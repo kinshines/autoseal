@@ -3,6 +3,7 @@ package com.inktech.autoseal;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +26,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dexafree.materialList.card.Card;
+import com.dexafree.materialList.card.CardProvider;
+import com.dexafree.materialList.card.OnActionClickListener;
+import com.dexafree.materialList.card.action.WelcomeButtonAction;
+import com.dexafree.materialList.view.MaterialListView;
 import com.inktech.autoseal.Util.SoapCallbackListener;
 import com.inktech.autoseal.Util.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
@@ -39,10 +45,8 @@ public class UsingCodeFragment extends Fragment {
 
     private AppCompatEditText editUsingCode;
     private AppCompatButton btnUsingCode;
-    private TextView textSealInfo;
-    private CardView cardSealInfo;
-    private AppCompatButton btnTakePhoto;
     private ProgressBar progressBar;
+    private MaterialListView listSealInfo;
 
     public UsingCodeFragment() {
         // Required empty public constructor
@@ -88,24 +92,14 @@ public class UsingCodeFragment extends Fragment {
             }
         });
 
-        btnTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),PhotoPreviewActivity.class);
-                intent.putExtra("next_action",PhotoPreviewActivity.TAKE_PHOTO);
-                startActivity(intent);
-            }
-        });
         return view;
     }
 
     private void initViews(View view) {
         editUsingCode = view.findViewById(R.id.edit_using_code);
         btnUsingCode= view.findViewById(R.id.btn_using_code);
-        textSealInfo=view.findViewById(R.id.text_seal_info);
-        cardSealInfo=view.findViewById(R.id.card_seal_info);
-        btnTakePhoto=view.findViewById(R.id.btn_take_photo);
         progressBar=view.findViewById(R.id.progress_bar);
+        listSealInfo=view.findViewById(R.id.list_seal_info);
     }
 
     private Handler handler=new Handler(){
@@ -113,27 +107,49 @@ public class UsingCodeFragment extends Fragment {
             switch (msg.what){
                 case 0x001:
                     progressBar.setVisibility(View.GONE);
-                    cardSealInfo.setVisibility(View.VISIBLE);
                     SoapObject sealInfoResult=(SoapObject)((SoapObject)msg.obj).getProperty("getUsingSealInfoResult");
                     SoapObject outerResult=(SoapObject)sealInfoResult.getProperty("result");
                     int sealStatus=Integer.parseInt(outerResult.getPropertySafelyAsString("sealCount"));
                     if(sealStatus==0){
-                        textSealInfo.setText("用印编码不存在");
+                        Toast.makeText(getContext(),"用印编码不存在",Toast.LENGTH_LONG).show();
                         return;
                     }
                     if(sealStatus==-1){
-                        textSealInfo.setText("机器码不对应");
+                        Toast.makeText(getContext(),"机器码不对应",Toast.LENGTH_LONG).show();
                         return;
                     }
                     SoapObject sealList=(SoapObject)outerResult.getProperty("sealList");
                     int sealListCount=sealList.getPropertyCount();
-                    String result="您输入的用印编码有效，盖章信息为：\n";
+
+                    String result="";
                     for(int i=0;i<sealListCount;i++){
                         SoapObject seal=(SoapObject)sealList.getProperty(i);
                         result=result+translateSealItem(seal)+"\n";
                     }
-                    result+="确认盖章信息无误后，请点击下方拍照按钮，并拍下您的正面照以存档方可盖章";
-                    textSealInfo.setText(result);
+                    result=result.substring(0,result.length()-2);
+                    Card sealCard = new Card.Builder(getContext())
+                            .withProvider(new CardProvider())
+                            .setLayout(R.layout.material_welcome_card_layout)
+                            .setTitle(result)
+                            .setTitleColor(Color.WHITE)
+                            .setDescription("用印编码有效，确认盖章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可盖章")
+                            .setDescriptionColor(Color.WHITE)
+                            .setBackgroundColor(getResources().getColor(R.color.colorPrimary))
+                            .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
+                                    .setText("确认拍照")
+                                    .setTextColor(Color.WHITE)
+                                    .setListener(new OnActionClickListener() {
+                                        @Override
+                                        public void onActionClicked(View view, Card card) {
+                                            Intent intent=new Intent(getActivity(),PhotoPreviewActivity.class);
+                                            intent.putExtra("next_action",PhotoPreviewActivity.TAKE_PHOTO);
+                                            startActivity(intent);
+                                        }
+                                    }))
+                            .setDividerVisible(true)
+                            .endConfig()
+                            .build();
+                    listSealInfo.getAdapter().add(sealCard);
                     break;
                 case 0x002:
                     progressBar.setVisibility(View.GONE);
