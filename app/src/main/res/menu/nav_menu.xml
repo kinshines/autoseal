@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/add_city"
+            android:icon="@mipmap/add_city"
+            android:title="普通用印"></item>
+        <item
+            android:id="@+id/multi_cities"
+            android:icon="@mipmap/multi_city"
+            android:title="普通取印"></item>
+        <item
+            android:id="@+id/setting"
+            android:icon="@mipmap/setting"
+            android:title="紧急用印"></item>
+        <item
+            android:id="@+id/urgent_out"
+            android:icon="@mipmap/setting"
+            android:title="紧急取印"></item>
+    </group>
+    <item android:title="自助盖章">
+        <menu>
+            <item
+                android:id="@+id/about"
+                android:icon="@mipmap/about"
+                android:title="关于"></item>
+            <item
+                android:id="@+id/exit"
+                android:icon="@mipmap/out"
+                android:title="退出"></item>
+        </menu>
+    </item>
+
+</menu>
