@@ -51,9 +51,6 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".PhotoFrontActivity" />
-        <activity android:name=".PhotoBackActivity"
-            android:label="盖章通信中"/>
         <activity
             android:name=".PhotoPreviewActivity"
             android:label="拍照预览" />

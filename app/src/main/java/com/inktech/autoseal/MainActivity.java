@@ -288,12 +288,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
     }
 
-    public void takePhotoBack(){
-        startActivityForResult(new Intent(this,PhotoBackActivity.class),0);
-    }
-    public void takePhotoFront(){
-        startActivityForResult(new Intent(this,PhotoFrontActivity.class),1);
-    }
 
 
     public void uploadImage(String sealCode,String filename,byte[] fileByte,String position){

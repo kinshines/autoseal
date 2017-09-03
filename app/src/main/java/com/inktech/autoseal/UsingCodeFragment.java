@@ -126,7 +126,7 @@ public class UsingCodeFragment extends Fragment {
                         SoapObject seal=(SoapObject)sealList.getProperty(i);
                         result=result+translateSealItem(seal)+"\n";
                     }
-                    result=result.substring(0,result.length()-2);
+                    result=result.substring(0,result.length()-1);
                     Card sealCard = new Card.Builder(getContext())
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_welcome_card_layout)

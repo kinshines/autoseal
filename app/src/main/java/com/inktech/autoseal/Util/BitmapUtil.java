@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Chaoyu on 2017/8/9.
@@ -139,7 +141,9 @@ public class BitmapUtil {
     }
 
     public static String getFilePath(Activity activity) {
-        return getFileDir(activity) + "/"+System.currentTimeMillis()+".jpg";
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                .format(new Date());
+        return getFileDir(activity) + File.separator+timeStamp+".jpg";
     }
 
     private static String getFileDir(Context context) {
