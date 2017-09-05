@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
@@ -31,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class SealProcessActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -317,6 +319,15 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         }
 
         myCamera.startPreview();
+
+        Camera.Parameters parameters = myCamera.getParameters(); // 获取各项参数
+        parameters.setPictureFormat(PixelFormat.JPEG); // 设置图片格式
+        parameters.setJpegQuality(100); // 设置照片质量
+        List<Camera.Size> sizeList=parameters.getSupportedPictureSizes();
+        Camera.Size camreaSize=sizeList.get(sizeList.size()/3);
+        parameters.setPictureSize(camreaSize.width, camreaSize.height);
+        parameters.setFocusMode("continuous-picture");
+        myCamera.setParameters(parameters);
 
         return true;
     }
