@@ -178,16 +178,9 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
             String filename = BitmapUtil.getFilePath(SealProcessActivity.this);
 
-            // 将得到的照片进行270°旋转，使其竖直
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            Matrix matrix = new Matrix();
-            matrix.preRotate(90);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-                    bitmap.getHeight(), matrix, true);
-
             try {
                 FileOutputStream fos = new FileOutputStream(filename);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.write(data);
                 fos.close();
                 WebServiceUtil.uploadByUsing(filename, "文件", new SoapCallbackListener() {
                     @Override
@@ -217,52 +210,6 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
             myCamera = null;
         }
     };
-
-    // 得到后置摄像头
-    private boolean openFacingFrontCamera() {
-        // 尝试开启前置摄像头
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        for (int camIdx = 0, cameraCount = Camera.getNumberOfCameras(); camIdx < cameraCount; camIdx++) {
-            Camera.getCameraInfo(camIdx, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                try {
-                    Log.i(TAG, "tryToOpenCamera");
-                    myCamera = Camera.open(camIdx);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        }
-
-        // 如果开启前置失败（无前置）则开启后置
-        if (myCamera == null) {
-            for (int camIdx = 0, cameraCount = Camera.getNumberOfCameras(); camIdx < cameraCount; camIdx++) {
-                Camera.getCameraInfo(camIdx, cameraInfo);
-                if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    try {
-                        myCamera = Camera.open(camIdx);
-                    } catch (RuntimeException e) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        try {
-            // 这里的myCamera为已经初始化的Camera对象
-            myCamera.setPreviewDisplay(myHolder);
-        } catch (IOException e) {
-            e.printStackTrace();
-            myCamera.stopPreview();
-            myCamera.release();
-            myCamera = null;
-        }
-
-        myCamera.startPreview();
-
-        return true;
-    }
 
     // 得到后置摄像头
     private boolean openFacingBackCamera() {
@@ -299,6 +246,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         List<Camera.Size> sizeList=parameters.getSupportedPictureSizes();
         Camera.Size camreaSize=sizeList.get(sizeList.size()/3);
         parameters.setPictureSize(camreaSize.width, camreaSize.height);
+        parameters.setRotation(90);
         parameters.setFocusMode("continuous-picture");
         myCamera.setParameters(parameters);
 

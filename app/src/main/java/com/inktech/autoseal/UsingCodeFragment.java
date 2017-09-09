@@ -141,9 +141,9 @@ public class UsingCodeFragment extends Fragment {
                                     .setListener(new OnActionClickListener() {
                                         @Override
                                         public void onActionClicked(View view, Card card) {
-                                            Intent intent=new Intent(getActivity(),PhotoPreviewActivity.class);
-                                            intent.putExtra("next_action",PhotoPreviewActivity.TAKE_PHOTO);
+                                            Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
                                             startActivity(intent);
+                                            getActivity().finish();
                                         }
                                     }))
                             .setDividerVisible(true)
