@@ -9,6 +9,7 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -17,6 +18,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,36 +84,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                 startTakePhoto();
                 //// TODO: 2017/8/28  接收蓝牙指令
                 try {
-                    Thread.sleep(10000);
-                    SealSummary.completeOnce();
-                    refreshSealProcess();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case TAKE_PHOTO_BACK:
-                if(resultCode==RESULT_OK){
-                    String filePath=data.getStringExtra("filePath");
-                    WebServiceUtil.uploadByUsing(filePath, "文件", new SoapCallbackListener() {
-                        @Override
-                        public void onFinish(SoapObject soapObject) {
-                            handler.sendEmptyMessage(0x001);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            handler.sendEmptyMessage(0x002);
-                        }
-                    });
-                }
-                //// TODO: 2017/8/28  接收蓝牙指令
-                try {
-                    Thread.sleep(10000);
+                    Thread.sleep(5000);
                     SealSummary.completeOnce();
                     refreshSealProcess();
                 } catch (InterruptedException e) {
