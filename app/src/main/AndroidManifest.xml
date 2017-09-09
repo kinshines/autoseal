@@ -53,7 +53,8 @@
 
         <activity
             android:name=".PhotoPreviewActivity"
-            android:label="拍照预览" />
+            android:label="拍照预览"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".SealProcessActivity" />
         <activity
             android:name=".TakePhotoActivity"
