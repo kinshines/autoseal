@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -55,15 +56,19 @@
             android:name=".PhotoPreviewActivity"
             android:label="拍照预览"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SealProcessActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SealProcessActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TakePhotoActivity"
             android:label="@string/title_activity_take_photo"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".BluetoothSearchActivity"
+        <activity
+            android:name=".BluetoothSearchActivity"
             android:label="连接盖章机"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".QRCodeReaderActivity"
+            android:label="请将二维码对准前摄像头以便扫描"></activity>
     </application>
 
 </manifest>

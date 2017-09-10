@@ -9,6 +9,7 @@ import java.util.UUID;
 public interface Constants {
     String TAG = "Arduino - Android";
     int REQUEST_ENABLE_BT = 1;
+    int REQUEST_QR_SCAN=2;
 
     // message types sent from the BluetoothChatService Handler
     int MESSAGE_STATE_CHANGE = 1;
@@ -31,4 +32,7 @@ public interface Constants {
     // Key names received from the BluetoothChatService Handler
     String EXTRA_DEVICE  = "EXTRA_DEVICE";
     String SNACKBAR = "toast";
+
+    String ACTION_NOTEBOOK="ACTION_NOTEBOOK";
+    String ACTION_DAILY_ONE="ACTION_DAILY_ONE";
 }

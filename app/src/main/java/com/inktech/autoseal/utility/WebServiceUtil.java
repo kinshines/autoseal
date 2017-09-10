@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class WebServiceUtil {
     private static final String AddressNameSpace = "http://tempuri.org/";
-    private static final String WebServiceUrl="http://192.168.0.101:8020/Api.asmx";
+    private static final String WebServiceUrl="http://192.168.18.213:8020/Api.asmx";
     private static final String UsingSealInfoMethod="getUsingSealInfo";
     private static final String UsingSealInfoAction="http://tempuri.org/getUsingSealInfo";
     private static final String UploadByUsingMethod="uploadByUsing";

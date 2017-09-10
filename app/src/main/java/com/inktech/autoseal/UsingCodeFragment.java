@@ -21,17 +21,21 @@ import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
+import com.inktech.autoseal.model.Constants;
 import com.inktech.autoseal.utility.SoapCallbackListener;
 import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 
 import org.ksoap2.serialization.SoapObject;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class UsingCodeFragment extends Fragment {
 
     AppCompatEditText editUsingCode;
     AppCompatButton btnUsingCode;
+    AppCompatButton btnScan;
     ProgressBar progressBar;
     MaterialListView listSealInfo;
 
@@ -79,7 +83,28 @@ public class UsingCodeFragment extends Fragment {
             }
         });
 
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),QRCodeReaderActivity.class);
+                startActivityForResult(intent, Constants.REQUEST_QR_SCAN);
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case Constants.REQUEST_QR_SCAN:
+                if(resultCode==RESULT_OK){
+                    String qrText=data.getStringExtra("qr_text");
+                    editUsingCode.setText(qrText);
+                    btnUsingCode.callOnClick();
+                }
+                break;
+        }
     }
 
     private void initViews(View view) {
@@ -87,6 +112,7 @@ public class UsingCodeFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         progressBar=view.findViewById(R.id.progress_bar);
         listSealInfo=view.findViewById(R.id.list_seal_info);
+        btnScan=view.findViewById(R.id.btn_scan);
     }
 
     private Handler handler=new Handler(){
@@ -118,13 +144,13 @@ public class UsingCodeFragment extends Fragment {
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_welcome_card_layout)
                             .setTitle(result)
-                            .setTitleColor(Color.WHITE)
+                            //.setTitleColor(Color.WHITE)
                             .setDescription("用印编码有效，确认盖章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可盖章")
-                            .setDescriptionColor(Color.WHITE)
-                            .setBackgroundColor(getResources().getColor(R.color.colorPrimary))
+                            //.setDescriptionColor(Color.WHITE)
+                            .setBackgroundColor(getResources().getColor(R.color.colorLight))
                             .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
                                     .setText("确认拍照")
-                                    .setTextColor(Color.WHITE)
+                                    .setTextColor(getResources().getColor(R.color.colorAccent))
                                     .setListener(new OnActionClickListener() {
                                         @Override
                                         public void onActionClicked(View view, Card card) {

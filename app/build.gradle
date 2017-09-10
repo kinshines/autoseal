@@ -42,5 +42,7 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
     compile 'com.github.dexafree:materiallist:3.2.1'
+    compile 'com.roger.catloadinglibrary:catloadinglibrary:1.0.1'
+    compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2'
     testCompile 'junit:junit:4.12'
 }
