@@ -1,7 +1,6 @@
-package com.inktech.autoseal.Util;
+package com.inktech.autoseal.utility;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.preference.PreferenceManager;
 
 import com.inktech.autoseal.MyApplication;
@@ -19,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Chaoyu on 2017/8/27.

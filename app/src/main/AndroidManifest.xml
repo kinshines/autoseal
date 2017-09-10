@@ -54,11 +54,15 @@
         <activity
             android:name=".PhotoPreviewActivity"
             android:label="拍照预览"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".SealProcessActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".SealProcessActivity" />
         <activity
             android:name=".TakePhotoActivity"
             android:label="@string/title_activity_take_photo"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".BluetoothSearchActivity"
+            android:label="连接盖章机"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

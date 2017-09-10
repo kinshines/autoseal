@@ -1,4 +1,4 @@
-package com.inktech.autoseal.Util;
+package com.inktech.autoseal.utility;
 
 import org.ksoap2.serialization.SoapObject;
 

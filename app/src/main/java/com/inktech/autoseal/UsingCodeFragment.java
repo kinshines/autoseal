@@ -1,29 +1,19 @@
 package com.inktech.autoseal;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dexafree.materialList.card.Card;
@@ -31,22 +21,19 @@ import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
-import com.inktech.autoseal.Util.SoapCallbackListener;
-import com.inktech.autoseal.Util.WebServiceUtil;
+import com.inktech.autoseal.utility.SoapCallbackListener;
+import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
-import com.inktech.autoseal.model.TakePhotoImage;
 
 import org.ksoap2.serialization.SoapObject;
 
-import java.io.File;
-import java.io.IOException;
 
 public class UsingCodeFragment extends Fragment {
 
-    private AppCompatEditText editUsingCode;
-    private AppCompatButton btnUsingCode;
-    private ProgressBar progressBar;
-    private MaterialListView listSealInfo;
+    AppCompatEditText editUsingCode;
+    AppCompatButton btnUsingCode;
+    ProgressBar progressBar;
+    MaterialListView listSealInfo;
 
     public UsingCodeFragment() {
         // Required empty public constructor

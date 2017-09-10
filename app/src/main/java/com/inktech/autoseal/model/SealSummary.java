@@ -50,6 +50,10 @@ public class SealSummary {
         return process.get(currentSealType)+1;
     }
 
+    public static boolean isCurrentSealEnd(){
+        return getCurrentSealCount()==overall.get(currentSealType);
+    }
+
     public static String translateSealTypeToChinese(String sealType){
         if("gz".equals(sealType))
             return "公章";

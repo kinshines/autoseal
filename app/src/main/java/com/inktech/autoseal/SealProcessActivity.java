@@ -1,42 +1,62 @@
 package com.inktech.autoseal;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inktech.autoseal.Util.BitmapUtil;
-import com.inktech.autoseal.Util.SoapCallbackListener;
-import com.inktech.autoseal.Util.WebServiceUtil;
+import com.inktech.autoseal.model.BluetoothCommandInterpreter;
+import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.service.BluetoothService;
+import com.inktech.autoseal.utility.BitmapUtil;
+import com.inktech.autoseal.utility.BluetoothUtil;
+import com.inktech.autoseal.utility.SoapCallbackListener;
+import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 
 import org.ksoap2.serialization.SoapObject;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class SealProcessActivity extends AppCompatActivity implements View.OnClickListener {
+
+    BluetoothService bluetoothService;
+    BluetoothDevice device;
+
+    Toolbar toolbar;
+    ProgressBar toolbalProgressBar;
+    CoordinatorLayout coordinatorLayout;
+    MenuItem reconnectButton;
+    Snackbar snackTurnOn;
+    myHandler handler;
 
     TextView textSealProcess;
     AppCompatButton btnConfirmSeal;
@@ -44,7 +64,6 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     private SurfaceView mySurfaceView;
     private SurfaceHolder myHolder;
     private Camera myCamera;
-    public static final int TAKE_PHOTO_BACK=0;
 
     private static final String TAG = "SealProcessActivity";
 
@@ -54,7 +73,141 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_seal_process);
         initViews();
         refreshSealProcess();
+        snackTurnOn = Snackbar.make(coordinatorLayout, "Bluetooth turned off", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Turn On", new View.OnClickListener() {
+                    @Override public void onClick(View v) {
+                        enableBluetooth();
+                    }
+                });
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        setSupportActionBar(toolbar);
+
+        handler = new myHandler(SealProcessActivity.this);
+
+        assert getSupportActionBar() != null; // won't be null, lint error
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        device = getIntent().getExtras().getParcelable(Constants.EXTRA_DEVICE);
+
+        bluetoothService = new BluetoothService(handler, device);
+
+        setTitle(device.getName());
     }
+
+    @Override protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mReceiver, filter);
+
+        bluetoothService.connect();
+        Log.d(Constants.TAG, "Connecting");
+    }
+
+    @Override protected void onStop() {
+        super.onStop();
+        if (bluetoothService != null) {
+            bluetoothService.stop();
+            Log.d(Constants.TAG, "Stopping");
+        }
+
+        unregisterReceiver(mReceiver);
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                setStatus("None");
+            } else {
+                setStatus("Error");
+                Snackbar.make(coordinatorLayout, "Failed to enable bluetooth", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Try Again", new View.OnClickListener() {
+                            @Override public void onClick(View v) {
+                                enableBluetooth();
+                            }
+                        }).show();
+            }
+        }
+
+    }
+
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (bluetoothService.getState() != Constants.STATE_CONNECTED) {
+            Snackbar.make(coordinatorLayout, "You are not connected", Snackbar.LENGTH_LONG)
+                    .setAction("Connect", new View.OnClickListener() {
+                        @Override public void onClick(View v) {
+                            reconnect();
+                        }
+                    }).show();
+            return;
+        } else {
+            byte[] send = BluetoothUtil.getHexBytes(message);
+            bluetoothService.write(send);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.bluetooth_menu, menu);
+        reconnectButton = menu.findItem(R.id.action_reconnect);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                bluetoothService.stop();
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.action_reconnect:
+                reconnect();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch (state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        snackTurnOn.show();
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        if (snackTurnOn.isShownOrQueued()) snackTurnOn.dismiss();
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        reconnect();
+                }
+            }
+        }
+    };
+
+    private void setStatus(String status) {
+        toolbar.setSubtitle(status);
+    }
+
+    private void enableBluetooth() {
+        setStatus("Enabling Bluetooth");
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, Constants.REQUEST_ENABLE_BT);
+    }
+
+    private void reconnect() {
+        reconnectButton.setVisible(false);
+        bluetoothService.stop();
+        bluetoothService.connect();
+    }
+
     private void refreshSealProcess(){
         String sealType=SealSummary.getCurrentSealType();
         if(TextUtils.isEmpty(sealType)){
@@ -74,38 +227,92 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         textSealProcess=(TextView) findViewById(R.id.text_seal_process);
         btnConfirmSeal=(AppCompatButton) findViewById(R.id.btn_confirm_seal);
         btnConfirmSeal.setOnClickListener(this);
+        toolbar=(Toolbar) findViewById(R.id.toolbar);
+        toolbalProgressBar=(ProgressBar) findViewById(R.id.toolbar_progress_bar);
+        coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinator_layout_bluetooth);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_confirm_seal:
-                //// TODO: 2017/8/28 发送蓝牙指令
-                startTakePhoto();
-                //// TODO: 2017/8/28  接收蓝牙指令
-                try {
-                    Thread.sleep(5000);
-                    SealSummary.completeOnce();
-                    refreshSealProcess();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                String command= BluetoothCommandInterpreter.Send(
+                        SealSummary.getCurrentSealType(),SealSummary.isCurrentSealEnd());
+                sendMessage(command);
                 break;
         }
     }
 
-    private Handler handler=new Handler(){
+    private class myHandler extends Handler{
+        private final WeakReference<SealProcessActivity> mActivity;
+        public myHandler(SealProcessActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
         public void handleMessage(Message msg){
+            final SealProcessActivity activity = mActivity.get();
             switch (msg.what){
-                case 0x001:
-                    Toast.makeText(SealProcessActivity.this,"照片上传成功",Toast.LENGTH_SHORT).show();
+                case Constants.MESSAGE_STATE_CHANGE:
+                    switch (msg.arg1) {
+                        case Constants.STATE_CONNECTED:
+                            activity.setStatus("Connected");
+                            activity.reconnectButton.setVisible(false);
+                            activity.toolbalProgressBar.setVisibility(View.GONE);
+                            break;
+                        case Constants.STATE_CONNECTING:
+                            activity.setStatus("Connecting");
+                            activity.toolbalProgressBar.setVisibility(View.VISIBLE);
+                            break;
+                        case Constants.STATE_NONE:
+                            activity.setStatus("Not Connected");
+                            activity.toolbalProgressBar.setVisibility(View.GONE);
+                            break;
+                        case Constants.STATE_ERROR:
+                            activity.setStatus("Error");
+                            activity.reconnectButton.setVisible(true);
+                            activity.toolbalProgressBar.setVisibility(View.GONE);
+                            break;
+                    }
                     break;
-                case 0x002:
-                    Toast.makeText(SealProcessActivity.this,"照片上传失败",Toast.LENGTH_SHORT).show();
+                case Constants.MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    String writeMessage=BluetoothUtil.bytesToHexString(writeBuf);
+                    Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
+                    break;
+                case Constants.MESSAGE_READ:
+
+                    String readMessage = (String) msg.obj;
+
+                    if (readMessage != null ) {
+                        Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
+                        if(BluetoothCommandInterpreter.FeedbackReceivedCommand.equals(readMessage)){
+                            startTakePhoto();
+                        }
+                        if(BluetoothCommandInterpreter.FeedbackSealOver.equals(readMessage)){
+                            startTakePhoto();
+                            SealSummary.completeOnce();
+                            refreshSealProcess();
+                        }
+                    }
+                    break;
+
+                case Constants.MESSAGE_SNACKBAR:
+                    Snackbar.make(activity.coordinatorLayout, msg.getData().getString(Constants.SNACKBAR), Snackbar.LENGTH_LONG)
+                            .setAction("Connect", new View.OnClickListener() {
+                                @Override public void onClick(View v) {
+                                    activity.reconnect();
+                                }
+                            }).show();
+
+                    break;
+                case Constants.MESSAGE_FILE_UPLOAD_SUCCEED:
+                    Toast.makeText(activity,"照片上传成功",Toast.LENGTH_SHORT).show();
+                    break;
+                case Constants.MESSAGE_FILE_UPLOAD_FAIL:
+                    Toast.makeText(activity,"照片上传失败",Toast.LENGTH_SHORT).show();
                     break;
             }
         }
-    };
+    }
 
     // 初始化surface
     @SuppressWarnings("deprecation")
@@ -158,7 +365,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
         try {
             // 因为开启摄像头需要时间，这里让线程睡两秒
-            Thread.sleep(3000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -185,12 +392,12 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                 WebServiceUtil.uploadByUsing(filename, "文件", new SoapCallbackListener() {
                     @Override
                     public void onFinish(SoapObject soapObject) {
-                        handler.sendEmptyMessage(0x001);
+                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        handler.sendEmptyMessage(0x002);
+                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });
             } catch (Exception error) {
