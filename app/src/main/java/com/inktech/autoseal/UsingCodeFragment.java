@@ -22,9 +22,12 @@ import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
 import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.model.SealInfo;
+import com.inktech.autoseal.model.SealInfoResult;
 import com.inktech.autoseal.utility.SoapCallbackListener;
 import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
+import com.inktech.autoseal.utility.XmlParseUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
@@ -120,9 +123,9 @@ public class UsingCodeFragment extends Fragment {
             switch (msg.what){
                 case 0x001:
                     progressBar.setVisibility(View.GONE);
-                    SoapObject sealInfoResult=(SoapObject)((SoapObject)msg.obj).getProperty("getUsingSealInfoResult");
-                    SoapObject outerResult=(SoapObject)sealInfoResult.getProperty("result");
-                    int sealStatus=Integer.parseInt(outerResult.getPropertySafelyAsString("sealCount"));
+                    String xml=((SoapObject)msg.obj).getPropertySafelyAsString("getUsingSealInfoResult");
+                    SealInfoResult sealInfoResult=XmlParseUtil.parseXML2SealInfoResult(xml);
+                    int sealStatus=sealInfoResult.getSealCount();
                     if(sealStatus==0){
                         Toast.makeText(getContext(),"用印编码不存在",Toast.LENGTH_LONG).show();
                         return;
@@ -131,12 +134,10 @@ public class UsingCodeFragment extends Fragment {
                         Toast.makeText(getContext(),"机器码不对应",Toast.LENGTH_LONG).show();
                         return;
                     }
-                    SoapObject sealList=(SoapObject)outerResult.getProperty("sealList");
-                    int sealListCount=sealList.getPropertyCount();
 
                     String result="";
-                    for(int i=0;i<sealListCount;i++){
-                        SoapObject seal=(SoapObject)sealList.getProperty(i);
+                    SealSummary.Init();
+                    for(SealInfo seal : sealInfoResult.getSealList()){
                         result=result+translateSealItem(seal)+"\n";
                     }
                     result=result.substring(0,result.length()-1);
@@ -144,9 +145,7 @@ public class UsingCodeFragment extends Fragment {
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_welcome_card_layout)
                             .setTitle(result)
-                            //.setTitleColor(Color.WHITE)
                             .setDescription("用印编码有效，确认盖章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可盖章")
-                            //.setDescriptionColor(Color.WHITE)
                             .setBackgroundColor(getResources().getColor(R.color.colorLight))
                             .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
                                     .setText("确认拍照")
@@ -172,11 +171,11 @@ public class UsingCodeFragment extends Fragment {
         }
     };
 
-    private String translateSealItem(SoapObject seal){
-        String type=seal.getProperty("type").toString();
-        String count=seal.getProperty("count").toString();
+    private String translateSealItem(SealInfo seal){
+        String type=seal.getType();
+        int count=seal.getCount();
         String chineseType= SealSummary.translateSealTypeToChinese(type);
-        SealSummary.addMap(type,Integer.parseInt(count));
+        SealSummary.addMap(type,count);
         return chineseType+"：盖章 "+count+" 次";
     }
 }

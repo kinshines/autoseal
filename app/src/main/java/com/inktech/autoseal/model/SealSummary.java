@@ -24,19 +24,19 @@ public class SealSummary {
     }
 
     public static String getCurrentSealType(){
-        currentSealType=trySealType("gz");
+        currentSealType=trySealType("仓位1");
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("frz");
+        currentSealType=trySealType("仓位2");
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("cwz");
+        currentSealType=trySealType("仓位3");
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("htz");
+        currentSealType=trySealType("仓位4");
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("fpz");
+        currentSealType=trySealType("仓位5");
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
         return "";
@@ -55,15 +55,15 @@ public class SealSummary {
     }
 
     public static String translateSealTypeToChinese(String sealType){
-        if("gz".equals(sealType))
+        if("仓位1".equals(sealType))
             return "公章";
-        if("frz".equals(sealType))
+        if("仓位2".equals(sealType))
             return "法人章";
-        if("cwz".equals(sealType))
+        if("仓位3".equals(sealType))
             return "财务章";
-        if("htz".equals(sealType))
+        if("仓位4".equals(sealType))
             return "合同专用章";
-        if("fpz".equals(sealType))
+        if("仓位5".equals(sealType))
             return "发票专用章";
         return sealType;
     }
@@ -80,5 +80,11 @@ public class SealSummary {
         }else {
             return sealType;
         }
+    }
+
+    public static void Init(){
+        overall.clear();
+        process.clear();
+        currentSealType="";
     }
 }

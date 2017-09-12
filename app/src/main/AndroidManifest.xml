@@ -67,8 +67,13 @@
             android:name=".BluetoothSearchActivity"
             android:label="连接盖章机"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".QRCodeReaderActivity"
-            android:label="请将二维码对准前摄像头以便扫描"></activity>
+        <activity
+            android:name=".QRCodeReaderActivity"
+            android:label="请将二维码对准前摄像头以便扫描" />
+        <activity
+            android:name=".SettingsPreferenceActivity"
+            android:label="@string/title_activity_settings_preference"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

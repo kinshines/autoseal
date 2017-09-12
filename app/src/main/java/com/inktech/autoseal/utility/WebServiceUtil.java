@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
 import com.inktech.autoseal.MyApplication;
+import com.inktech.autoseal.SettingsPreferenceActivity;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.MarshalBase64;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 public class WebServiceUtil {
     private static final String AddressNameSpace = "http://tempuri.org/";
-    private static final String WebServiceUrl="http://192.168.18.213:8020/Api.asmx";
+    private static String WebServiceUrl=getServerIp();
     private static final String UsingSealInfoMethod="getUsingSealInfo";
     private static final String UsingSealInfoAction="http://tempuri.org/getUsingSealInfo";
     private static final String UploadByUsingMethod="uploadByUsing";
@@ -63,14 +64,14 @@ public class WebServiceUtil {
         Map<String,Object> map=new HashMap<>();
         SharedPreferences pref=PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         String sealCode=pref.getString("sealCode","");
-        map.put("usingSealCode",sealCode);
-        map.put("hardwareCode","hardwareCode");
+        map.put("usingSealCode","UCJ3EHZOXTO0");
+        map.put("hardwareCode","GF199510");
         sendRequest(UsingSealInfoMethod,UsingSealInfoAction,map,listener);
     }
 
     public static void uploadByUsing(final String filePath,final String position,final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
-        map.put("sealCode","sealCode");
+        map.put("sealCode","UCJ3EHZOXTO0");
         File file=new File(filePath);
         map.put("fileByte",getBytes(file));
         map.put("filename",file.getName());
@@ -97,6 +98,13 @@ public class WebServiceUtil {
             e.printStackTrace();
         }
         return buffer;
+    }
+
+    private static String getServerIp(){
+        SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        String savedIp=pref.getString("serverIP","124.128.33.110");
+        //return "http://"+savedIp+":10003/WebService/WebService.asmx";
+        return "http://124.128.33.110:10003/WebService/WebService.asmx";
     }
 
 }
