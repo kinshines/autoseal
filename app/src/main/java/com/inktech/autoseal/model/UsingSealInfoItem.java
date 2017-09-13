@@ -4,17 +4,8 @@ package com.inktech.autoseal.model;
  * Created by Chaoyu on 2017/9/12.
  */
 
-public class SealInfo {
-    private String type;
+public class UsingSealInfoItem extends OutSealInfoItem {
     private Integer count;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public Integer getCount() {
         return count;

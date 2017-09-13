@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
 import com.inktech.autoseal.constant.MyApplication;
-import com.inktech.autoseal.model.SoapCallbackListener;
+import com.inktech.autoseal.adapter.SoapCallbackListener;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.MarshalBase64;
@@ -103,8 +103,7 @@ public class WebServiceUtil {
     private static String getServerIp(){
         SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         String savedIp=pref.getString("serverIP","124.128.33.110");
-        //return "http://"+savedIp+":10003/WebService/WebService.asmx";
-        return "http://124.128.33.110:10003/WebService/WebService.asmx";
+        return "http://"+savedIp+":10003/WebService/WebService.asmx";
     }
 
 }

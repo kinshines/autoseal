@@ -1,4 +1,4 @@
-package com.inktech.autoseal.model;
+package com.inktech.autoseal.adapter;
 
 import org.ksoap2.serialization.SoapObject;
 

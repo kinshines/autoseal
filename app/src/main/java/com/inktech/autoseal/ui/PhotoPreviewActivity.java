@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.inktech.autoseal.constant.Constants;
-import com.inktech.autoseal.model.SoapCallbackListener;
+import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.util.BitmapUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 

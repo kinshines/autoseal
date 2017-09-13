@@ -22,9 +22,9 @@ import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
 import com.inktech.autoseal.constant.Constants;
-import com.inktech.autoseal.model.SealInfo;
-import com.inktech.autoseal.model.SealInfoResult;
-import com.inktech.autoseal.model.SoapCallbackListener;
+import com.inktech.autoseal.model.UsingSealInfoItem;
+import com.inktech.autoseal.model.UsingSealInfoResponse;
+import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 import com.inktech.autoseal.util.XmlParseUtil;
@@ -123,7 +123,7 @@ public class UsingCodeFragment extends Fragment {
                 case 0x001:
                     progressBar.setVisibility(View.GONE);
                     String xml=((SoapObject)msg.obj).getPropertySafelyAsString("getUsingSealInfoResult");
-                    SealInfoResult sealInfoResult=XmlParseUtil.parseXML2SealInfoResult(xml);
+                    UsingSealInfoResponse sealInfoResult=XmlParseUtil.pullUsingSealInfoResponse(xml);
                     int sealStatus=sealInfoResult.getSealCount();
                     if(sealStatus==0){
                         Toast.makeText(getContext(),"用印编码不存在",Toast.LENGTH_LONG).show();
@@ -136,7 +136,7 @@ public class UsingCodeFragment extends Fragment {
 
                     String result="";
                     SealSummary.Init();
-                    for(SealInfo seal : sealInfoResult.getSealList()){
+                    for(UsingSealInfoItem seal : sealInfoResult.getSealList()){
                         result=result+translateSealItem(seal)+"\n";
                     }
                     result=result.substring(0,result.length()-1);
@@ -170,7 +170,7 @@ public class UsingCodeFragment extends Fragment {
         }
     };
 
-    private String translateSealItem(SealInfo seal){
+    private String translateSealItem(UsingSealInfoItem seal){
         String type=seal.getType();
         int count=seal.getCount();
         String chineseType= SealSummary.translateSealTypeToChinese(type);
