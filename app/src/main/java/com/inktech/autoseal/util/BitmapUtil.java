@@ -1,4 +1,4 @@
-package com.inktech.autoseal.utility;
+package com.inktech.autoseal.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

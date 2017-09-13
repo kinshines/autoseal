@@ -1,4 +1,4 @@
-package com.inktech.autoseal.utility;
+package com.inktech.autoseal.util;
 
 import com.inktech.autoseal.model.SealInfo;
 import com.inktech.autoseal.model.SealInfoResult;

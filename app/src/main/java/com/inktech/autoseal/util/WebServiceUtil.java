@@ -1,4 +1,4 @@
-package com.inktech.autoseal.utility;
+package com.inktech.autoseal.util;
 
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;

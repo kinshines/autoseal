@@ -1,4 +1,4 @@
-package com.inktech.autoseal.utility;
+package com.inktech.autoseal.util;
 
 /**
  * Created by Chaoyu on 2017/8/11.

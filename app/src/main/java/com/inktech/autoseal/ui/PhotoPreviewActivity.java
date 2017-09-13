@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.model.SoapCallbackListener;
-import com.inktech.autoseal.utility.BitmapUtil;
-import com.inktech.autoseal.utility.WebServiceUtil;
+import com.inktech.autoseal.util.BitmapUtil;
+import com.inktech.autoseal.util.WebServiceUtil;
 
 import org.ksoap2.serialization.SoapObject;
 

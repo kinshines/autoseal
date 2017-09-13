@@ -1,4 +1,4 @@
-package com.inktech.autoseal.utility;
+package com.inktech.autoseal.util;
 
 import android.bluetooth.BluetoothDevice;
 import android.util.Log;

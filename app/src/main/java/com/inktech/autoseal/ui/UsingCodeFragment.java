@@ -3,7 +3,6 @@ package com.inktech.autoseal.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,9 +25,9 @@ import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.model.SealInfo;
 import com.inktech.autoseal.model.SealInfoResult;
 import com.inktech.autoseal.model.SoapCallbackListener;
-import com.inktech.autoseal.utility.WebServiceUtil;
+import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
-import com.inktech.autoseal.utility.XmlParseUtil;
+import com.inktech.autoseal.util.XmlParseUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
