@@ -8,7 +8,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.inktech.autoseal.constant.Constants;
-import com.inktech.autoseal.model.BluetoothCmdInterpreter;
+import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
 
 import java.io.IOException;
 import java.io.InputStream;

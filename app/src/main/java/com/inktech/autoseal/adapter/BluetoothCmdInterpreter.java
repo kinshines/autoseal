@@ -1,4 +1,4 @@
-package com.inktech.autoseal.model;
+package com.inktech.autoseal.adapter;
 
 /**
  * Created by Chaoyu on 2017/9/10.

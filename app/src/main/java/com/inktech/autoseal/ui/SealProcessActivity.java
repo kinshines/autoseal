@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.inktech.autoseal.constant.Constants;
-import com.inktech.autoseal.model.BluetoothCmdInterpreter;
+import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
 import com.inktech.autoseal.model.SoapCallbackListener;
 import com.inktech.autoseal.service.BluetoothService;
 import com.inktech.autoseal.util.BitmapUtil;
