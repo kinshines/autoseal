@@ -7,8 +7,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.inktech.autoseal.model.BluetoothCommandInterpreter;
-import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.model.BluetoothCmdInterpreter;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -229,7 +229,7 @@ public class BluetoothService {
                     String read=bytesToHexString(buffer,bytes);
                     readMessage.append(read);
 
-                    if (read.contains(BluetoothCommandInterpreter.Suffix)) {
+                    if (read.contains(BluetoothCmdInterpreter.Suffix)) {
                         myHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, readMessage.toString()).sendToTarget();
                         readMessage.setLength(0);
                     }

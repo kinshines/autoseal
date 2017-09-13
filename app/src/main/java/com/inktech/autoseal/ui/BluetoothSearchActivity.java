@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -21,10 +21,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.inktech.autoseal.model.BluetoothDevicesAdapter;
-import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.adapter.BluetoothDevicesAdapter;
+import com.inktech.autoseal.constant.Constants;
 
 import java.util.Set;
+
+import com.inktech.autoseal.R;
 
 public class BluetoothSearchActivity extends AppCompatActivity {
 

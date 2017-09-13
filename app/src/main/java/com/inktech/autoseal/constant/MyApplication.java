@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.constant;
 
 import android.app.Application;
 import android.content.Context;

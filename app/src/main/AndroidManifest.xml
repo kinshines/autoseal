@@ -23,7 +23,7 @@
         android:required="true" />
 
     <application
-        android:name=".MyApplication"
+        android:name=".constant.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,7 +31,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -53,25 +53,25 @@
         </provider>
 
         <activity
-            android:name=".PhotoPreviewActivity"
+            android:name=".ui.PhotoPreviewActivity"
             android:label="拍照预览"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SealProcessActivity"
+            android:name=".ui.SealProcessActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".TakePhotoActivity"
+            android:name=".ui.TakePhotoActivity"
             android:label="@string/title_activity_take_photo"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".BluetoothSearchActivity"
+            android:name=".ui.BluetoothSearchActivity"
             android:label="连接盖章机"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".QRCodeReaderActivity"
+            android:name=".ui.QRCodeReaderActivity"
             android:label="请将二维码对准前摄像头以便扫描" />
         <activity
-            android:name=".SettingsPreferenceActivity"
+            android:name=".ui.SettingsPreferenceActivity"
             android:label="@string/title_activity_settings_preference"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

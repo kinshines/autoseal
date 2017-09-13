@@ -1,5 +1,6 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -21,18 +22,17 @@ import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
-import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.model.SealInfo;
 import com.inktech.autoseal.model.SealInfoResult;
-import com.inktech.autoseal.utility.SoapCallbackListener;
+import com.inktech.autoseal.model.SoapCallbackListener;
 import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 import com.inktech.autoseal.utility.XmlParseUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
-import static android.app.Activity.RESULT_OK;
-
+import com.inktech.autoseal.R;
 
 public class UsingCodeFragment extends Fragment {
 
@@ -101,7 +101,7 @@ public class UsingCodeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
             case Constants.REQUEST_QR_SCAN:
-                if(resultCode==RESULT_OK){
+                if(resultCode== Activity.RESULT_OK){
                     String qrText=data.getStringExtra("qr_text");
                     editUsingCode.setText(qrText);
                     btnUsingCode.callOnClick();

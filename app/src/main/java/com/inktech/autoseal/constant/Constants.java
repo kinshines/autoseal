@@ -1,4 +1,4 @@
-package com.inktech.autoseal.model;
+package com.inktech.autoseal.constant;
 
 import java.util.UUID;
 

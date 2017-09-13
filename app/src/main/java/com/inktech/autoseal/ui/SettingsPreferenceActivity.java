@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.List;
+import com.inktech.autoseal.R;
 
 public class SettingsPreferenceActivity extends AppCompatActivity {
 

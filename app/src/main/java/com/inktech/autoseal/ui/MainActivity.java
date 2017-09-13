@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.content.Intent;
 import android.os.Process;
@@ -18,8 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.inktech.autoseal.model.Constants;
-
+import com.inktech.autoseal.R;
+import com.inktech.autoseal.constant.Constants;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
 

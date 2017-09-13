@@ -3,8 +3,8 @@ package com.inktech.autoseal.utility;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
-import com.inktech.autoseal.MyApplication;
-import com.inktech.autoseal.SettingsPreferenceActivity;
+import com.inktech.autoseal.constant.MyApplication;
+import com.inktech.autoseal.model.SoapCallbackListener;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.MarshalBase64;

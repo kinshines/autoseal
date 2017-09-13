@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -30,12 +30,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.inktech.autoseal.model.BluetoothCommandInterpreter;
-import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.model.BluetoothCmdInterpreter;
+import com.inktech.autoseal.model.SoapCallbackListener;
 import com.inktech.autoseal.service.BluetoothService;
 import com.inktech.autoseal.utility.BitmapUtil;
 import com.inktech.autoseal.utility.BluetoothUtil;
-import com.inktech.autoseal.utility.SoapCallbackListener;
 import com.inktech.autoseal.utility.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 
@@ -45,6 +45,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.List;
+
+import com.inktech.autoseal.R;
 
 public class SealProcessActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -236,7 +238,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_confirm_seal:
-                String command= BluetoothCommandInterpreter.Send(
+                String command= BluetoothCmdInterpreter.Send(
                         SealSummary.getCurrentSealType(),SealSummary.isCurrentSealEnd());
                 sendMessage(command);
                 break;
@@ -284,10 +286,10 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
                     if (readMessage != null ) {
                         Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
-                        if(BluetoothCommandInterpreter.FeedbackReceivedCommand.equals(readMessage)){
+                        if(BluetoothCmdInterpreter.FeedbackReceivedCommand.equals(readMessage)){
                             startTakePhoto();
                         }
-                        if(BluetoothCommandInterpreter.FeedbackSealOver.equals(readMessage)){
+                        if(BluetoothCmdInterpreter.FeedbackSealOver.equals(readMessage)){
                             startTakePhoto();
                             SealSummary.completeOnce();
                             refreshSealProcess();

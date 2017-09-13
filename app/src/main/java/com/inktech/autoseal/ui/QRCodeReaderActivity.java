@@ -1,9 +1,11 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.content.Intent;
 import android.graphics.PointF;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.inktech.autoseal.R;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 

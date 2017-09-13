@@ -1,4 +1,4 @@
-package com.inktech.autoseal;
+package com.inktech.autoseal.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,14 +13,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.inktech.autoseal.model.Constants;
+import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.model.SoapCallbackListener;
 import com.inktech.autoseal.utility.BitmapUtil;
-import com.inktech.autoseal.utility.SoapCallbackListener;
 import com.inktech.autoseal.utility.WebServiceUtil;
 
 import org.ksoap2.serialization.SoapObject;
 
 import java.io.FileOutputStream;
+
+import  com.inktech.autoseal.R;
 
 public class PhotoPreviewActivity extends AppCompatActivity implements View.OnClickListener {
 

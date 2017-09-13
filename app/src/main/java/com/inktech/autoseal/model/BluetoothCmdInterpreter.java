@@ -4,7 +4,7 @@ package com.inktech.autoseal.model;
  * Created by Chaoyu on 2017/9/10.
  */
 
-public class BluetoothCommandInterpreter {
+public class BluetoothCmdInterpreter {
     public static final String SendPrefix="EEB1";
     public static final String ReceivePrefix="EEB2";
     public static final String Suffix="FFFCFFFF";

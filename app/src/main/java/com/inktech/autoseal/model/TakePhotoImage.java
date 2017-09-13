@@ -5,8 +5,6 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.view.Display;
 
-import com.inktech.autoseal.MyApplication;
-
 /**
  * Created by Chaoyu on 2017/8/27.
  */

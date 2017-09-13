@@ -1,13 +1,5 @@
 package com.inktech.autoseal.utility;
 
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-
-import java.lang.reflect.Method;
-
 /**
  * Created by Chaoyu on 2017/8/11.
  */
