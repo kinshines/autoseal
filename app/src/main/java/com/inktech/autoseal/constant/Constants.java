@@ -35,4 +35,14 @@ public interface Constants {
 
     String ACTION_NOTEBOOK="ACTION_NOTEBOOK";
     String ACTION_DAILY_ONE="ACTION_DAILY_ONE";
+
+    String User="用印人";
+    String Documents="文档";
+    String OfflineUsingSealCode="OfflineUsingSealCode";
+
+    String gz="仓位1";
+    String frz="仓位2";
+    String cwz="仓位3";
+    String htz="仓位4";
+    String fpz="仓位5";
 }

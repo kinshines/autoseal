@@ -1,15 +1,14 @@
 package com.inktech.autoseal.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Chaoyu on 2017/9/14.
  */
 
-public class OutSealInfoItem {
+public class OutSealInfoItem implements Serializable {
     public OutSealInfoItem(){
         type="";
-    }
-    public OutSealInfoItem(String type){
-        this.type=type;
     }
     private String type;
 

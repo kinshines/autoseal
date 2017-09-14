@@ -15,14 +15,14 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
+import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.util.BitmapUtil;
+import com.inktech.autoseal.util.DbUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
-
-import org.ksoap2.serialization.SoapObject;
-
 import java.io.FileOutputStream;
 
 import  com.inktech.autoseal.R;
+import com.inktech.autoseal.util.XmlParseUtil;
 
 public class PhotoPreviewActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -59,14 +59,22 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(photoData);
                     fos.close();
-                    WebServiceUtil.uploadByUsing(filename, "用印人", new SoapCallbackListener() {
+                    WebServiceUtil.uploadByUsing(filename, Constants.User, new SoapCallbackListener() {
                     @Override
-                    public void onFinish(SoapObject soapObject) {
-                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
+                    public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+                        UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
+                        if(response.getStatus()==1){
+                            DbUtil.uploadSuccess(method,sealCode,filePath,position);
+                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
+                        }else{
+                            DbUtil.uploadFail(method,sealCode,filePath,position);
+                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                        }
                     }
 
                     @Override
-                    public void onError(Exception e) {
+                    public void onError(Exception e, String method, String sealCode, String filePath, String position) {
+                        DbUtil.uploadFail(method,sealCode,filePath,position);
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });

@@ -2,6 +2,8 @@ package com.inktech.autoseal.model;
 
 import android.text.TextUtils;
 
+import com.inktech.autoseal.constant.Constants;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class SealSummary {
     private static HashMap<String,Integer>overall=new HashMap<>();
     private static HashMap<String,Integer> process=new HashMap<>();
     private static String currentSealType="";
+    private static String currentSealCode="";
+
     public static void addMap(String sealType,int totalCount){
         overall.put(sealType,totalCount);
     }
@@ -55,15 +59,15 @@ public class SealSummary {
     }
 
     public static String translateSealTypeToChinese(String sealType){
-        if("仓位1".equals(sealType))
+        if(Constants.gz.equals(sealType))
             return "公章";
-        if("仓位2".equals(sealType))
+        if(Constants.frz.equals(sealType))
             return "法人章";
-        if("仓位3".equals(sealType))
+        if(Constants.cwz.equals(sealType))
             return "财务章";
-        if("仓位4".equals(sealType))
+        if(Constants.htz.equals(sealType))
             return "合同专用章";
-        if("仓位5".equals(sealType))
+        if(Constants.fpz.equals(sealType))
             return "发票专用章";
         return sealType;
     }
@@ -86,5 +90,13 @@ public class SealSummary {
         overall.clear();
         process.clear();
         currentSealType="";
+        currentSealCode="";
+    }
+
+    public static String getCurrentSealCode(){
+        return currentSealCode;
+    }
+    public static void setCurrentSealCode(String code){
+        currentSealCode=code;
     }
 }

@@ -7,6 +7,6 @@ import org.ksoap2.serialization.SoapObject;
  */
 
 public interface SoapCallbackListener {
-    void onFinish(SoapObject soapObject);
-    void onError(Exception e);
+    void onFinish(String xml,String method,String sealCode,String filePath,String position);
+    void onError(Exception e,String method,String sealCode,String filePath,String position);
 }

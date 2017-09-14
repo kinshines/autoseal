@@ -70,15 +70,16 @@ public class UsingCodeFragment extends Fragment {
                 editor.apply();
                 WebServiceUtil.getUsingSealInfo(new SoapCallbackListener() {
                     @Override
-                    public void onFinish(SoapObject soapObject) {
+                    public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+                        UsingSealInfoResponse response=XmlParseUtil.pullUsingSealInfoResponse(xml);
                         Message message=new Message();
-                        message.obj=soapObject;
+                        message.obj=response;
                         message.what=0x001;
                         handler.sendMessage(message);
                     }
 
                     @Override
-                    public void onError(Exception e) {
+                    public void onError(Exception e, String method, String sealCode, String filePath, String position) {
                         handler.sendEmptyMessage(0x002);
                     }
                 });
@@ -122,8 +123,7 @@ public class UsingCodeFragment extends Fragment {
             switch (msg.what){
                 case 0x001:
                     progressBar.setVisibility(View.GONE);
-                    String xml=((SoapObject)msg.obj).getPropertySafelyAsString("getUsingSealInfoResult");
-                    UsingSealInfoResponse sealInfoResult=XmlParseUtil.pullUsingSealInfoResponse(xml);
+                    UsingSealInfoResponse sealInfoResult=(UsingSealInfoResponse)msg.obj;
                     int sealStatus=sealInfoResult.getSealCount();
                     if(sealStatus==0){
                         Toast.makeText(getContext(),"用印编码不存在",Toast.LENGTH_LONG).show();
