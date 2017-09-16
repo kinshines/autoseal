@@ -20,6 +20,9 @@ public interface Constants {
     int MESSAGE_FILE_UPLOAD_SUCCEED=5;
     int MESSAGE_FILE_UPLOAD_FAIL=6;
 
+    int MESSAGE_WEB_SERVICE_SUCCEED=7;
+    int MESSAGE_WEB_SERVICE_FAIL=8;
+
     // Constants that indicate the current connection state
     int STATE_NONE = 0;       // we're doing nothing
     int STATE_ERROR = 1;

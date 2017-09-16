@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.service.SyncService;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
 
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             showHideFragment(0);
         }
+
+        Intent serviceIntent=new Intent(this, SyncService.class);
+        startService(serviceIntent);
     }
     private void initViews() {
 

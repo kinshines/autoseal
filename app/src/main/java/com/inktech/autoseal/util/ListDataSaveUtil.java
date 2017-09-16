@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.inktech.autoseal.constant.MyApplication;
+import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,8 @@ public class ListDataSaveUtil {
      * @param tag
      * @param datalist
      */
-    public static <T> void setDataList(String tag, List<T> datalist) {
-        if (null == datalist || datalist.size() <= 0)
+    public static <T> void setDataList(String tag, ArrayList<T> datalist) {
+        if (null == datalist || datalist.size() == 0)
             return;
 
         Gson gson = new Gson();
@@ -31,7 +32,7 @@ public class ListDataSaveUtil {
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         SharedPreferences.Editor editor=prefs.edit();
         editor.putString(tag, strJson);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -39,15 +40,15 @@ public class ListDataSaveUtil {
      * @param tag
      * @return
      */
-    public static <T> List<T> getDataList(String tag) {
-        List<T> datalist=new ArrayList<T>();
+    public static ArrayList<UsingSealInfoItemOffline> getUsingSealInfoItemOfflineList(String tag) {
+        ArrayList<UsingSealInfoItemOffline> datalist=new ArrayList<>();
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         String strJson = prefs.getString(tag, null);
         if (null == strJson) {
             return datalist;
         }
         Gson gson = new Gson();
-        datalist = gson.fromJson(strJson, new TypeToken<List<T>>() {
+        datalist = gson.fromJson(strJson, new TypeToken<ArrayList<UsingSealInfoItemOffline>>() {
         }.getType());
         return datalist;
 

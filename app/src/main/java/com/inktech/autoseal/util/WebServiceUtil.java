@@ -46,8 +46,14 @@ public class WebServiceUtil {
             @Override
             public void run() {
                 HttpTransportSE httpTransportSE=null;
-                String sealCode=propertyMap.getOrDefault("sealCode","").toString();
-                String position=propertyMap.getOrDefault("postion","").toString();
+                String sealCode="";
+                if(propertyMap.containsKey("sealCode")){
+                    sealCode=propertyMap.get("sealCode").toString();
+                }
+                String position="";
+                if(propertyMap.containsKey("position")){
+                    position=propertyMap.get("position").toString();
+                }
                 try {
                     SoapObject soapObject=new SoapObject(AddressNameSpace,method);
                     for (String key:propertyMap.keySet()) {
@@ -100,7 +106,7 @@ public class WebServiceUtil {
     public static void updateUsingSealCode(final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
         map.put("hardwareCode","YZCS001");
-        sendRequest(UpdateUsingSealCode+ UsingSealInfo,map,listener);
+        sendRequest(UpdateUsingSealCode,map,listener);
     }
 
     private static byte[] getBytes(File file){

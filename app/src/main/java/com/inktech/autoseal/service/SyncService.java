@@ -26,6 +26,7 @@ import com.inktech.autoseal.util.XmlParseUtil;
 import org.ksoap2.serialization.SoapObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class SyncService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         updateUsingSealInfoIfNeed();
+        uploadLocalFile();
         AlarmManager manager=(AlarmManager) getSystemService(ALARM_SERVICE);
         long triggerAtTime= SystemClock.elapsedRealtime()+SyncInterval;
         Intent i=new Intent(this,SyncService.class);
@@ -55,7 +57,7 @@ public class SyncService extends Service {
 
     private void updateUsingSealInfoIfNeed(){
         String tag=Constants.OfflineUsingSealCode+ DateUtil.getShortDate();
-        List<UsingSealInfoItemOffline> list=ListDataSaveUtil.getDataList(tag);
+        ArrayList<UsingSealInfoItemOffline> list=ListDataSaveUtil.getUsingSealInfoItemOfflineList(tag);
 
         if(list.size()==0||!hasAllCode(list)){
             updateUsingSealCode();
@@ -63,7 +65,7 @@ public class SyncService extends Service {
         }
     }
 
-    private boolean hasCodeForSealType(String sealType,List<UsingSealInfoItemOffline> list){
+    private boolean hasCodeForSealType(String sealType,ArrayList<UsingSealInfoItemOffline> list){
         boolean hasCode=false;
         for(UsingSealInfoItemOffline item:list){
             if(sealType.equals(item.getType())){
@@ -74,7 +76,7 @@ public class SyncService extends Service {
         return hasCode;
     }
 
-    private boolean hasAllCode(List<UsingSealInfoItemOffline> list){
+    private boolean hasAllCode(ArrayList<UsingSealInfoItemOffline> list){
         return hasCodeForSealType(Constants.gz,list)
                 &&hasCodeForSealType(Constants.frz,list)
                 &&hasCodeForSealType(Constants.cwz,list)
@@ -88,7 +90,7 @@ public class SyncService extends Service {
             public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
                 UsingSealInfoSyncResponse response= XmlParseUtil.pullUsingSealInfoSyncResponse(xml);
                 if(response.getSealCount()>0){
-                    List<UsingSealInfoItemOffline> list=response.getSealList();
+                    ArrayList<UsingSealInfoItemOffline> list=response.getSealList();
                     String tag=Constants.OfflineUsingSealCode+ DateUtil.getShortDate();
                     ListDataSaveUtil.setDataList(tag,list);
                 }

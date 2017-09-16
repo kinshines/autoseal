@@ -42,11 +42,11 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
     compile 'com.github.dexafree:materiallist:3.2.1'
-    compile 'com.roger.catloadinglibrary:catloadinglibrary:1.0.1'
     compile 'com.dlazaro66.qrcodereaderview:qrcodereaderview:2.0.2'
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:support-vector-drawable:26.+'
     compile 'org.litepal.android:core:1.6.0'
     compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.github.d-max:spots-dialog:0.7@aar'
     testCompile 'junit:junit:4.12'
 }

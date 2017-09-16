@@ -14,7 +14,7 @@ public class UsingSealInfoSyncResponse {
         sealList=new ArrayList<>();
     }
     Integer sealCount;
-    List<UsingSealInfoItemOffline> sealList;
+    ArrayList<UsingSealInfoItemOffline> sealList;
 
     public Integer getSealCount() {
         return sealCount;
@@ -24,11 +24,11 @@ public class UsingSealInfoSyncResponse {
         this.sealCount = sealCount;
     }
 
-    public List<UsingSealInfoItemOffline> getSealList() {
+    public ArrayList<UsingSealInfoItemOffline> getSealList() {
         return sealList;
     }
 
-    public void setSealList(List<UsingSealInfoItemOffline> sealList) {
+    public void setSealList(ArrayList<UsingSealInfoItemOffline> sealList) {
         this.sealList = sealList;
     }
 

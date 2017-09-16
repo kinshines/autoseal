@@ -6,9 +6,11 @@ import com.inktech.autoseal.db.PhotoPosition;
 import com.inktech.autoseal.db.SealType;
 import com.inktech.autoseal.db.UploadStatus;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +76,12 @@ public class DbUtil {
     }
 
     public static List<FileUploadRecord> getTobeUploadFileList(){
-        List<FileUploadRecord> list=DataSupport.where("status = 0 ").find(FileUploadRecord.class);
-        return list;
+        try {
+            List<FileUploadRecord> list=DataSupport.where("status = 0 ").find(FileUploadRecord.class);
+            return list;
+        }catch (Exception e){
+            e.printStackTrace();
+            return new ArrayList<FileUploadRecord>();
+        }
     }
 }

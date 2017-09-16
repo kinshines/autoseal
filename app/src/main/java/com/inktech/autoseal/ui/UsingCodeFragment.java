@@ -13,7 +13,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.dexafree.materialList.card.Card;
@@ -29,17 +28,18 @@ import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 import com.inktech.autoseal.util.XmlParseUtil;
 
-import org.ksoap2.serialization.SoapObject;
-
 import com.inktech.autoseal.R;
+
+import dmax.dialog.SpotsDialog;
+import android.app.AlertDialog;
 
 public class UsingCodeFragment extends Fragment {
 
     AppCompatEditText editUsingCode;
     AppCompatButton btnUsingCode;
     AppCompatButton btnScan;
-    ProgressBar progressBar;
     MaterialListView listSealInfo;
+    AlertDialog loadingView;
 
     public UsingCodeFragment() {
         // Required empty public constructor
@@ -64,9 +64,12 @@ public class UsingCodeFragment extends Fragment {
         btnUsingCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
+
+                loadingView.show();
+                String sealCode=editUsingCode.getText().toString().trim();
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
-                editor.putString("sealCode",editUsingCode.getText().toString());
+                SealSummary.setCurrentSealCode(sealCode);
+                editor.putString("sealCode",sealCode);
                 editor.apply();
                 WebServiceUtil.getUsingSealInfo(new SoapCallbackListener() {
                     @Override
@@ -74,13 +77,13 @@ public class UsingCodeFragment extends Fragment {
                         UsingSealInfoResponse response=XmlParseUtil.pullUsingSealInfoResponse(xml);
                         Message message=new Message();
                         message.obj=response;
-                        message.what=0x001;
+                        message.what=Constants.MESSAGE_WEB_SERVICE_SUCCEED;
                         handler.sendMessage(message);
                     }
 
                     @Override
                     public void onError(Exception e, String method, String sealCode, String filePath, String position) {
-                        handler.sendEmptyMessage(0x002);
+                        handler.sendEmptyMessage(Constants.MESSAGE_WEB_SERVICE_FAIL);
                     }
                 });
             }
@@ -113,16 +116,16 @@ public class UsingCodeFragment extends Fragment {
     private void initViews(View view) {
         editUsingCode = view.findViewById(R.id.edit_using_code);
         btnUsingCode= view.findViewById(R.id.btn_using_code);
-        progressBar=view.findViewById(R.id.progress_bar);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
+        loadingView=new SpotsDialog(getContext(),"校验中……");
     }
 
     private Handler handler=new Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
-                case 0x001:
-                    progressBar.setVisibility(View.GONE);
+                case Constants.MESSAGE_WEB_SERVICE_SUCCEED:
+                    loadingView.dismiss();
                     UsingSealInfoResponse sealInfoResult=(UsingSealInfoResponse)msg.obj;
                     int sealStatus=sealInfoResult.getSealCount();
                     if(sealStatus==0){
@@ -160,10 +163,11 @@ public class UsingCodeFragment extends Fragment {
                             .setDividerVisible(true)
                             .endConfig()
                             .build();
+                    listSealInfo.getAdapter().clearAll();
                     listSealInfo.getAdapter().add(sealCard);
                     break;
-                case 0x002:
-                    progressBar.setVisibility(View.GONE);
+                case Constants.MESSAGE_WEB_SERVICE_FAIL:
+                    loadingView.dismiss();
                     Toast.makeText(getContext(),"网络暂时无法连接，请使用紧急用印功能",Toast.LENGTH_SHORT).show();
                     break;
             }
