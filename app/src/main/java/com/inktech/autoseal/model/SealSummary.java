@@ -99,4 +99,12 @@ public class SealSummary {
     public static void setCurrentSealCode(String code){
         currentSealCode=code;
     }
+
+    public static String translateSealItemToChinese(UsingSealInfoItem seal){
+        String type=seal.getType();
+        int count=seal.getCount();
+        String chineseType= translateSealTypeToChinese(type);
+        SealSummary.addMap(type,count);
+        return chineseType+"：盖章 "+count+" 次";
+    }
 }

@@ -3,27 +3,27 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/add_city"
-            android:icon="@mipmap/add_city"
-            android:title="普通用印"></item>
+            android:id="@+id/menu_using_seal"
+            android:icon="@mipmap/using_seal"
+            android:title="@string/using_seal"></item>
         <item
-            android:id="@+id/multi_cities"
-            android:icon="@mipmap/multi_city"
-            android:title="普通取印"></item>
+            android:id="@+id/menu_get_seal"
+            android:icon="@mipmap/get_seal"
+            android:title="@string/get_seal"></item>
         <item
-            android:id="@+id/setting"
-            android:icon="@mipmap/setting"
-            android:title="紧急用印"></item>
+            android:id="@+id/menu_using_seal_offline"
+            android:icon="@mipmap/using_seal_offline"
+            android:title="@string/using_seal_offline"></item>
         <item
-            android:id="@+id/urgent_out"
-            android:icon="@mipmap/setting"
-            android:title="紧急取印"></item>
+            android:id="@+id/menu_get_seal_offline"
+            android:icon="@mipmap/get_seal_offline"
+            android:title="@string/get_seal_offline"></item>
     </group>
     <item android:title="自助盖章">
         <menu>
             <item
                 android:id="@+id/about"
-                android:icon="@mipmap/about"
+                android:icon="@mipmap/setting"
                 android:title="设置"></item>
             <item
                 android:id="@+id/exit"

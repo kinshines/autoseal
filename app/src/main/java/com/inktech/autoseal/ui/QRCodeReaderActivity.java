@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.inktech.autoseal.R;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.inktech.autoseal.constant.Constants;
 
 public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
@@ -36,7 +37,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeRea
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         Intent intent = new Intent();
-        intent.putExtra("qr_text", text);
+        intent.putExtra(Constants.qr_text, text);
         setResult(RESULT_OK, intent);
         finish();
     }

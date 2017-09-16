@@ -4,30 +4,21 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 
 import com.inktech.autoseal.adapter.SoapCallbackListener;
-import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.db.FileUploadRecord;
 import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 import com.inktech.autoseal.model.UsingSealInfoSyncResponse;
-import com.inktech.autoseal.util.DateUtil;
 import com.inktech.autoseal.util.DbUtil;
-import com.inktech.autoseal.util.ListDataSaveUtil;
+import com.inktech.autoseal.util.SealOfflineUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.util.XmlParseUtil;
 
-import org.ksoap2.serialization.SoapObject;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class SyncService extends Service {
@@ -56,32 +47,9 @@ public class SyncService extends Service {
     }
 
     private void updateUsingSealInfoIfNeed(){
-        String tag=Constants.OfflineUsingSealCode+ DateUtil.getShortDate();
-        ArrayList<UsingSealInfoItemOffline> list=ListDataSaveUtil.getUsingSealInfoItemOfflineList(tag);
-
-        if(list.size()==0||!hasAllCode(list)){
+        if(SealOfflineUtil.needUpdateUsingSeal()){
             updateUsingSealCode();
-            return;
         }
-    }
-
-    private boolean hasCodeForSealType(String sealType,ArrayList<UsingSealInfoItemOffline> list){
-        boolean hasCode=false;
-        for(UsingSealInfoItemOffline item:list){
-            if(sealType.equals(item.getType())){
-                hasCode=true;
-                break;
-            }
-        }
-        return hasCode;
-    }
-
-    private boolean hasAllCode(ArrayList<UsingSealInfoItemOffline> list){
-        return hasCodeForSealType(Constants.gz,list)
-                &&hasCodeForSealType(Constants.frz,list)
-                &&hasCodeForSealType(Constants.cwz,list)
-                &&hasCodeForSealType(Constants.htz,list)
-                &&hasCodeForSealType(Constants.fpz,list);
     }
 
     private void updateUsingSealCode(){
@@ -91,10 +59,8 @@ public class SyncService extends Service {
                 UsingSealInfoSyncResponse response= XmlParseUtil.pullUsingSealInfoSyncResponse(xml);
                 if(response.getSealCount()>0){
                     ArrayList<UsingSealInfoItemOffline> list=response.getSealList();
-                    String tag=Constants.OfflineUsingSealCode+ DateUtil.getShortDate();
-                    ListDataSaveUtil.setDataList(tag,list);
+                    SealOfflineUtil.saveOfflineUsingSealList(list);
                 }
-
             }
 
             @Override

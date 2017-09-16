@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/card_view_horizontal_margin"
         android:layout_marginLeft="@dimen/card_view_horizontal_margin"
         android:layout_marginRight="@dimen/card_view_horizontal_margin"
-        card_view:cardCornerRadius="2dp">
+        card_view:cardCornerRadius="@dimen/card_corner_radius">
         <LinearLayout
             android:layout_marginTop="@dimen/card_view_horizontal_margin"
             android:layout_marginLeft="@dimen/card_view_horizontal_margin"
@@ -31,7 +31,7 @@
                     android:textSize="@dimen/title_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="普通用印"/>
+                    android:text="@string/using_seal"/>
             </LinearLayout>
             <LinearLayout
                 android:orientation="horizontal"
@@ -40,21 +40,21 @@
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_scan"
                     android:background="@mipmap/scan"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp" />
+                    android:layout_width="@dimen/scan_btn_size"
+                    android:layout_height="@dimen/scan_btn_size" />
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/edit_using_code"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="请输入用印编码"
+                    android:hint="@string/using_seal_hint"
                     android:layout_weight="1"/>
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_using_code"
                     android:layout_width="wrap_content"
-                    android:layout_height="32dp"
+                    android:layout_height="@dimen/confirm_btn_height"
                     android:background="@color/colorPrimary"
                     android:textColor="@android:color/white"
-                    android:text="发送"/>
+                    android:text="@string/send"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

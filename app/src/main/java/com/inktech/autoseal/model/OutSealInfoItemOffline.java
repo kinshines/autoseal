@@ -1,5 +1,7 @@
 package com.inktech.autoseal.model;
 
+import com.inktech.autoseal.util.DateUtil;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +10,11 @@ import java.io.Serializable;
 
 public class OutSealInfoItemOffline extends OutSealInfoItem implements Serializable {
     private String sealCode;
+    private String timeStamp;
+
+    public OutSealInfoItemOffline(){
+        timeStamp= DateUtil.getShortDate();
+    }
 
     public String getSealCode() {
         return sealCode;
@@ -15,5 +22,13 @@ public class OutSealInfoItemOffline extends OutSealInfoItem implements Serializa
 
     public void setSealCode(String sealCode) {
         this.sealCode = sealCode;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

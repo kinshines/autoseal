@@ -4,6 +4,13 @@
     <string name="drawer_close">Close drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="using_seal">普通用印</string>
+    <string name="using_seal_offline">紧急用印</string>
+    <string name="get_seal">普通取印</string>
+    <string name="get_seal_offline">紧急取印</string>
+    <string name="using_seal_hint">请输入用印编码</string>
+    <string name="send">发送</string>
+    <string name="confirm">确认</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_take_photo">TakePhotoActivity</string>
     <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>
@@ -12,6 +19,12 @@
     <string name="flash_off">Flash off</string>
     <string name="flash_on">Flash on</string>
     <string name="title_activity_settings_preference">Settings</string>
+
+    <string name="checking">校验中……</string>
+    <string name="using_seal_code_invalid">用印编码不存在</string>
+    <string name="hardware_code_invalid">机器码不对应</string>
+    <string name="using_seal_code_description">用印编码有效，确认盖章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可盖章</string>
+    <string name="confirm_take_photo">确认拍照</string>
 
     <!-- Strings related to Settings -->
 

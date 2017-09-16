@@ -36,8 +36,10 @@ public interface Constants {
     String EXTRA_DEVICE  = "EXTRA_DEVICE";
     String SNACKBAR = "toast";
 
-    String ACTION_NOTEBOOK="ACTION_NOTEBOOK";
-    String ACTION_DAILY_ONE="ACTION_DAILY_ONE";
+    String ACTION_USING_SEAL="ACTION_USING_SEAL";
+    String ACTION_USING_SEAL_OFFLINE="ACTION_USING_SEAL_OFFLINE";
+    String ACTION_GET_SEAL="ACTION_GET_SEAL";
+    String ACTION_GET_SEAL_OFFLINE="ACTION_GET_SEAL_OFFLINE";
 
     String User="用印人";
     String Documents="文档";
@@ -48,4 +50,6 @@ public interface Constants {
     String cwz="仓位3";
     String htz="仓位4";
     String fpz="仓位5";
+
+    String qr_text="qr_text";
 }

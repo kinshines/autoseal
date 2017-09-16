@@ -15,7 +15,7 @@ import java.util.List;
  * Created by Chaoyu on 2017/9/15.
  */
 
-public class ListDataSaveUtil {
+public class PreferenceUtil {
 
     /**
      * 保存List
@@ -52,5 +52,11 @@ public class ListDataSaveUtil {
         }.getType());
         return datalist;
 
+    }
+
+    public static void setSealCode(String sealCode){
+        SharedPreferences.Editor editor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+        editor.putString("sealCode",sealCode);
+        editor.apply();
     }
 }
