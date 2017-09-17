@@ -27,6 +27,7 @@ import com.inktech.autoseal.util.XmlParseUtil;
 public class PhotoPreviewActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "PhotoPreviewActivity";
+    private String WebServiceMethod="";
     ImageView imagePreview;
     AppCompatButton btnConfirm;
     AppCompatButton btnTakePhoto;
@@ -38,6 +39,7 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
         initViews();
         Intent intent=getIntent();
         photoData=intent.getByteArrayExtra("photo_data");
+        WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
         Bitmap previewBitmap= BitmapFactory.decodeByteArray(photoData,0,photoData.length);
         imagePreview.setImageBitmap(previewBitmap);
     }
@@ -59,7 +61,7 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(photoData);
                     fos.close();
-                    WebServiceUtil.uploadByUsing(filename, Constants.User, new SoapCallbackListener() {
+                    WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.User, new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
@@ -84,11 +86,15 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     Log.i(TAG, "保存照片失败" + error.toString());
                     error.printStackTrace();
                 }
-                startActivity(new Intent(this,BluetoothSearchActivity.class));
+                Intent bluetoothIntent=new Intent(this,BluetoothSearchActivity.class);
+                bluetoothIntent.putExtra(Constants.web_service_method,WebServiceMethod);
+                startActivity(bluetoothIntent);
                 finish();
                 break;
             case R.id.btn_take_photo:
-                startActivity(new Intent(this,TakePhotoActivity.class));
+                Intent takephotoIntent=new Intent(this,TakePhotoActivity.class);
+                takephotoIntent.putExtra(Constants.web_service_method,WebServiceMethod);
+                startActivity(takephotoIntent);
                 finish();
                 break;
         }

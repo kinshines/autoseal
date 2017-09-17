@@ -33,10 +33,10 @@ public class WebServiceUtil {
     public static final String UsingSealInfo ="getUsingSealInfo";
     public static final String UpdateUsingSealCode="updateUsingSealCode";
 
-    public static final String UploadByUsing ="uploadByUsing";
-    public static final String UploadByOut="uploadByOut";
-    public static final String UploadByUrgentUsing="uploadByUrgentUsing";
-    public static final String UploadByUrgentOut="uploadByUrgentOut";
+    public static final String uploadByUsing ="uploadByUsing";
+    public static final String uploadByOut ="uploadByOut";
+    public static final String uploadByUrgentUsing ="uploadByUrgentUsing";
+    public static final String uploadByUrgentOut ="uploadByUrgentOut";
 
     private static void sendRequest(final String method, final Map<String,Object> propertyMap, final SoapCallbackListener listener){
         sendRequest(method,propertyMap,listener,"");
@@ -88,9 +88,9 @@ public class WebServiceUtil {
         sendRequest(UsingSealInfo,map,listener);
     }
 
-    public static void uploadByUsing(final String filePath,final String position,final SoapCallbackListener listener){
+    public static void uploadByMethod(final String method,final String filePath,final String position,final SoapCallbackListener listener){
         String sealCode="UCJ3EHZOXTO0";
-        uploadBy(sealCode,UploadByUsing,filePath,position,listener);
+        uploadBy(sealCode,method,filePath,position,listener);
     }
 
     private static void uploadBy(String sealCode,final String method,final String filePath,final String position,final SoapCallbackListener listener){

@@ -41,8 +41,6 @@ import com.inktech.autoseal.util.DbUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.model.SealSummary;
 
-import org.ksoap2.serialization.SoapObject;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -72,10 +70,16 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
     private static final String TAG = "SealProcessActivity";
 
+    private String WebServiceMethod="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seal_process);
+
+        Intent bluetoothIntent=getIntent();
+        WebServiceMethod=bluetoothIntent.getStringExtra(Constants.web_service_method);
+
         initViews();
         refreshSealProcess();
         snackTurnOn = Snackbar.make(coordinatorLayout, "Bluetooth turned off", Snackbar.LENGTH_INDEFINITE)
@@ -394,7 +398,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                 FileOutputStream fos = new FileOutputStream(filename);
                 fos.write(data);
                 fos.close();
-                WebServiceUtil.uploadByUsing(filename, Constants.Documents, new SoapCallbackListener() {
+                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Documents, new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);

@@ -24,6 +24,7 @@ import com.inktech.autoseal.model.SealSummary;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.SealOfflineUtil;
+import com.inktech.autoseal.util.WebServiceUtil;
 
 import dmax.dialog.SpotsDialog;
 
@@ -83,6 +84,7 @@ public class UsingSealOfflineFragment extends Fragment {
                                     @Override
                                     public void onActionClicked(View view, Card card) {
                                         Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
+                                        intent.putExtra(Constants.web_service_method, WebServiceUtil.uploadByUrgentUsing);
                                         startActivity(intent);
                                         getActivity().finish();
                                     }

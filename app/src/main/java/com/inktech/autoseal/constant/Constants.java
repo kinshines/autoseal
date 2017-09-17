@@ -52,4 +52,5 @@ public interface Constants {
     String fpz="仓位5";
 
     String qr_text="qr_text";
+    String web_service_method="web_service_method";
 }

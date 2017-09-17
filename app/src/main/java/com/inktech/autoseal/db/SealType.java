@@ -5,5 +5,5 @@ package com.inktech.autoseal.db;
  */
 
 public enum SealType {
-    UploadByUsing, UploadByOut, UploadByUrgentUsing, UploadByUrgentOut
+    uploadByUsing, uploadByOut, uploadByUrgentUsing, uploadByUrgentOut
 }

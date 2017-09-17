@@ -6,7 +6,6 @@ import com.inktech.autoseal.db.PhotoPosition;
 import com.inktech.autoseal.db.SealType;
 import com.inktech.autoseal.db.UploadStatus;
 
-import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
@@ -51,14 +50,14 @@ public class DbUtil {
         }else if(Constants.Documents.equals(position)){
             record.setPosition(PhotoPosition.Documents);
         }
-        if(WebServiceUtil.UploadByUsing.equals(method)){
-            record.setSealType(SealType.UploadByUsing);
-        }else if(WebServiceUtil.UploadByOut.equals(method)){
-            record.setSealType(SealType.UploadByOut);
-        }else if(WebServiceUtil.UploadByUrgentUsing.equals(method)){
-            record.setSealType(SealType.UploadByUrgentUsing);
-        }else if(WebServiceUtil.UploadByUrgentOut.equals(method)){
-            record.setSealType(SealType.UploadByUrgentOut);
+        if(WebServiceUtil.uploadByUsing.equals(method)){
+            record.setSealType(SealType.uploadByUsing);
+        }else if(WebServiceUtil.uploadByOut.equals(method)){
+            record.setSealType(SealType.uploadByOut);
+        }else if(WebServiceUtil.uploadByUrgentUsing.equals(method)){
+            record.setSealType(SealType.uploadByUrgentUsing);
+        }else if(WebServiceUtil.uploadByUrgentOut.equals(method)){
+            record.setSealType(SealType.uploadByUrgentOut);
         }
         record.setTimeStamp(new Date());
         record.save();

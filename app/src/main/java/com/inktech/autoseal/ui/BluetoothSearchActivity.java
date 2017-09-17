@@ -40,6 +40,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
     ProgressBar toolbarProgressCircle;
     CoordinatorLayout coordinatorLayout;
     Button seachButton;
+    String WebServiceMethod="";
 
     private void enableBluetooth() {
         setStatus("Enabling Bluetooth");
@@ -51,6 +52,9 @@ public class BluetoothSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_search);
+
+        Intent bluetoothIntent=getIntent();
+        WebServiceMethod=bluetoothIntent.getStringExtra(Constants.web_service_method);
 
         initViews();
         setSupportActionBar(toolbar);
@@ -79,6 +83,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                                 Intent intent = new Intent(BluetoothSearchActivity.this, SealProcessActivity.class);
 
                                 intent.putExtra(Constants.EXTRA_DEVICE, device);
+                                intent.putExtra(Constants.web_service_method,WebServiceMethod);
 
                                 startActivity(intent);
                             }
@@ -115,6 +120,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
             for(BluetoothDevice device:bondedDevices){
                 Intent intent = new Intent(BluetoothSearchActivity.this, SealProcessActivity.class);
                 intent.putExtra(Constants.EXTRA_DEVICE, device);
+                intent.putExtra(Constants.web_service_method,WebServiceMethod);
                 startActivity(intent);
                 break;
             }

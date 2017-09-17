@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.cameraview.CameraView;
 
 import com.inktech.autoseal.R;
+import com.inktech.autoseal.constant.Constants;
 
 public class TakePhotoActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -30,6 +31,7 @@ public class TakePhotoActivity extends AppCompatActivity implements
     private static final String TAG = "TakePhotoActivity";
     private static final int REQUEST_CAMERA_PERMISSION = 1;
     private static final String FRAGMENT_DIALOG = "dialog";
+    private String WebServiceMethod="";
 
     private CameraView mCameraView;
 
@@ -49,6 +51,9 @@ public class TakePhotoActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photo);
+
+        Intent intent=getIntent();
+        WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
 
         mCameraView = (CameraView) findViewById(R.id.camera);
         if (mCameraView != null) {
@@ -127,6 +132,7 @@ public class TakePhotoActivity extends AppCompatActivity implements
             Log.d(TAG, "onPictureTaken " + data.length);
             Intent intent=new Intent(TakePhotoActivity.this,PhotoPreviewActivity.class);
             intent.putExtra("photo_data",data);
+            intent.putExtra(Constants.web_service_method,WebServiceMethod);
             startActivity(intent);
             finish();
         }

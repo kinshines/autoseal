@@ -2,12 +2,10 @@ package com.inktech.autoseal.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
@@ -154,6 +152,7 @@ public class UsingSealFragment extends Fragment {
                                         @Override
                                         public void onActionClicked(View view, Card card) {
                                             Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
+                                            intent.putExtra(Constants.web_service_method,WebServiceUtil.uploadByUsing);
                                             startActivity(intent);
                                             getActivity().finish();
                                         }
