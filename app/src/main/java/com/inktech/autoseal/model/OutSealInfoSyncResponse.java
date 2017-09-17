@@ -13,7 +13,7 @@ public class OutSealInfoSyncResponse {
         sealList= new ArrayList<>();
     }
     private Integer sealCount;
-    private List<OutSealInfoItemOffline> sealList;
+    private ArrayList<OutSealInfoItemOffline> sealList;
 
     public Integer getSealCount() {
         return sealCount;
@@ -23,11 +23,11 @@ public class OutSealInfoSyncResponse {
         this.sealCount = sealCount;
     }
 
-    public List<OutSealInfoItemOffline> getSealList() {
+    public ArrayList<OutSealInfoItemOffline> getSealList() {
         return sealList;
     }
 
-    public void setSealList(List<OutSealInfoItemOffline> sealList) {
+    public void setSealList(ArrayList<OutSealInfoItemOffline> sealList) {
         this.sealList = sealList;
     }
 

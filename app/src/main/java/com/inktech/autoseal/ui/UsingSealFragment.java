@@ -24,7 +24,7 @@ import com.inktech.autoseal.model.UsingSealInfoResponse;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
-import com.inktech.autoseal.model.SealSummary;
+import com.inktech.autoseal.model.UsingSealSummary;
 import com.inktech.autoseal.util.XmlParseUtil;
 
 import com.inktech.autoseal.R;
@@ -63,11 +63,10 @@ public class UsingSealFragment extends Fragment {
         btnUsingCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
                 loadingView.setCancelable(false);
                 loadingView.show();
                 String sealCode=editUsingCode.getText().toString().trim();
-                SealSummary.setCurrentSealCode(sealCode);
+                UsingSealSummary.setCurrentSealCode(sealCode);
                 PreferenceUtil.setSealCode(sealCode);
                 WebServiceUtil.getUsingSealInfo(new SoapCallbackListener() {
                     @Override
@@ -116,7 +115,7 @@ public class UsingSealFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
-
+        loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
     }
 
     private Handler handler=new Handler(){
@@ -136,9 +135,8 @@ public class UsingSealFragment extends Fragment {
                     }
 
                     String result="";
-                    SealSummary.init();
                     for(UsingSealInfoItem seal : sealInfoResult.getSealList()){
-                        result=result+SealSummary.translateSealItemToChinese(seal)+"\n";
+                        result=result+ UsingSealSummary.translateUsingSealItemToChinese(seal)+"\n";
                     }
                     result=result.substring(0,result.length()-1);
                     Card sealCard = new Card.Builder(getContext())

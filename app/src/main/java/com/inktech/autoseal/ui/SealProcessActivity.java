@@ -1,5 +1,6 @@
 package com.inktech.autoseal.ui;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -13,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -33,13 +33,13 @@ import android.widget.Toast;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
+import com.inktech.autoseal.model.OutSealSummary;
 import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.service.BluetoothService;
 import com.inktech.autoseal.util.BitmapUtil;
-import com.inktech.autoseal.util.BluetoothUtil;
 import com.inktech.autoseal.util.DbUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
-import com.inktech.autoseal.model.SealSummary;
+import com.inktech.autoseal.model.UsingSealSummary;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,6 +48,8 @@ import java.util.List;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.util.XmlParseUtil;
+
+import dmax.dialog.SpotsDialog;
 
 public class SealProcessActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -69,10 +71,12 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     private SurfaceView mySurfaceView;
     private SurfaceHolder myHolder;
     private Camera myCamera;
+    AlertDialog loadingView;
 
     private static final String TAG = "SealProcessActivity";
 
     private String WebServiceMethod="";
+    private boolean usingSealFlag=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +84,6 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_seal_process);
 
         initViews();
-        refreshSealProcess();
         snackTurnOn = Snackbar.make(coordinatorLayout, "Bluetooth turned off", Snackbar.LENGTH_INDEFINITE)
                 .setAction("Turn On", new View.OnClickListener() {
                     @Override public void onClick(View v) {
@@ -99,8 +102,12 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         Intent intent=getIntent();
         device = intent.getExtras().getParcelable(Constants.EXTRA_DEVICE);
         WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
+        if(WebServiceUtil.uploadByUsing.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
+            usingSealFlag=true;
+        }
         bluetoothService = new BluetoothService(handler, device);
 
+        refreshSealProcess();
         setTitle(device.getName());
     }
 
@@ -152,7 +159,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                         }
                     }).show();
         } else {
-            byte[] send = BluetoothUtil.getHexBytes(message);
+            byte[] send = BluetoothCmdInterpreter.getHexBytes(message);
             bluetoothService.write(send);
         }
     }
@@ -229,9 +236,16 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void refreshSealProcess(){
-        String sealType=SealSummary.getCurrentSealType();
+        if(usingSealFlag){
+            refreshUsingSealProcess();
+        }else{
+            refreshOutSealProcess();
+        }
+    }
+
+    private void refreshUsingSealProcess(){
+        String sealType= UsingSealSummary.getCurrentSealType();
         if(TextUtils.isEmpty(sealType)){
-            SealSummary.init();
             sealProcessInfoHead="盖章完成!";
             sealProcessInfoCaption="";
             btnConfirmSeal.setVisibility(View.GONE);
@@ -239,12 +253,31 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
             textSealProcess.setText(sealProcessInfoCaption);
             return;
         }
-        String sealTypeChinese=SealSummary.getSealTypeChinese();
-        int currentCount=SealSummary.getCurrentSealCount();
+        String sealTypeChinese= UsingSealSummary.getSealTypeChinese();
+        int currentCount= UsingSealSummary.getCurrentSealCount();
         sealProcessInfoCaption="设备已就绪，请将需要盖章的文件放置于指定位置后，点击确认盖章按钮后执行盖章。\n";
         sealProcessInfoHead+="当前执行的盖章类型为：\n"+sealTypeChinese+"，第 "+currentCount+" 次";
         textSealProcess.setText(sealProcessInfoCaption);
         textSealHead.setText(sealProcessInfoHead);
+    }
+
+    private void refreshOutSealProcess(){
+        String sealType= OutSealSummary.getCurrentSealType();
+        if(TextUtils.isEmpty(sealType)){
+            sealProcessInfoHead="取印完成!";
+            sealProcessInfoCaption="";
+            btnConfirmSeal.setVisibility(View.GONE);
+            textSealHead.setText(sealProcessInfoHead);
+            textSealProcess.setText(sealProcessInfoCaption);
+            return;
+        }
+        String sealTypeChinese=OutSealSummary.getSealTypeChinese();
+        sealProcessInfoCaption="设备已就绪，点击确认取印按钮后取出印章，使用完毕请及时归还\n";
+        sealProcessInfoHead+="当前即将取出的印章类型为：\n"+sealTypeChinese;
+
+        textSealProcess.setText(sealProcessInfoCaption);
+        textSealHead.setText(sealProcessInfoHead);
+        btnConfirmSeal.setText("确认取印");
     }
 
     private void initViews(){
@@ -255,14 +288,21 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         toolbar=(Toolbar) findViewById(R.id.toolbar);
         toolbalProgressBar=(ProgressBar) findViewById(R.id.toolbar_progress_bar);
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinator_layout_bluetooth);
+        loadingView=new SpotsDialog(this,"盖章机通信中……");
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_confirm_seal:
-                String command= BluetoothCmdInterpreter.Send(
-                        SealSummary.getCurrentSealType(),SealSummary.isCurrentSealEnd());
+                loadingView.show();
+                String command="";
+                if(usingSealFlag){
+                    command= BluetoothCmdInterpreter.usingSend(
+                            UsingSealSummary.getCurrentSealType(), UsingSealSummary.isCurrentSealEnd());
+                }else{
+                    command=BluetoothCmdInterpreter.outSend(OutSealSummary.getCurrentSealType());
+                }
                 sendMessage(command);
                 break;
         }
@@ -300,8 +340,8 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                     break;
                 case Constants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
-                    String writeMessage=BluetoothUtil.bytesToHexString(writeBuf,writeBuf.length);
-                    Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
+                    String writeMessage=BluetoothCmdInterpreter.bytesToHexString(writeBuf,writeBuf.length);
+                    Toast.makeText(activity,"usingSend:"+writeMessage,Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_READ:
 
@@ -309,13 +349,19 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
                     if (readMessage != null ) {
                         Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
-                        if(BluetoothCmdInterpreter.FeedbackReceivedCommand.equals(readMessage)){
+                        if(BluetoothCmdInterpreter.UsingFeedbackReceivedCmd.equals(readMessage)){
                             startTakePhoto();
                         }
-                        if(BluetoothCmdInterpreter.FeedbackSealOver.equals(readMessage)){
+                        if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
                             startTakePhoto();
-                            SealSummary.completeOnce();
+                            UsingSealSummary.completeOnce();
                             refreshSealProcess();
+                            loadingView.dismiss();
+                        }
+                        if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
+                            OutSealSummary.completeOnce();
+                            refreshSealProcess();
+                            loadingView.dismiss();
                         }
                     }
                     break;

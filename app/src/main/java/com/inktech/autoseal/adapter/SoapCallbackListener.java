@@ -1,7 +1,5 @@
 package com.inktech.autoseal.adapter;
 
-import org.ksoap2.serialization.SoapObject;
-
 /**
  * Created by Chaoyu on 2017/8/27.
  */

@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 
 import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.db.FileUploadRecord;
+import com.inktech.autoseal.model.OutSealInfoItemOffline;
+import com.inktech.autoseal.model.OutSealInfoSyncResponse;
 import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 import com.inktech.autoseal.model.UsingSealInfoSyncResponse;
@@ -35,7 +37,8 @@ public class SyncService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        updateUsingSealInfoIfNeed();
+        syncUsingSealInfoIfNeed();
+        syncOutSealInfoIfNeed();
         uploadLocalFile();
         AlarmManager manager=(AlarmManager) getSystemService(ALARM_SERVICE);
         long triggerAtTime= SystemClock.elapsedRealtime()+SyncInterval;
@@ -46,13 +49,18 @@ public class SyncService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateUsingSealInfoIfNeed(){
+    private void syncUsingSealInfoIfNeed(){
         if(SealOfflineUtil.needUpdateUsingSeal()){
-            updateUsingSealCode();
+            syncUsingSealCode();
+        }
+    }
+    private void syncOutSealInfoIfNeed(){
+        if(SealOfflineUtil.needUpdateOutSeal()){
+            syncOutSealCode();
         }
     }
 
-    private void updateUsingSealCode(){
+    private void syncUsingSealCode(){
         WebServiceUtil.updateUsingSealCode(new SoapCallbackListener() {
             @Override
             public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -60,6 +68,24 @@ public class SyncService extends Service {
                 if(response.getSealCount()>0){
                     ArrayList<UsingSealInfoItemOffline> list=response.getSealList();
                     SealOfflineUtil.saveOfflineUsingSealList(list);
+                }
+            }
+
+            @Override
+            public void onError(Exception e, String method, String sealCode, String filePath) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void syncOutSealCode(){
+        WebServiceUtil.updateOutSealCode(new SoapCallbackListener() {
+            @Override
+            public void onFinish(String xml, String method, String sealCode, String filePath) {
+                OutSealInfoSyncResponse response= XmlParseUtil.pullOutSealInfoSyncResponse(xml);
+                if(response.getSealCount()>0){
+                    ArrayList<OutSealInfoItemOffline> list=response.getSealList();
+                    SealOfflineUtil.saveOfflineOutSealList(list);
                 }
             }
 

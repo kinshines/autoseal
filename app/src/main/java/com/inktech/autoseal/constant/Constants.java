@@ -42,6 +42,7 @@ public interface Constants {
     String ACTION_GET_SEAL_OFFLINE="ACTION_GET_SEAL_OFFLINE";
 
     String OfflineUsingSealCode="OfflineUsingSealCode";
+    String OfflineOutSealCode="OfflineOutSealCode";
 
     String gz="仓位1";
     String frz="仓位2";

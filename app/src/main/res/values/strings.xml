@@ -9,6 +9,7 @@
     <string name="get_seal">普通取印</string>
     <string name="get_seal_offline">紧急取印</string>
     <string name="using_seal_hint">请输入用印编码</string>
+    <string name="get_seal_hint">请输入取印编码</string>
     <string name="send">发送</string>
     <string name="confirm">确认</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -22,8 +23,10 @@
 
     <string name="checking">验证中……</string>
     <string name="using_seal_code_invalid">用印编码不存在</string>
+    <string name="get_seal_code_invalid">用印编码不存在</string>
     <string name="hardware_code_invalid">机器码不对应</string>
     <string name="using_seal_code_description">用印编码有效，确认盖章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可盖章</string>
+    <string name="get_seal_code_description">取印编码有效，确认印章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可取印</string>
     <string name="confirm_take_photo">确认拍照</string>
 
     <!-- Strings related to Settings -->

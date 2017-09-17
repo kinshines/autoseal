@@ -1,13 +1,67 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.inktech.autoseal.ui.GetSealOfflineFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tool:contenxt="com.inktech.autoseal.ui.GetSealOfflineFragment"
+    android:orientation="vertical">
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/card_view_horizontal_margin"
+        android:layout_marginLeft="@dimen/card_view_horizontal_margin"
+        android:layout_marginRight="@dimen/card_view_horizontal_margin"
+        card_view:cardCornerRadius="@dimen/card_corner_radius">
+        <LinearLayout
+            android:layout_marginTop="@dimen/card_view_horizontal_margin"
+            android:layout_marginLeft="@dimen/card_view_horizontal_margin"
+            android:layout_marginRight="@dimen/card_view_horizontal_margin"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.AppCompatTextView
+                    android:textSize="@dimen/title_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/get_seal_offline"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_scan"
+                    android:background="@mipmap/scan"
+                    android:layout_width="@dimen/scan_btn_size"
+                    android:layout_height="@dimen/scan_btn_size" />
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edit_using_code"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/get_seal_hint"
+                    android:layout_weight="1"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/btn_using_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/confirm_btn_height"
+                    android:background="@color/colorPrimary"
+                    android:textColor="@android:color/white"
+                    android:text="@string/confirm"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <com.dexafree.materialList.view.MaterialListView
+        android:id="@+id/list_seal_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+</LinearLayout>

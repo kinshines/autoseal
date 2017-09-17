@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
-import com.inktech.autoseal.util.BluetoothUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +78,7 @@ public class BluetoothService {
      */
     private void connectionFailed() {
         Log.e(Constants.TAG, "Connection Failed");
-        // Send a failure item_message back to the Activity
+        // usingSend a failure item_message back to the Activity
         Message msg = myHandler.obtainMessage(Constants.MESSAGE_SNACKBAR);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.SNACKBAR, "无法连接盖章机");
@@ -94,7 +93,7 @@ public class BluetoothService {
      */
     private void connectionLost() {
         Log.e(Constants.TAG, "Connection Lost");
-        // Send a failure item_message back to the Activity
+        // usingSend a failure item_message back to the Activity
         Message msg = myHandler.obtainMessage(Constants.MESSAGE_SNACKBAR);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.SNACKBAR, "与盖章机已失去连接");
@@ -227,7 +226,7 @@ public class BluetoothService {
             while (true) {
                 try {
                     bytes = mmInStream.read(buffer);
-                    String read= BluetoothUtil.bytesToHexString(buffer,bytes);
+                    String read= BluetoothCmdInterpreter.bytesToHexString(buffer,bytes);
                     readMessage.append(read);
 
                     if (read.contains(BluetoothCmdInterpreter.Suffix)) {

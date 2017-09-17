@@ -18,6 +18,9 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
     AppCompatButton btnSaveIp;
     AppCompatEditText editServerIp;
 
+    AppCompatButton btnSaveHardware;
+    AppCompatEditText editHardware;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +32,8 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
 
         editServerIp=(AppCompatEditText) findViewById(R.id.edit_server_ip);
         btnSaveIp=(AppCompatButton) findViewById(R.id.btn_save_ip);
+        editHardware=(AppCompatEditText) findViewById(R.id.edit_hardware_code);
+        btnSaveHardware=(AppCompatButton) findViewById(R.id.btn_save_hardware_code);
         SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(SettingsPreferenceActivity.this);
 
         btnSaveIp.setOnClickListener(new View.OnClickListener() {
@@ -40,8 +45,22 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
                 Toast.makeText(SettingsPreferenceActivity.this,"success",Toast.LENGTH_SHORT).show();
             }
         });
-        String savedIp=pref.getString("serverIP","192.168.");
+
+        btnSaveHardware.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor=pref.edit();
+                editor.putString("hardwareCode",editHardware.getText().toString());
+                editor.apply();
+                Toast.makeText(SettingsPreferenceActivity.this,"success",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        String savedIp=pref.getString("serverIP","124.128.33.110:10003");
         editServerIp.setText(savedIp);
+
+        String savedhardware=pref.getString("hardwareCode","hardwareCode");
+        editHardware.setText(savedhardware);
     }
 
     @Override

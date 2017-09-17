@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.inktech.autoseal.constant.MyApplication;
+import com.inktech.autoseal.model.OutSealInfoItemOffline;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 
 import java.util.ArrayList;
@@ -51,11 +52,28 @@ public class PreferenceUtil {
         datalist = gson.fromJson(strJson, new TypeToken<ArrayList<UsingSealInfoItemOffline>>() {
         }.getType());
         return datalist;
+    }
 
+    /**
+     * 获取List
+     * @param tag
+     * @return
+     */
+    public static ArrayList<OutSealInfoItemOffline> getOutSealInfoItemOfflineList(String tag) {
+        ArrayList<OutSealInfoItemOffline> datalist=new ArrayList<>();
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        String strJson = prefs.getString(tag, null);
+        if (null == strJson) {
+            return datalist;
+        }
+        Gson gson = new Gson();
+        datalist = gson.fromJson(strJson, new TypeToken<ArrayList<OutSealInfoItemOffline>>() {
+        }.getType());
+        return datalist;
     }
 
     public static void setSealCode(String sealCode){
-        SharedPreferences.Editor editor = android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
         editor.putString("sealCode",sealCode);
         editor.apply();
     }

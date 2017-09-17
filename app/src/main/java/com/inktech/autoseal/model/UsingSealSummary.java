@@ -5,13 +5,12 @@ import android.text.TextUtils;
 import com.inktech.autoseal.constant.Constants;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Chaoyu on 2017/8/28.
  */
 
-public class SealSummary {
+public class UsingSealSummary {
     private static HashMap<String,Integer>overall=new HashMap<>();
     private static HashMap<String,Integer> process=new HashMap<>();
     private static String currentSealType="";
@@ -86,11 +85,9 @@ public class SealSummary {
         }
     }
 
-    public static void init(){
+    private static void init(){
         overall.clear();
         process.clear();
-        currentSealType="";
-        currentSealCode="";
     }
 
     public static String getCurrentSealCode(){
@@ -98,13 +95,14 @@ public class SealSummary {
     }
     public static void setCurrentSealCode(String code){
         currentSealCode=code;
+        init();
     }
 
-    public static String translateSealItemToChinese(UsingSealInfoItem seal){
+    public static String translateUsingSealItemToChinese(UsingSealInfoItem seal){
         String type=seal.getType();
         int count=seal.getCount();
         String chineseType= translateSealTypeToChinese(type);
-        SealSummary.addMap(type,count);
+        addMap(type,count);
         return chineseType+"：盖章 "+count+" 次";
     }
 }

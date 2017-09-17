@@ -21,7 +21,7 @@ import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
-import com.inktech.autoseal.model.SealSummary;
+import com.inktech.autoseal.model.UsingSealSummary;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.SealOfflineUtil;
@@ -64,15 +64,15 @@ public class UsingSealOfflineFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String sealCode=editUsingCode.getText().toString().trim();
-                SealSummary.setCurrentSealCode(sealCode);
+                UsingSealSummary.setCurrentSealCode(sealCode);
                 PreferenceUtil.setSealCode(sealCode);
                 sealInfoOffline=SealOfflineUtil.validateUsingSealCode(sealCode);
                 if(sealInfoOffline==null){
                     Toast.makeText(getContext(),R.string.using_seal_code_invalid,Toast.LENGTH_LONG).show();
                     return;
                 }
-                SealOfflineUtil.removeSealInfoItemOffline(sealCode);
-                String result=SealSummary.translateSealItemToChinese(sealInfoOffline);
+                SealOfflineUtil.removeUsingSealInfoItemOffline(sealCode);
+                String result= UsingSealSummary.translateUsingSealItemToChinese(sealInfoOffline);
                 Card sealCard = new Card.Builder(getContext())
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_welcome_card_layout)
@@ -127,7 +127,7 @@ public class UsingSealOfflineFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
-        loadingView=new SpotsDialog(getContext(),"校验中……");
+        loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
     }
 
 }
