@@ -256,7 +256,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         String sealTypeChinese= UsingSealSummary.getSealTypeChinese();
         int currentCount= UsingSealSummary.getCurrentSealCount();
         sealProcessInfoCaption="设备已就绪，请将需要盖章的文件放置于指定位置后，点击确认盖章按钮后执行盖章。\n";
-        sealProcessInfoHead+="当前执行的盖章类型为：\n"+sealTypeChinese+"，第 "+currentCount+" 次";
+        sealProcessInfoHead="当前执行的盖章类型为：\n"+sealTypeChinese+"，第 "+currentCount+" 次";
         textSealProcess.setText(sealProcessInfoCaption);
         textSealHead.setText(sealProcessInfoHead);
     }
@@ -273,7 +273,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         }
         String sealTypeChinese=OutSealSummary.getSealTypeChinese();
         sealProcessInfoCaption="设备已就绪，点击确认取印按钮后取出印章，使用完毕请及时归还\n";
-        sealProcessInfoHead+="当前即将取出的印章类型为：\n"+sealTypeChinese;
+        sealProcessInfoHead="当前即将取出的印章类型为：\n"+sealTypeChinese;
 
         textSealProcess.setText(sealProcessInfoCaption);
         textSealHead.setText(sealProcessInfoHead);
