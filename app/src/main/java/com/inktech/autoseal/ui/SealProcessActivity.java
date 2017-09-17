@@ -77,9 +77,6 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seal_process);
 
-        Intent bluetoothIntent=getIntent();
-        WebServiceMethod=bluetoothIntent.getStringExtra(Constants.web_service_method);
-
         initViews();
         refreshSealProcess();
         snackTurnOn = Snackbar.make(coordinatorLayout, "Bluetooth turned off", Snackbar.LENGTH_INDEFINITE)
@@ -97,8 +94,9 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         assert getSupportActionBar() != null; // won't be null, lint error
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        device = getIntent().getExtras().getParcelable(Constants.EXTRA_DEVICE);
-
+        Intent intent=getIntent();
+        device = intent.getExtras().getParcelable(Constants.EXTRA_DEVICE);
+        WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
         bluetoothService = new BluetoothService(handler, device);
 
         setTitle(device.getName());
@@ -145,8 +143,8 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (bluetoothService.getState() != Constants.STATE_CONNECTED) {
-            Snackbar.make(coordinatorLayout, "You are not connected", Snackbar.LENGTH_LONG)
-                    .setAction("Connect", new View.OnClickListener() {
+            Snackbar.make(coordinatorLayout, "尚未连接盖章机", Snackbar.LENGTH_LONG)
+                    .setAction("连接", new View.OnClickListener() {
                         @Override public void onClick(View v) {
                             reconnect();
                         }
@@ -284,7 +282,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                     break;
                 case Constants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
-                    String writeMessage=BluetoothUtil.bytesToHexString(writeBuf);
+                    String writeMessage=BluetoothUtil.bytesToHexString(writeBuf,writeBuf.length);
                     Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_READ:
@@ -306,7 +304,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
                 case Constants.MESSAGE_SNACKBAR:
                     Snackbar.make(activity.coordinatorLayout, msg.getData().getString(Constants.SNACKBAR), Snackbar.LENGTH_LONG)
-                            .setAction("Connect", new View.OnClickListener() {
+                            .setAction("连接", new View.OnClickListener() {
                                 @Override public void onClick(View v) {
                                     activity.reconnect();
                                 }

@@ -17,9 +17,9 @@ public class BluetoothUtil {
         return bytes;
     }
 
-    public static String bytesToHexString(byte[] bytes) {
+    public static String bytesToHexString(byte[] bytes,int length) {
         String result = "";
-        for (int i = 0; i < bytes.length; i++) {
+        for (int i = 0; i < length; i++) {
             String hexString = Integer.toHexString(bytes[i] & 0xFF);
             if (hexString.length() == 1) {
                 hexString = '0' + hexString;

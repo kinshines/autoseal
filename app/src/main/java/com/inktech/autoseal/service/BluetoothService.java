@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
+import com.inktech.autoseal.util.BluetoothUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,7 +82,7 @@ public class BluetoothService {
         // Send a failure item_message back to the Activity
         Message msg = myHandler.obtainMessage(Constants.MESSAGE_SNACKBAR);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.SNACKBAR, "Unable to connect");
+        bundle.putString(Constants.SNACKBAR, "无法连接盖章机");
         msg.setData(bundle);
         myHandler.sendMessage(msg);
         setState(Constants.STATE_ERROR);
@@ -96,7 +97,7 @@ public class BluetoothService {
         // Send a failure item_message back to the Activity
         Message msg = myHandler.obtainMessage(Constants.MESSAGE_SNACKBAR);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.SNACKBAR, "Cconnection was lost");
+        bundle.putString(Constants.SNACKBAR, "与盖章机已失去连接");
         msg.setData(bundle);
         myHandler.sendMessage(msg);
         setState(Constants.STATE_ERROR);
@@ -226,7 +227,7 @@ public class BluetoothService {
             while (true) {
                 try {
                     bytes = mmInStream.read(buffer);
-                    String read=bytesToHexString(buffer,bytes);
+                    String read= BluetoothUtil.bytesToHexString(buffer,bytes);
                     readMessage.append(read);
 
                     if (read.contains(BluetoothCmdInterpreter.Suffix)) {
@@ -261,19 +262,6 @@ public class BluetoothService {
                 Log.e(Constants.TAG, "close() of connect socket failed", e);}
         }
 
-
-    }
-
-    public static String bytesToHexString(byte[] bytes,int length) {
-        String result = "";
-        for (int i = 0; i < length; i++) {
-            String hexString = Integer.toHexString(bytes[i] & 0xFF);
-            if (hexString.length() == 1) {
-                hexString = '0' + hexString;
-            }
-            result += hexString.toUpperCase();
-        }
-        return result;
     }
 
 }

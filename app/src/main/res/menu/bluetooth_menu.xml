@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_reconnect"
         android:orderInCategory="100"
-        android:title="Reconnect"
+        android:title="重新连接"
         android:visible="false"
         app:showAsAction="always"/>
 
