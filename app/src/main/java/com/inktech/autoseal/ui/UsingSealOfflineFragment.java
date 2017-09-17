@@ -71,7 +71,7 @@ public class UsingSealOfflineFragment extends Fragment {
                     Toast.makeText(getContext(),R.string.using_seal_code_invalid,Toast.LENGTH_LONG).show();
                     return;
                 }
-                SealOfflineUtil.removeSealInfoItemOffline(sealInfoOffline);
+                SealOfflineUtil.removeSealInfoItemOffline(sealCode);
                 String result=SealSummary.translateSealItemToChinese(sealInfoOffline);
                 Card sealCard = new Card.Builder(getContext())
                         .withProvider(new CardProvider())

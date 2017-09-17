@@ -28,6 +28,11 @@ public class SealOfflineUtil {
     @Nullable
     public static UsingSealInfoItemOffline validateUsingSealCode(String sealCode){
         ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        return validateUsingSealCode(list,sealCode);
+    }
+
+    @Nullable
+    private static UsingSealInfoItemOffline validateUsingSealCode(ArrayList<UsingSealInfoItemOffline> list,String sealCode){
         String today=DateUtil.getShortDate();
         for(UsingSealInfoItemOffline item:list){
             if(sealCode.equals(item.getSealCode())&&today.equals(item.getTimeStamp()))
@@ -55,8 +60,11 @@ public class SealOfflineUtil {
         return hasCode;
     }
 
-    public static void removeSealInfoItemOffline(UsingSealInfoItemOffline item){
+    public static void removeSealInfoItemOffline(String sealCode){
         ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        UsingSealInfoItemOffline item=validateUsingSealCode(list,sealCode);
+        if(item==null)
+            return;
         list.remove(item);
         saveOfflineUsingSealList(list);
     }

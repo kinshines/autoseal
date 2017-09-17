@@ -63,6 +63,8 @@ public class UsingSealFragment extends Fragment {
         btnUsingCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
+                loadingView.setCancelable(false);
                 loadingView.show();
                 String sealCode=editUsingCode.getText().toString().trim();
                 SealSummary.setCurrentSealCode(sealCode);
@@ -114,7 +116,7 @@ public class UsingSealFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
-        loadingView=new SpotsDialog(getContext(),R.string.checking);
+
     }
 
     private Handler handler=new Handler(){
