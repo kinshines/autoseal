@@ -18,7 +18,13 @@
 -keep class dmax.dialog.** {
     *;
 }
+-keep class org.litepal.** {
+    *;
+}
 
+-keep class * extends org.litepal.crud.DataSupport {
+    *;
+}
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable

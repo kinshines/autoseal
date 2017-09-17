@@ -3,11 +3,10 @@ package com.inktech.autoseal.util;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
+import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.constant.MyApplication;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.db.FileUploadRecord;
-import com.inktech.autoseal.db.PhotoPosition;
-import com.inktech.autoseal.db.SealType;
 
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.MarshalBase64;
@@ -50,10 +49,6 @@ public class WebServiceUtil {
                 if(propertyMap.containsKey("sealCode")){
                     sealCode=propertyMap.get("sealCode").toString();
                 }
-                String position="";
-                if(propertyMap.containsKey("position")){
-                    position=propertyMap.get("position").toString();
-                }
                 try {
                     SoapObject soapObject=new SoapObject(AddressNameSpace,method);
                     for (String key:propertyMap.keySet()) {
@@ -71,10 +66,10 @@ public class WebServiceUtil {
                     httpTransportSE.call(action,envelope);
                     SoapObject object=(SoapObject)envelope.bodyIn;
                     String xml=object.getPropertySafelyAsString(method+"Result");
-                    listener.onFinish(xml,method,sealCode,filePath,position);
+                    listener.onFinish(xml,method,sealCode,filePath);
                 }
                 catch (Exception e){
-                    listener.onError(e,method,sealCode,filePath,position);
+                    listener.onError(e,method,sealCode,filePath);
                 }
             }
         }).start();
@@ -88,18 +83,18 @@ public class WebServiceUtil {
         sendRequest(UsingSealInfo,map,listener);
     }
 
-    public static void uploadByMethod(final String method,final String filePath,final String position,final SoapCallbackListener listener){
+    public static void uploadByMethod(final String method,final String filePath,final Integer position,final SoapCallbackListener listener){
         String sealCode="UCJ3EHZOXTO0";
         uploadBy(sealCode,method,filePath,position,listener);
     }
 
-    private static void uploadBy(String sealCode,final String method,final String filePath,final String position,final SoapCallbackListener listener){
+    private static void uploadBy(String sealCode,final String method,final String filePath,final Integer position,final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
         map.put("sealCode",sealCode);
         File file=new File(filePath);
         map.put("fileByte",getBytes(file));
         map.put("filename",file.getName());
-        map.put("postion",position);
+        map.put("postion",Constants.User.equals(position)?"用印人":"文档");
         sendRequest(method,map,listener,filePath);
     }
 
@@ -137,8 +132,7 @@ public class WebServiceUtil {
     }
 
     public static void uploadByRecord(FileUploadRecord record,final SoapCallbackListener listener){
-        String position= PhotoPosition.User.equals(record.getPosition())?"用印人":"文档";
-        uploadBy(record.getSealCode(),record.getSealType().toString(),record.getFilePath(),position,listener);
+        uploadBy(record.getSealCode(),record.getSealType().toString(),record.getFilePath(),record.getPosition(),listener);
     }
 
 }

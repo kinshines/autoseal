@@ -41,8 +41,6 @@ public interface Constants {
     String ACTION_GET_SEAL="ACTION_GET_SEAL";
     String ACTION_GET_SEAL_OFFLINE="ACTION_GET_SEAL_OFFLINE";
 
-    String User="用印人";
-    String Documents="文档";
     String OfflineUsingSealCode="OfflineUsingSealCode";
 
     String gz="仓位1";
@@ -53,4 +51,15 @@ public interface Constants {
 
     String qr_text="qr_text";
     String web_service_method="web_service_method";
+
+    Integer User=1;
+    Integer Document=2;
+
+    Integer uploadByUsing=1;
+    Integer uploadByOut=2;
+    Integer uploadByUrgentUsing=3;
+    Integer uploadByUrgentOut=4;
+
+    Integer ToBeUpload=1;
+    Integer Uploaded=2;
 }

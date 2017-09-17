@@ -69,7 +69,7 @@ public class UsingSealFragment extends Fragment {
                 PreferenceUtil.setSealCode(sealCode);
                 WebServiceUtil.getUsingSealInfo(new SoapCallbackListener() {
                     @Override
-                    public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+                    public void onFinish(String xml, String method, String sealCode, String filePath) {
                         UsingSealInfoResponse response=XmlParseUtil.pullUsingSealInfoResponse(xml);
                         Message message=new Message();
                         message.obj=response;
@@ -78,7 +78,7 @@ public class UsingSealFragment extends Fragment {
                     }
 
                     @Override
-                    public void onError(Exception e, String method, String sealCode, String filePath, String position) {
+                    public void onError(Exception e, String method, String sealCode, String filePath) {
                         handler.sendEmptyMessage(Constants.MESSAGE_WEB_SERVICE_FAIL);
                     }
                 });
@@ -134,7 +134,7 @@ public class UsingSealFragment extends Fragment {
                     }
 
                     String result="";
-                    SealSummary.Init();
+                    SealSummary.init();
                     for(UsingSealInfoItem seal : sealInfoResult.getSealList()){
                         result=result+SealSummary.translateSealItemToChinese(seal)+"\n";
                     }
@@ -154,7 +154,6 @@ public class UsingSealFragment extends Fragment {
                                             Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
                                             intent.putExtra(Constants.web_service_method,WebServiceUtil.uploadByUsing);
                                             startActivity(intent);
-                                            getActivity().finish();
                                         }
                                     }))
                             .setDividerVisible(true)

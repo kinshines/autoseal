@@ -54,4 +54,10 @@ public class SealOfflineUtil {
         }
         return hasCode;
     }
+
+    public static void removeSealInfoItemOffline(UsingSealInfoItemOffline item){
+        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        list.remove(item);
+        saveOfflineUsingSealList(list);
+    }
 }

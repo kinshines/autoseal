@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ public class UsingSealOfflineFragment extends Fragment {
     AppCompatButton btnScan;
     MaterialListView listSealInfo;
     AlertDialog loadingView;
+    UsingSealInfoItemOffline sealInfoOffline;
 
     public UsingSealOfflineFragment() {
         // Required empty public constructor
@@ -50,7 +52,6 @@ public class UsingSealOfflineFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,28 +66,28 @@ public class UsingSealOfflineFragment extends Fragment {
                 String sealCode=editUsingCode.getText().toString().trim();
                 SealSummary.setCurrentSealCode(sealCode);
                 PreferenceUtil.setSealCode(sealCode);
-                UsingSealInfoItemOffline sealInfo=SealOfflineUtil.validateUsingSealCode(sealCode);
-                if(sealInfo==null){
+                sealInfoOffline=SealOfflineUtil.validateUsingSealCode(sealCode);
+                if(sealInfoOffline==null){
                     Toast.makeText(getContext(),R.string.using_seal_code_invalid,Toast.LENGTH_LONG).show();
                     return;
                 }
-                String result=SealSummary.translateSealItemToChinese(sealInfo);
+                SealOfflineUtil.removeSealInfoItemOffline(sealInfoOffline);
+                String result=SealSummary.translateSealItemToChinese(sealInfoOffline);
                 Card sealCard = new Card.Builder(getContext())
                         .withProvider(new CardProvider())
                         .setLayout(R.layout.material_welcome_card_layout)
                         .setTitle(result)
                         .setDescription(R.string.using_seal_code_description)
-                        .setBackgroundColor(getResources().getColor(R.color.colorLight))
+                        .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
                         .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
                                 .setText(R.string.confirm_take_photo)
-                                .setTextColor(getResources().getColor(R.color.colorAccent))
+                                .setTextColor(ContextCompat.getColor(getContext(),R.color.colorAccent))
                                 .setListener(new OnActionClickListener() {
                                     @Override
                                     public void onActionClicked(View view, Card card) {
                                         Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
                                         intent.putExtra(Constants.web_service_method, WebServiceUtil.uploadByUrgentUsing);
                                         startActivity(intent);
-                                        getActivity().finish();
                                     }
                                 }))
                         .setDividerVisible(true)

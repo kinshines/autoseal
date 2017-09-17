@@ -55,7 +55,7 @@ public class SyncService extends Service {
     private void updateUsingSealCode(){
         WebServiceUtil.updateUsingSealCode(new SoapCallbackListener() {
             @Override
-            public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+            public void onFinish(String xml, String method, String sealCode, String filePath) {
                 UsingSealInfoSyncResponse response= XmlParseUtil.pullUsingSealInfoSyncResponse(xml);
                 if(response.getSealCount()>0){
                     ArrayList<UsingSealInfoItemOffline> list=response.getSealList();
@@ -64,7 +64,7 @@ public class SyncService extends Service {
             }
 
             @Override
-            public void onError(Exception e, String method, String sealCode, String filePath, String position) {
+            public void onError(Exception e, String method, String sealCode, String filePath) {
                 e.printStackTrace();
             }
         });
@@ -77,19 +77,19 @@ public class SyncService extends Service {
         for (FileUploadRecord record:list){
             WebServiceUtil.uploadByRecord(record, new SoapCallbackListener() {
                 @Override
-                public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+                public void onFinish(String xml, String method, String sealCode, String filePath) {
                     UploadFileResponse response=XmlParseUtil.pullUploadFileResponse(xml);
                     if(response.getStatus()==1){
-                        DbUtil.uploadSuccess(method,sealCode,filePath,position);
+                        DbUtil.uploadSuccess(method,sealCode,filePath,record.getPosition());
                     }else{
-                        DbUtil.uploadFail(method,sealCode,filePath,position);
+                        DbUtil.uploadFail(method,sealCode,filePath,record.getPosition());
                     }
                 }
 
                 @Override
-                public void onError(Exception e, String method, String sealCode, String filePath, String position) {
+                public void onError(Exception e, String method, String sealCode, String filePath) {
                     e.printStackTrace();
-                    DbUtil.uploadFail(method,sealCode,filePath,position);
+                    DbUtil.uploadFail(method,sealCode,filePath,record.getPosition());
                 }
             });
         }

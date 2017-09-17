@@ -86,6 +86,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                                 intent.putExtra(Constants.web_service_method,WebServiceMethod);
 
                                 startActivity(intent);
+                                finish();
                             }
                         })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -122,6 +123,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                 intent.putExtra(Constants.EXTRA_DEVICE, device);
                 intent.putExtra(Constants.web_service_method,WebServiceMethod);
                 startActivity(intent);
+                finish();
                 break;
             }
         }

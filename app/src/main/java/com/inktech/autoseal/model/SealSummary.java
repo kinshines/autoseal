@@ -86,7 +86,7 @@ public class SealSummary {
         }
     }
 
-    public static void Init(){
+    public static void init(){
         overall.clear();
         process.clear();
         currentSealType="";

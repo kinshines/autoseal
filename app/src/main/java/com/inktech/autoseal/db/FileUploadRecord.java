@@ -11,9 +11,9 @@ import java.util.Date;
 public class FileUploadRecord extends DataSupport {
     private String sealCode;
     private String filePath;
-    private PhotoPosition position;
-    private SealType sealType;
-    private UploadStatus status;
+    private Integer position;
+    private Integer sealType;
+    private Integer status;
     private Date timeStamp;
 
     public String getSealCode() {
@@ -32,27 +32,27 @@ public class FileUploadRecord extends DataSupport {
         this.filePath = filePath;
     }
 
-    public PhotoPosition getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
-    public void setPosition(PhotoPosition position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 
-    public SealType getSealType() {
+    public Integer getSealType() {
         return sealType;
     }
 
-    public void setSealType(SealType sealType) {
+    public void setSealType(Integer sealType) {
         this.sealType = sealType;
     }
 
-    public UploadStatus getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(UploadStatus status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

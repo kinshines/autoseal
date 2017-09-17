@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.service.SyncService;
+import com.inktech.autoseal.util.WebServiceUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
 

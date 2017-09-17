@@ -62,8 +62,10 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     myHandler handler;
 
     TextView textSealProcess;
+    TextView textSealHead;
     AppCompatButton btnConfirmSeal;
-    String sealProcessInfo="";
+    String sealProcessInfoCaption="";
+    String sealProcessInfoHead="";
     private SurfaceView mySurfaceView;
     private SurfaceHolder myHolder;
     private Camera myCamera;
@@ -149,7 +151,6 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                             reconnect();
                         }
                     }).show();
-            return;
         } else {
             byte[] send = BluetoothUtil.getHexBytes(message);
             bluetoothService.write(send);
@@ -170,7 +171,19 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 bluetoothService.stop();
-                NavUtils.navigateUpFromSameTask(this);
+                //NavUtils.navigateUpFromSameTask(this);
+                Intent intent=new Intent(SealProcessActivity.this,MainActivity.class);
+                if(WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod)){
+                    intent.setAction(Constants.ACTION_GET_SEAL_OFFLINE);
+                }else if(WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
+                    intent.setAction(Constants.ACTION_USING_SEAL_OFFLINE);
+                }else if(WebServiceUtil.uploadByOut.equals(WebServiceMethod)){
+                    intent.setAction(Constants.ACTION_GET_SEAL);
+                }else {
+                    intent.setAction(Constants.ACTION_USING_SEAL);
+                }
+                startActivity(intent);
+                finish();
                 return true;
             case R.id.action_reconnect:
                 reconnect();
@@ -218,20 +231,25 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     private void refreshSealProcess(){
         String sealType=SealSummary.getCurrentSealType();
         if(TextUtils.isEmpty(sealType)){
-            sealProcessInfo="盖章完成!";
+            SealSummary.init();
+            sealProcessInfoHead="盖章完成!";
+            sealProcessInfoCaption="";
             btnConfirmSeal.setVisibility(View.GONE);
-            textSealProcess.setText(sealProcessInfo);
+            textSealHead.setText(sealProcessInfoHead);
+            textSealProcess.setText(sealProcessInfoCaption);
             return;
         }
         String sealTypeChinese=SealSummary.getSealTypeChinese();
         int currentCount=SealSummary.getCurrentSealCount();
-        sealProcessInfo="设备已就绪，请将需要盖章的文件放置于指定位置后，点击确认盖章按钮后执行盖章。\n";
-        sealProcessInfo+="当前执行的盖章类型为："+sealTypeChinese+"，第 "+currentCount+" 次";
-        textSealProcess.setText(sealProcessInfo);
+        sealProcessInfoCaption="设备已就绪，请将需要盖章的文件放置于指定位置后，点击确认盖章按钮后执行盖章。\n";
+        sealProcessInfoHead+="当前执行的盖章类型为：\n"+sealTypeChinese+"，第 "+currentCount+" 次";
+        textSealProcess.setText(sealProcessInfoCaption);
+        textSealHead.setText(sealProcessInfoHead);
     }
 
     private void initViews(){
         textSealProcess=(TextView) findViewById(R.id.text_seal_process);
+        textSealHead=(TextView) findViewById(R.id.text_seal_head);
         btnConfirmSeal=(AppCompatButton) findViewById(R.id.btn_confirm_seal);
         btnConfirmSeal.setOnClickListener(this);
         toolbar=(Toolbar) findViewById(R.id.toolbar);
@@ -396,22 +414,22 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                 FileOutputStream fos = new FileOutputStream(filename);
                 fos.write(data);
                 fos.close();
-                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Documents, new SoapCallbackListener() {
+                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document, new SoapCallbackListener() {
                     @Override
-                    public void onFinish(String xml, String method, String sealCode, String filePath, String position) {
+                    public void onFinish(String xml, String method, String sealCode, String filePath) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
                         if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,position);
+                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                         }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,position);
+                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                         }
                     }
 
                     @Override
-                    public void onError(Exception e, String method, String sealCode, String filePath, String position) {
-                        DbUtil.uploadFail(method,sealCode,filePath,position);
+                    public void onError(Exception e, String method, String sealCode, String filePath) {
+                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document);
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });
