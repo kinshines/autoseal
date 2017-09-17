@@ -50,14 +50,14 @@ public class SyncService extends Service {
     }
 
     private void syncUsingSealInfoIfNeed(){
-        if(SealOfflineUtil.needUpdateUsingSeal()){
+        //if(SealOfflineUtil.needUpdateUsingSeal()){
             syncUsingSealCode();
-        }
+        //}
     }
     private void syncOutSealInfoIfNeed(){
-        if(SealOfflineUtil.needUpdateOutSeal()){
+        //if(SealOfflineUtil.needUpdateOutSeal()){
             syncOutSealCode();
-        }
+        //}
     }
 
     private void syncUsingSealCode(){
