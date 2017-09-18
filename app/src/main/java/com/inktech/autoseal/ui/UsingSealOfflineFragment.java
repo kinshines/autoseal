@@ -68,7 +68,15 @@ public class UsingSealOfflineFragment extends Fragment {
                 PreferenceUtil.setSealCode(sealCode);
                 sealInfoOffline=SealOfflineUtil.validateUsingSealCode(sealCode);
                 if(sealInfoOffline==null){
-                    Toast.makeText(getContext(),R.string.using_seal_code_invalid,Toast.LENGTH_LONG).show();
+                    Card warnCard = new Card.Builder(getContext())
+                            .withProvider(new CardProvider())
+                            .setLayout(R.layout.material_small_image_card)
+                            .setTitle(R.string.using_seal_code_invalid)
+                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                            .endConfig()
+                            .build();
+                    listSealInfo.getAdapter().clearAll();
+                    listSealInfo.getAdapter().add(warnCard);
                     return;
                 }
                 SealOfflineUtil.removeUsingSealInfoItemOffline(sealCode);

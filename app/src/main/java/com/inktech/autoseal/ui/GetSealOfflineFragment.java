@@ -4,6 +4,7 @@ package com.inktech.autoseal.ui;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -71,7 +72,15 @@ public class GetSealOfflineFragment extends Fragment {
                 PreferenceUtil.setSealCode(sealCode);
                 sealInfoOffline= SealOfflineUtil.validateOutSealCode(sealCode);
                 if(sealInfoOffline==null){
-                    Toast.makeText(getContext(),R.string.get_seal_code_invalid,Toast.LENGTH_LONG).show();
+                    Card warnCard = new Card.Builder(getContext())
+                            .withProvider(new CardProvider())
+                            .setLayout(R.layout.material_small_image_card)
+                            .setTitle(R.string.get_seal_code_invalid)
+                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                            .endConfig()
+                            .build();
+                    listSealInfo.getAdapter().clearAll();
+                    listSealInfo.getAdapter().add(warnCard);
                     return;
                 }
                 SealOfflineUtil.removeOutSealInfoItemOffline(sealCode);

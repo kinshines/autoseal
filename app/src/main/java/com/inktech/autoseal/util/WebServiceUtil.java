@@ -164,7 +164,21 @@ public class WebServiceUtil {
     }
 
     public static void uploadByRecord(FileUploadRecord record,final SoapCallbackListener listener){
-        uploadBy(record.getSealCode(),record.getSealType().toString(),record.getFilePath(),record.getPosition(),listener);
+        String method="";
+        Integer sealType=record.getSealType();
+        if(Constants.uploadByUsing.equals(sealType)){
+            method=uploadByUsing;
+        }
+        if(Constants.uploadByOut.equals(sealType)){
+            method=uploadByOut;
+        }
+        if(Constants.uploadByUrgentOut.equals(sealType)){
+            method=uploadByUrgentOut;
+        }
+        if(Constants.uploadByUrgentUsing.equals(sealType)){
+            method=uploadByUrgentUsing;
+        }
+        uploadBy(record.getSealCode(),method,record.getFilePath(),record.getPosition(),listener);
     }
 
 }

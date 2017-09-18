@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
@@ -129,11 +130,39 @@ public class GetSealFragment extends Fragment {
                     OutSealInfoResponse sealInfoResult=(OutSealInfoResponse)msg.obj;
                     int sealStatus=sealInfoResult.getSealCount();
                     if(sealStatus==0){
-                        Toast.makeText(getContext(),R.string.get_seal_code_invalid,Toast.LENGTH_LONG).show();
+                        Card warnCard = new Card.Builder(getContext())
+                                .withProvider(new CardProvider())
+                                .setLayout(R.layout.material_small_image_card)
+                                .setTitle(R.string.get_seal_code_invalid)
+                                .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                                .endConfig()
+                                .build();
+                        listSealInfo.getAdapter().clearAll();
+                        listSealInfo.getAdapter().add(warnCard);
                         return;
                     }
                     if(sealStatus==-1){
-                        Toast.makeText(getContext(),R.string.hardware_code_invalid,Toast.LENGTH_LONG).show();
+                        Card warnCard = new Card.Builder(getContext())
+                                .withProvider(new CardProvider())
+                                .setLayout(R.layout.material_small_image_card)
+                                .setTitle(R.string.hardware_code_invalid)
+                                .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                                .endConfig()
+                                .build();
+                        listSealInfo.getAdapter().clearAll();
+                        listSealInfo.getAdapter().add(warnCard);
+                        return;
+                    }
+                    if(sealStatus==-2){
+                        Card warnCard = new Card.Builder(getContext())
+                                .withProvider(new CardProvider())
+                                .setLayout(R.layout.material_small_image_card)
+                                .setTitle(R.string.get_seal_code_used)
+                                .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                                .endConfig()
+                                .build();
+                        listSealInfo.getAdapter().clearAll();
+                        listSealInfo.getAdapter().add(warnCard);
                         return;
                     }
 
@@ -147,10 +176,10 @@ public class GetSealFragment extends Fragment {
                             .setLayout(R.layout.material_welcome_card_layout)
                             .setTitle(result)
                             .setDescription(R.string.get_seal_code_description)
-                            .setBackgroundColor(getResources().getColor(R.color.colorLight))
+                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
                             .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
                                     .setText(R.string.confirm_take_photo)
-                                    .setTextColor(getResources().getColor(R.color.colorAccent))
+                                    .setTextColor(ContextCompat.getColor(getContext(),R.color.colorAccent))
                                     .setListener(new OnActionClickListener() {
                                         @Override
                                         public void onActionClicked(View view, Card card) {

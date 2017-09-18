@@ -25,7 +25,7 @@ import java.util.List;
 
 public class SyncService extends Service {
     private static final String TAG = "SyncService";
-    private static final int SyncInterval=60*60*1000;
+    private static final int SyncInterval=5*60*1000;
     public SyncService() {
     }
 
