@@ -44,17 +44,18 @@ public interface Constants {
     String OfflineUsingSealCode="OfflineUsingSealCode";
     String OfflineOutSealCode="OfflineOutSealCode";
 
-    String gz="仓位1";
-    String frz="仓位2";
-    String cwz="仓位3";
-    String htz="仓位4";
-    String fpz="仓位5";
+    String gz="cw1";
+    String frz="cw2";
+    String cwz="cw3";
+    String htz="cw4";
+    String fpz="cw5";
 
     String qr_text="qr_text";
     String web_service_method="web_service_method";
 
     Integer User=1;
     Integer Document=2;
+    Integer UserForOut=3;
 
     Integer uploadByUsing=1;
     Integer uploadByOut=2;

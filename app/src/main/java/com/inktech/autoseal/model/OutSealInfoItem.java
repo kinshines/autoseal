@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Chaoyu on 2017/9/14.
  */
 
-public class OutSealInfoItem implements Serializable {
+public class OutSealInfoItem {
     public OutSealInfoItem(){
         type="";
     }
@@ -18,5 +18,15 @@ public class OutSealInfoItem implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    private String sealName;
+
+    public String getSealName() {
+        return sealName;
+    }
+
+    public void setSealName(String sealName) {
+        this.sealName = sealName;
     }
 }

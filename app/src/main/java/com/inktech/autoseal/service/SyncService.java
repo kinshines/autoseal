@@ -96,11 +96,16 @@ public class SyncService extends Service {
         });
     }
 
-    private void uploadLocalFile(){
+    private void uploadLocalFile() {
         List<FileUploadRecord> list=DbUtil.getTobeUploadFileList();
         if(list.size()==0)
             return;
         for (FileUploadRecord record:list){
+            try {
+                Thread.sleep(2*1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             WebServiceUtil.uploadByRecord(record, new SoapCallbackListener() {
                 @Override
                 public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -118,6 +123,7 @@ public class SyncService extends Service {
                     DbUtil.uploadFail(method,sealCode,filePath,record.getPosition());
                 }
             });
+
         }
     }
 }

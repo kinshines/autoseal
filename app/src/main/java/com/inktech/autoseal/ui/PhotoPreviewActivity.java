@@ -61,22 +61,24 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(photoData);
                     fos.close();
-                    WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.User, new SoapCallbackListener() {
+                    final Integer position=(WebServiceUtil.uploadByOut.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod))?Constants.UserForOut:Constants.User;
+                    WebServiceUtil.uploadByMethod(WebServiceMethod, filename, position, new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
+
                         if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.User);
+                            DbUtil.uploadSuccess(method,sealCode,filePath,position);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                         }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,Constants.User);
+                            DbUtil.uploadFail(method,sealCode,filePath,position);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                         }
                     }
 
                     @Override
                     public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,Constants.User);
+                        DbUtil.uploadFail(method,sealCode,filePath,position);
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });

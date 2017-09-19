@@ -6,12 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.inktech.autoseal.R;
+import com.inktech.autoseal.constant.Constants;
 
 public class SettingsPreferenceActivity extends AppCompatActivity {
 
@@ -20,6 +22,8 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
 
     AppCompatButton btnSaveHardware;
     AppCompatEditText editHardware;
+    AppCompatTextView textUsingCode;
+    AppCompatTextView textOutCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,8 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        textOutCode=(AppCompatTextView) findViewById(R.id.text_out_code);
+        textUsingCode=(AppCompatTextView) findViewById(R.id.text_using_code);
         editServerIp=(AppCompatEditText) findViewById(R.id.edit_server_ip);
         btnSaveIp=(AppCompatButton) findViewById(R.id.btn_save_ip);
         editHardware=(AppCompatEditText) findViewById(R.id.edit_hardware_code);
@@ -61,6 +67,9 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
 
         String savedhardware=pref.getString("hardwareCode","hardwareCode");
         editHardware.setText(savedhardware);
+
+        textUsingCode.setText(pref.getString(Constants.OfflineUsingSealCode,""));
+        textOutCode.setText(pref.getString(Constants.OfflineOutSealCode,""));
     }
 
     @Override

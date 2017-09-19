@@ -134,7 +134,6 @@ public class TakePhotoActivity extends AppCompatActivity implements
             intent.putExtra("photo_data",data);
             intent.putExtra(Constants.web_service_method,WebServiceMethod);
             startActivity(intent);
-            finish();
         }
 
     };

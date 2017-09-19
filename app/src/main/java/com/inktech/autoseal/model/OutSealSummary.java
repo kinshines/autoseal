@@ -1,6 +1,7 @@
 package com.inktech.autoseal.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Chaoyu on 2017/9/17.
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 
 public class OutSealSummary {
     private static ArrayList<String> overall=new ArrayList<>();
+    private static HashMap<String,String> sealNameMap=new HashMap<>();
     private static String currentSealType="";
     private static String currentSealCode="";
 
@@ -29,7 +31,7 @@ public class OutSealSummary {
     }
 
     public static String getSealTypeChinese(){
-        return UsingSealSummary.translateSealTypeToChinese(currentSealType);
+        return sealNameMap.get(currentSealType);
     }
 
     private static void init(){
@@ -46,8 +48,9 @@ public class OutSealSummary {
 
     public static String translateOutSealItemToChinese(OutSealInfoItem seal){
         String type=seal.getType();
-        String chineseType= UsingSealSummary.translateSealTypeToChinese(type);
+        String chineseType= seal.getSealName();
         addSealType(type);
+        sealNameMap.put(type,chineseType);
         return chineseType;
     }
 }

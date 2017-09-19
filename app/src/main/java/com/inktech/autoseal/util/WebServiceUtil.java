@@ -112,7 +112,17 @@ public class WebServiceUtil {
         File file=new File(filePath);
         map.put("fileByte",getBytes(file));
         map.put("filename",file.getName());
-        map.put("postion",Constants.User.equals(position)?"用印人":"文档");
+        String positionChi="";
+        if(Constants.User.equals(position)){
+            positionChi="用印人";
+        }
+        if(Constants.UserForOut.equals(position)){
+            positionChi="取印人";
+        }
+        if(Constants.Document.equals(position)){
+            positionChi="文档";
+        }
+        map.put("postion",positionChi);
         sendRequest(method,map,listener,filePath);
     }
 

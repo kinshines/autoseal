@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by Chaoyu on 2017/9/14.
  */
 
-public class UsingSealInfoItemOffline extends UsingSealInfoItem implements Serializable {
+public class UsingSealInfoItemOffline extends UsingSealInfoItem {
     private String sealCode;
     private String timeStamp;
     public UsingSealInfoItemOffline(){

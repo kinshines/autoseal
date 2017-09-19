@@ -186,6 +186,7 @@ public class GetSealFragment extends Fragment {
                                             Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
                                             intent.putExtra(Constants.web_service_method,WebServiceUtil.uploadByOut);
                                             startActivity(intent);
+                                            getActivity().finish();
                                         }
                                     }))
                             .setDividerVisible(true)

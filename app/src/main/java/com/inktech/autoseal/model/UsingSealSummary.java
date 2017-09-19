@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class UsingSealSummary {
     private static HashMap<String,Integer>overall=new HashMap<>();
     private static HashMap<String,Integer> process=new HashMap<>();
+    private static HashMap<String,String> sealNameMap=new HashMap<>();
     private static String currentSealType="";
     private static String currentSealCode="";
 
@@ -27,26 +28,26 @@ public class UsingSealSummary {
     }
 
     public static String getCurrentSealType(){
-        currentSealType=trySealType("仓位1");
+        currentSealType=trySealType(Constants.gz);
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("仓位2");
+        currentSealType=trySealType(Constants.frz);
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("仓位3");
+        currentSealType=trySealType(Constants.cwz);
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("仓位4");
+        currentSealType=trySealType(Constants.htz);
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
-        currentSealType=trySealType("仓位5");
+        currentSealType=trySealType(Constants.fpz);
         if(!TextUtils.isEmpty(currentSealType))
             return currentSealType;
         return "";
     }
 
     public static String getSealTypeChinese(){
-        return translateSealTypeToChinese(currentSealType);
+        return sealNameMap.get(currentSealType);
     }
 
     public static int getCurrentSealCount(){
@@ -55,20 +56,6 @@ public class UsingSealSummary {
 
     public static boolean isCurrentSealEnd(){
         return getCurrentSealCount()==overall.get(currentSealType);
-    }
-
-    public static String translateSealTypeToChinese(String sealType){
-        if(Constants.gz.equals(sealType))
-            return "公章";
-        if(Constants.frz.equals(sealType))
-            return "法人章";
-        if(Constants.cwz.equals(sealType))
-            return "财务章";
-        if(Constants.htz.equals(sealType))
-            return "合同专用章";
-        if(Constants.fpz.equals(sealType))
-            return "发票专用章";
-        return sealType;
     }
 
     private static String trySealType(String sealType){
@@ -88,6 +75,7 @@ public class UsingSealSummary {
     private static void init(){
         overall.clear();
         process.clear();
+        sealNameMap.clear();
     }
 
     public static String getCurrentSealCode(){
@@ -101,8 +89,9 @@ public class UsingSealSummary {
     public static String translateUsingSealItemToChinese(UsingSealInfoItem seal){
         String type=seal.getType();
         int count=seal.getCount();
-        String chineseType= translateSealTypeToChinese(type);
+        String chineseType= seal.getSealName();
         addMap(type,count);
+        sealNameMap.put(type,chineseType);
         return chineseType+"：盖章 "+count+" 次";
     }
 }

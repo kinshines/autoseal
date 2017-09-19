@@ -34,6 +34,9 @@ public class XmlParseUtil {
                         }else if("type".equals(nodeName)){
                             String type=xmlPullParser.nextText();
                             sealInfo.setType(type);
+                        }else if("sealName".equals(nodeName)){
+                            String type=xmlPullParser.nextText();
+                            sealInfo.setSealName(type);
                         }else if("count".equals(nodeName)){
                             String count=xmlPullParser.nextText();
                             sealInfo.setCount(Integer.parseInt(count));
@@ -106,6 +109,9 @@ public class XmlParseUtil {
                         }else if("type".equals(nodeName)){
                             String type=xmlPullParser.nextText();
                             sealInfo.setType(type);
+                        }else if("sealName".equals(nodeName)){
+                            String type=xmlPullParser.nextText();
+                            sealInfo.setSealName(type);
                         }else if("count".equals(nodeName)){
                             String count=xmlPullParser.nextText();
                             sealInfo.setCount(Integer.parseInt(count));
@@ -151,6 +157,9 @@ public class XmlParseUtil {
                         }else if("type".equals(nodeName)){
                             String type=xmlPullParser.nextText();
                             sealInfo.setType(type);
+                        }else if("sealName".equals(nodeName)){
+                            String type=xmlPullParser.nextText();
+                            sealInfo.setSealName(type);
                         }
                         break;
                     case XmlPullParser.END_TAG:
@@ -190,8 +199,10 @@ public class XmlParseUtil {
                         }else if("type".equals(nodeName)){
                             String type=xmlPullParser.nextText();
                             sealInfo.setType(type);
-                        }
-                        else if("sealCode".equals(nodeName)){
+                        }else if("sealName".equals(nodeName)){
+                            String type=xmlPullParser.nextText();
+                            sealInfo.setSealName(type);
+                        }else if("sealCode".equals(nodeName)){
                             String sealCode=xmlPullParser.nextText();
                             sealInfo.setSealCode(sealCode);
                         }

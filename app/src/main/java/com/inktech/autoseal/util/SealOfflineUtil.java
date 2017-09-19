@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class SealOfflineUtil {
     public static boolean needUpdateUsingSeal(){
-        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList();
         if(list.size()==0)
             return true;
         if(!hasAllTypeCode(list))
@@ -28,7 +28,7 @@ public class SealOfflineUtil {
 
     @Nullable
     public static UsingSealInfoItemOffline validateUsingSealCode(String sealCode){
-        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList();
         return validateUsingSealCode(list,sealCode);
     }
 
@@ -62,7 +62,7 @@ public class SealOfflineUtil {
     }
 
     public static void removeUsingSealInfoItemOffline(String sealCode){
-        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        ArrayList<UsingSealInfoItemOffline> list= PreferenceUtil.getUsingSealInfoItemOfflineList();
         UsingSealInfoItemOffline item=validateUsingSealCode(list,sealCode);
         if(item==null)
             return;
@@ -71,7 +71,7 @@ public class SealOfflineUtil {
     }
 
     public static boolean needUpdateOutSeal(){
-        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList(Constants.OfflineOutSealCode);
+        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList();
         if(list.size()==0)
             return true;
         if(!hasAllTypeOutCode(list))
@@ -85,7 +85,7 @@ public class SealOfflineUtil {
 
     @Nullable
     public static OutSealInfoItemOffline validateOutSealCode(String sealCode){
-        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList(Constants.OfflineOutSealCode);
+        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList();
         return validateOutSealCode(list,sealCode);
     }
 
@@ -119,7 +119,7 @@ public class SealOfflineUtil {
     }
 
     public static void removeOutSealInfoItemOffline(String sealCode){
-        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList(Constants.OfflineUsingSealCode);
+        ArrayList<OutSealInfoItemOffline> list= PreferenceUtil.getOutSealInfoItemOfflineList();
         OutSealInfoItemOffline item=validateOutSealCode(list,sealCode);
         if(item==null)
             return;

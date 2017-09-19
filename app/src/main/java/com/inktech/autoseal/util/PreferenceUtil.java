@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.constant.MyApplication;
 import com.inktech.autoseal.model.OutSealInfoItemOffline;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
@@ -38,13 +39,12 @@ public class PreferenceUtil {
 
     /**
      * 获取List
-     * @param tag
      * @return
      */
-    public static ArrayList<UsingSealInfoItemOffline> getUsingSealInfoItemOfflineList(String tag) {
+    public static ArrayList<UsingSealInfoItemOffline> getUsingSealInfoItemOfflineList() {
         ArrayList<UsingSealInfoItemOffline> datalist=new ArrayList<>();
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-        String strJson = prefs.getString(tag, null);
+        String strJson = prefs.getString(Constants.OfflineUsingSealCode, null);
         if (null == strJson) {
             return datalist;
         }
@@ -56,13 +56,12 @@ public class PreferenceUtil {
 
     /**
      * 获取List
-     * @param tag
      * @return
      */
-    public static ArrayList<OutSealInfoItemOffline> getOutSealInfoItemOfflineList(String tag) {
+    public static ArrayList<OutSealInfoItemOffline> getOutSealInfoItemOfflineList() {
         ArrayList<OutSealInfoItemOffline> datalist=new ArrayList<>();
         SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-        String strJson = prefs.getString(tag, null);
+        String strJson = prefs.getString(Constants.OfflineOutSealCode, null);
         if (null == strJson) {
             return datalist;
         }

@@ -177,20 +177,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                bluetoothService.stop();
-                //NavUtils.navigateUpFromSameTask(this);
-                Intent intent=new Intent(SealProcessActivity.this,MainActivity.class);
-                if(WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod)){
-                    intent.setAction(Constants.ACTION_GET_SEAL_OFFLINE);
-                }else if(WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
-                    intent.setAction(Constants.ACTION_USING_SEAL_OFFLINE);
-                }else if(WebServiceUtil.uploadByOut.equals(WebServiceMethod)){
-                    intent.setAction(Constants.ACTION_GET_SEAL);
-                }else {
-                    intent.setAction(Constants.ACTION_USING_SEAL);
-                }
-                startActivity(intent);
-                finish();
+                retunToHome();
                 return true;
             case R.id.action_reconnect:
                 reconnect();
@@ -295,7 +282,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_confirm_seal:
-                loadingView.show();
+                //loadingView.show();
                 String command="";
                 if(usingSealFlag){
                     command= BluetoothCmdInterpreter.usingSend(
@@ -349,19 +336,16 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
 
                     if (readMessage != null ) {
                         Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
-                        if(BluetoothCmdInterpreter.UsingFeedbackReceivedCmd.equals(readMessage)){
-                            startTakePhoto();
-                        }
                         if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
-                            loadingView.dismiss();
+                            //loadingView.dismiss();
                         }
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
-                            loadingView.dismiss();
+                            //loadingView.dismiss();
                         }
                     }
                     break;
@@ -539,4 +523,23 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        retunToHome();
+    }
+
+    private void retunToHome(){
+        Intent intent=new Intent(SealProcessActivity.this,MainActivity.class);
+        if(WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod)){
+            intent.setAction(Constants.ACTION_GET_SEAL_OFFLINE);
+        }else if(WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
+            intent.setAction(Constants.ACTION_USING_SEAL_OFFLINE);
+        }else if(WebServiceUtil.uploadByOut.equals(WebServiceMethod)){
+            intent.setAction(Constants.ACTION_GET_SEAL);
+        }else {
+            intent.setAction(Constants.ACTION_USING_SEAL);
+        }
+        startActivity(intent);
+        finish();
+    }
 }
