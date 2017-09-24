@@ -76,6 +76,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     private static final String TAG = "SealProcessActivity";
 
     private String WebServiceMethod="";
+    private String sealTypeChinese="";
     private boolean usingSealFlag=false;
 
     @Override
@@ -240,7 +241,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
             textSealProcess.setText(sealProcessInfoCaption);
             return;
         }
-        String sealTypeChinese= UsingSealSummary.getSealTypeChinese();
+        sealTypeChinese= UsingSealSummary.getSealTypeChinese();
         int currentCount= UsingSealSummary.getCurrentSealCount();
         sealProcessInfoCaption="设备已就绪，请将需要盖章的文件放置于指定位置后，点击确认盖章按钮后执行盖章。\n";
         sealProcessInfoHead="当前执行的盖章类型为：\n"+sealTypeChinese+"，第 "+currentCount+" 次";
@@ -258,7 +259,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
             textSealProcess.setText(sealProcessInfoCaption);
             return;
         }
-        String sealTypeChinese=OutSealSummary.getSealTypeChinese();
+        sealTypeChinese=OutSealSummary.getSealTypeChinese();
         sealProcessInfoCaption="设备已就绪，点击确认取印按钮后取出印章，使用完毕请及时归还\n";
         sealProcessInfoHead="当前即将取出的印章类型为：\n"+sealTypeChinese;
 
@@ -282,7 +283,7 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_confirm_seal:
-                //loadingView.show();
+                loadingView.show();
                 String command="";
                 if(usingSealFlag){
                     command= BluetoothCmdInterpreter.usingSend(
@@ -340,12 +341,12 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
-                            //loadingView.dismiss();
+                            loadingView.dismiss();
                         }
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
-                            //loadingView.dismiss();
+                            loadingView.dismiss();
                         }
                     }
                     break;
@@ -444,22 +445,22 @@ public class SealProcessActivity extends AppCompatActivity implements View.OnCli
                 FileOutputStream fos = new FileOutputStream(filename);
                 fos.write(data);
                 fos.close();
-                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document, new SoapCallbackListener() {
+                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
                         if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document);
+                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                         }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document);
+                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                         }
                     }
 
                     @Override
                     public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document);
+                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });

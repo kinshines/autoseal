@@ -96,17 +96,17 @@ public class WebServiceUtil {
         sendRequest(OutSealInfo,map,listener);
     }
 
-    public static void uploadByMethod(final String method,final String filePath,final Integer position,final SoapCallbackListener listener){
+    public static void uploadByMethod(final String method,final String filePath,final Integer position,final String sealName,final SoapCallbackListener listener){
         String sealCode="";
         if(uploadByUsing.equals(method)||uploadByUrgentUsing.equals(method)){
             sealCode= UsingSealSummary.getCurrentSealCode();
         }else{
             sealCode=OutSealSummary.getCurrentSealCode();
         }
-        uploadBy(sealCode,method,filePath,position,listener);
+        uploadBy(sealCode,method,filePath,position,sealName, listener);
     }
 
-    private static void uploadBy(String sealCode,final String method,final String filePath,final Integer position,final SoapCallbackListener listener){
+    private static void uploadBy(String sealCode,final String method,final String filePath,final Integer position,final String sealName,final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
         map.put("sealCode",sealCode);
         File file=new File(filePath);
@@ -120,7 +120,7 @@ public class WebServiceUtil {
             positionChi="取印人";
         }
         if(Constants.Document.equals(position)){
-            positionChi="文档";
+            positionChi="文档_"+sealName;
         }
         map.put("postion",positionChi);
         sendRequest(method,map,listener,filePath);
@@ -188,7 +188,7 @@ public class WebServiceUtil {
         if(Constants.uploadByUrgentUsing.equals(sealType)){
             method=uploadByUrgentUsing;
         }
-        uploadBy(record.getSealCode(),method,record.getFilePath(),record.getPosition(),listener);
+        uploadBy(record.getSealCode(),method,record.getFilePath(),record.getPosition(),record.getSealName(),listener);
     }
 
 }

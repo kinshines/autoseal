@@ -65,23 +65,23 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     fos.write(photoData);
                     fos.close();
                     final Integer position=(WebServiceUtil.uploadByOut.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod))?Constants.UserForOut:Constants.User;
-                    WebServiceUtil.uploadByMethod(WebServiceMethod, filename, position, new SoapCallbackListener() {
+                    WebServiceUtil.uploadByMethod(WebServiceMethod, filename, position, "", new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath) {
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
 
                         if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,position);
+                            DbUtil.uploadSuccess(method,sealCode,filePath,position,"");
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                         }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,position);
+                            DbUtil.uploadFail(method,sealCode,filePath,position,"");
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                         }
                     }
 
                     @Override
                     public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,position);
+                        DbUtil.uploadFail(method,sealCode,filePath,position,"");
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });

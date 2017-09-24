@@ -15,26 +15,26 @@ import java.util.List;
  */
 
 public class DbUtil {
-    public static void uploadSuccess(String method,String sealCode,String filePath,Integer position){
+    public static void uploadSuccess(String method,String sealCode,String filePath,Integer position,String sealName){
         if(existInDb(filePath)){
             updateStatus(filePath,Constants.Uploaded);
         }else {
-            saveRecord(method,sealCode,filePath,position,Constants.Uploaded);
+            saveRecord(method,sealCode,filePath,position,sealName,Constants.Uploaded);
         }
         File file=new File(filePath);
         if(file.exists()){
             file.delete();
         }
     }
-    public static void uploadFail(String method,String sealCode,String filePath,Integer position){
+    public static void uploadFail(String method,String sealCode,String filePath,Integer position,String sealName){
         if(existInDb(filePath)){
             updateStatus(filePath,Constants.ToBeUpload);
         }else{
-            saveRecord(method,sealCode,filePath,position,Constants.ToBeUpload);
+            saveRecord(method,sealCode,filePath,position,sealName,Constants.ToBeUpload);
         }
     }
 
-    private static void saveRecord(String method, String sealCode, String filePath, Integer position, Integer status){
+    private static void saveRecord(String method, String sealCode, String filePath, Integer position, String sealName, Integer status){
         if(!method.contains("uploadBy")){
             return;
         }
@@ -43,6 +43,7 @@ public class DbUtil {
         record.setFilePath(filePath);
         record.setStatus(status);
         record.setPosition(position);
+        record.setSealName(sealName);
         if(WebServiceUtil.uploadByUsing.equals(method)){
             record.setSealType(Constants.uploadByUsing);
         }else if(WebServiceUtil.uploadByOut.equals(method)){
@@ -73,7 +74,7 @@ public class DbUtil {
             return list;
         }catch (Exception e){
             e.printStackTrace();
-            return new ArrayList<FileUploadRecord>();
+            return new ArrayList<>();
         }
     }
 }
