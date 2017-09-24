@@ -2,55 +2,61 @@ package com.inktech.autoseal.ui;
 
 import android.content.Intent;
 import android.graphics.PointF;
+import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.inktech.autoseal.R;
 
-import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.inktech.autoseal.constant.Constants;
 
-public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeReaderView.OnQRCodeReadListener {
+import cn.bingoogolapple.qrcode.core.QRCodeView;
+import cn.bingoogolapple.qrcode.zbar.ZBarView;
 
-    private QRCodeReaderView qrCodeReaderView;
+public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeView.Delegate {
+
+    private QRCodeView mQRCodeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode_reader);
 
-        qrCodeReaderView = (QRCodeReaderView) findViewById(R.id.qrdecoderview);
-        qrCodeReaderView.setOnQRCodeReadListener(this);
-        // Use this function to enable/disable decoding
-        qrCodeReaderView.setQRDecodingEnabled(true);
-
-        // Use this function to change the autofocus interval (default is 5 secs)
-        qrCodeReaderView.setAutofocusInterval(2000L);
-
-        // Use this function to enable/disable Torch
-        qrCodeReaderView.setTorchEnabled(true);
-
-        // Use this function to set front camera preview
-        qrCodeReaderView.setFrontCamera();
+        mQRCodeView = (ZBarView) findViewById(R.id.zbarview);
+        mQRCodeView.setDelegate(this);
     }
 
     @Override
-    public void onQRCodeRead(String text, PointF[] points) {
-        Intent intent = new Intent();
-        intent.putExtra(Constants.qr_text, text);
-        setResult(RESULT_OK, intent);
+    protected void onStart() {
+        super.onStart();
+        mQRCodeView.startCamera(Camera.CameraInfo.CAMERA_FACING_FRONT);
+
+        mQRCodeView.startSpotAndShowRect();
+    }
+
+    @Override
+    public void onScanQRCodeSuccess(String result){
+        Intent intent=new Intent();
+        intent.putExtra(Constants.qr_text,result);
+        setResult(RESULT_OK,intent);
         finish();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        qrCodeReaderView.startCamera();
+    public void onScanQRCodeOpenCameraError() {
+        Toast.makeText(this,"打开相机出错",Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        qrCodeReaderView.stopCamera();
+    protected void onDestroy() {
+        mQRCodeView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        mQRCodeView.stopCamera();
+        super.onStop();
     }
 }
