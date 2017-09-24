@@ -83,7 +83,6 @@ public class GetSealOfflineFragment extends Fragment {
                     listSealInfo.getAdapter().add(warnCard);
                     return;
                 }
-                SealOfflineUtil.removeOutSealInfoItemOffline(sealCode);
                 String result= OutSealSummary.translateOutSealItemToChinese(sealInfoOffline);
                 Card sealCard = new Card.Builder(getContext())
                         .withProvider(new CardProvider())

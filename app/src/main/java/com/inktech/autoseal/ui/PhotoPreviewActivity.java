@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
+import com.inktech.autoseal.model.OutSealSummary;
 import com.inktech.autoseal.model.UploadFileResponse;
+import com.inktech.autoseal.model.UsingSealSummary;
 import com.inktech.autoseal.util.BitmapUtil;
 import com.inktech.autoseal.util.DbUtil;
+import com.inktech.autoseal.util.SealOfflineUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import java.io.FileOutputStream;
 
@@ -87,6 +90,11 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                             .show();
                     Log.i(TAG, "保存照片失败" + error.toString());
                     error.printStackTrace();
+                }
+                if(WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
+                    SealOfflineUtil.removeUsingSealInfoItemOffline(UsingSealSummary.getCurrentSealCode());
+                }else if(WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod)){
+                    SealOfflineUtil.removeOutSealInfoItemOffline(OutSealSummary.getCurrentSealCode());
                 }
                 Intent bluetoothIntent=new Intent(this,BluetoothSearchActivity.class);
                 bluetoothIntent.putExtra(Constants.web_service_method,WebServiceMethod);
