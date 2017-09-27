@@ -101,65 +101,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editUsingCode = (AppCompatEditText) findViewById(R.id.edit_using_code);
         btnUsingCode= (AppCompatButton) findViewById(R.id.btn_using_code);
     }
-//    private void bindViews(){
-//        editCode=(EditText)findViewById(R.id.edit_code);
-//        btnCode=(Button)findViewById(R.id.btn_code);
-//        sealInfo=(TextView)findViewById(R.id.seal_info);
-//        btnCode.setOnClickListener(this);
-////        takePhoto=(Button)findViewById(R.id.take_photo);
-////        takePhoto.setOnClickListener(this);
-////        pictureView=(ImageView)findViewById(R.id.picture_view);
-//        searchBluetoothDevice=(Button)findViewById(R.id.search_bluetooth_device);
-//        searchBluetoothDevice.setOnClickListener(this);
-//        lvDevices = (ListView) findViewById(R.id.lv_devices);
-//        btnTakePhotoBack=(Button)findViewById(R.id.take_photo_back);
-//        btnTakePhotoFront=(Button)findViewById(R.id.take_photo_front);
-//        btnTakePhotoFront.setOnClickListener(this);
-//        btnTakePhotoBack.setOnClickListener(this);
-//
-//        arrayAdapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, android.R.id.text1,bluetoothDevices);
-//        lvDevices.setAdapter(arrayAdapter);
-//        lvDevices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                String s = arrayAdapter.getItem(position);
-//                String address = s.substring(s.indexOf(":") + 1).trim();//把地址解析出来
-//                //主动连接蓝牙服务端
-//                try {
-//                    //判断当前是否正在搜索
-//                    if (mBluetoothAdapter.isDiscovering()) {
-//                        mBluetoothAdapter.cancelDiscovery();
-//                    }
-//                    try {
-//                        if (device == null) {
-//                            //获得远程设备
-//                            device = mBluetoothAdapter.getRemoteDevice(address);
-//                        }
-//                        if (clientSocket == null) {
-//                            Method method=device.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-//                            clientSocket=(BluetoothSocket) method.invoke(device, 1);
-//                            //创建客户端蓝牙Socket
-//                            //clientSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-//                            //开始连接蓝牙，如果没有配对则弹出对话框提示我们进行配对
-//                            clientSocket.connect();
-//                        }
-//                        //获得输出流（客户端指向服务端输出文本）
-//                        os = clientSocket.getOutputStream();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                    if (os != null) {
-//                        //往服务端写信息
-//                        os.write("蓝牙信息来了".getBytes("utf-8"));
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -179,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.about:
                 startActivity(new Intent(MainActivity.this,SettingsPreferenceActivity.class));
+                break;
+            case R.id.wifi:
+                startActivity(new Intent(MainActivity.this,WifiActivity.class));
                 break;
             case R.id.exit:
                 finish();
@@ -253,11 +197,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-        switch (requestCode){
-        }
     }
-
-
 
     /**
      * 点击返回键两次退出程序

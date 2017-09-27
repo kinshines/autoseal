@@ -26,6 +26,10 @@
                 android:icon="@mipmap/setting"
                 android:title="设置"></item>
             <item
+                android:id="@+id/wifi"
+                android:icon="@mipmap/setting"
+                android:title="WiFi管理"></item>
+            <item
                 android:id="@+id/exit"
                 android:icon="@mipmap/out"
                 android:title="退出"></item>
