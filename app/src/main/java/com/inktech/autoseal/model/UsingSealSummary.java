@@ -4,78 +4,52 @@ import android.text.TextUtils;
 
 import com.inktech.autoseal.constant.Constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Chaoyu on 2017/8/28.
  */
 
 public class UsingSealSummary {
-    private static HashMap<String,Integer>overall=new HashMap<>();
-    private static HashMap<String,Integer> process=new HashMap<>();
+    private static HashMap<String,Integer>overallMap=new HashMap<>();
+    private static HashMap<String,Integer> processMap=new HashMap<>();
     private static HashMap<String,String> sealNameMap=new HashMap<>();
+    private static ArrayList<String> canceledMap=new ArrayList<>();
     private static String currentSealType="";
     private static String currentSealCode="";
 
     public static void addMap(String sealType,int totalCount){
-        overall.put(sealType,totalCount);
+        overallMap.put(sealType,totalCount);
     }
 
     public static int completeOnce(){
-        int processCount=process.get(currentSealType);
-        process.put(currentSealType,processCount+1);
-        return processCount+1;
-    }
-
-    public static String getCurrentSealType(){
-        currentSealType=trySealType(Constants.gz);
-        if(!TextUtils.isEmpty(currentSealType))
-            return currentSealType;
-        currentSealType=trySealType(Constants.frz);
-        if(!TextUtils.isEmpty(currentSealType))
-            return currentSealType;
-        currentSealType=trySealType(Constants.cwz);
-        if(!TextUtils.isEmpty(currentSealType))
-            return currentSealType;
-        currentSealType=trySealType(Constants.htz);
-        if(!TextUtils.isEmpty(currentSealType))
-            return currentSealType;
-        currentSealType=trySealType(Constants.fpz);
-        if(!TextUtils.isEmpty(currentSealType))
-            return currentSealType;
-        return "";
-    }
-
-    public static String getSealTypeChinese(){
-        return sealNameMap.get(currentSealType);
-    }
-
-    public static int getCurrentSealCount(){
-        return process.get(currentSealType)+1;
-    }
-
-    public static boolean isCurrentSealEnd(){
-        return getCurrentSealCount()==overall.get(currentSealType);
-    }
-
-    private static String trySealType(String sealType){
-        if(!overall.containsKey(sealType))
-            return "";
-        if(!process.containsKey(sealType)){
-            process.put(sealType,0);
-            return sealType;
+        int processCount=0;
+        if(processMap.containsKey(currentSealType)){
+            processCount=processMap.get(currentSealType);
         }
-        if(overall.get(sealType).equals(process.get(sealType))){
-            return "";
-        }else {
-            return sealType;
+        processCount=processCount+1;
+        processMap.put(currentSealType,processCount);
+        return processCount;
+    }
+
+    public static Integer getRemainCount(String sealType){
+        if(processMap.containsKey(sealType)){
+            return overallMap.get(sealType)-processMap.get(sealType);
         }
+        return overallMap.get(sealType);
+    }
+
+    public static String getSealTypeChinese(String sealType){
+        return sealNameMap.get(sealType);
     }
 
     private static void init(){
-        overall.clear();
-        process.clear();
+        overallMap.clear();
+        processMap.clear();
         sealNameMap.clear();
+        canceledMap.clear();
     }
 
     public static String getCurrentSealCode(){
@@ -93,5 +67,30 @@ public class UsingSealSummary {
         addMap(type,count);
         sealNameMap.put(type,chineseType);
         return chineseType+"：盖章 "+count+" 次";
+    }
+
+    public static void setCurrentSealType(String sealType){
+        currentSealType=sealType;
+    }
+
+    public static HashMap<String,Integer> getOverallMap(){
+        return overallMap;
+    }
+
+    public static boolean isCompleted(){
+        for(Map.Entry<String,Integer> entry: overallMap.entrySet()){
+            if(!entry.getValue().equals(processMap.get(entry.getKey()))){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void cancelSeal(String sealType){
+        processMap.put(sealType,overallMap.get(sealType));
+        canceledMap.add(sealType);
+    }
+    public static boolean isCanceled(String sealType){
+        return canceledMap.contains(sealType);
     }
 }

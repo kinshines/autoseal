@@ -126,7 +126,7 @@ public class WifiAdmin {
             }else{Toast.makeText(context,"WiFi没有开启", Toast.LENGTH_SHORT).show();
             }
         } else {
-            mWifiList = new ArrayList();
+            mWifiList = new ArrayList<ScanResult>();
             for(ScanResult result : results){
                 if (result.SSID == null || result.SSID.length() == 0 || result.capabilities.contains("[IBSS]")) {
                     continue;

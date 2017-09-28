@@ -8,36 +8,37 @@ import java.util.HashMap;
  */
 
 public class OutSealSummary {
-    private static ArrayList<String> overall=new ArrayList<>();
+    private static ArrayList<String> overallMap=new ArrayList<>();
+    private static ArrayList<String> processMap=new ArrayList<>();
     private static HashMap<String,String> sealNameMap=new HashMap<>();
+    private static ArrayList<String> canceledMap=new ArrayList<>();
     private static String currentSealType="";
     private static String currentSealCode="";
 
     private static void addSealType(String sealType){
-        overall.add(sealType);
+        overallMap.add(sealType);
     }
 
-    public static int completeOnce(){
-        overall.remove(0);
-        return overall.size();
+    public static void completeOnce(){
+        processMap.add(currentSealType);
     }
 
-    public static String getCurrentSealType(){
-        if(overall.size()>0){
-            currentSealType=overall.get(0);
-            return currentSealType;
-        }
-        return "";
+    public static boolean sealHasTakenOut(String sealType){
+        return processMap.contains(sealType);
     }
 
-    public static String getSealTypeChinese(){
-        return sealNameMap.get(currentSealType);
+    public static String getSealTypeChinese(String sealType){
+        return sealNameMap.get(sealType);
     }
 
     private static void init(){
-        overall.clear();
+        overallMap.clear();
+        processMap.clear();
+        canceledMap.clear();
     }
-
+    public static void setCurrentSealType(String sealType){
+        currentSealType=sealType;
+    }
     public static String getCurrentSealCode(){
         return currentSealCode;
     }
@@ -53,4 +54,26 @@ public class OutSealSummary {
         sealNameMap.put(type,chineseType);
         return chineseType;
     }
+
+    public static ArrayList<String> getOverallMap(){
+        return overallMap;
+    }
+
+    public static boolean isCompleted(){
+        for(String key:overallMap){
+            if(!processMap.contains(key)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void cancelSeal(String sealType){
+        processMap.add(sealType);
+        canceledMap.add(sealType);
+    }
+    public static boolean isCanceled(String sealType){
+        return canceledMap.contains(sealType);
+    }
 }
+
