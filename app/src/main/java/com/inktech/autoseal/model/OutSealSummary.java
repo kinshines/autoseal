@@ -59,7 +59,7 @@ public class OutSealSummary {
         return overallMap;
     }
 
-    public static boolean isCompleted(){
+    public static boolean isAllCompleted(){
         for(String key:overallMap){
             if(!processMap.contains(key)){
                 return false;

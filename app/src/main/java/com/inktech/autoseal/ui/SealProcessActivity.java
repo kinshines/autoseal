@@ -240,7 +240,7 @@ public class SealProcessActivity extends AppCompatActivity {
 
     private void refreshUsingSealProcess(){
         HashMap<String,Integer> overallMap=UsingSealSummary.getOverallMap();
-        if(UsingSealSummary.isCompleted()||overallMap.isEmpty()){
+        if(UsingSealSummary.isAllCompleted()||overallMap.isEmpty()){
             Card card = new Card.Builder(this)
                     .withProvider(new CardProvider())
                     .setLayout(R.layout.material_welcome_card_layout)
@@ -262,6 +262,9 @@ public class SealProcessActivity extends AppCompatActivity {
             for(String sealType:overallMap.keySet()){
                 if(UsingSealSummary.isCanceled(sealType))
                     continue;
+                //once you start to seal,you should process this seal to end
+                if(!UsingSealSummary.isCurrentCompleted()&&!sealType.equals(UsingSealSummary.getCurrentSealType()))
+                    continue;
                 Card card=populateCardWithUsingSeal(sealType);
                 listSealProcess.getAdapter().add(card);
             }
@@ -270,7 +273,7 @@ public class SealProcessActivity extends AppCompatActivity {
 
     private void refreshOutSealProcess(){
         ArrayList<String> overallMap=OutSealSummary.getOverallMap();
-        if(OutSealSummary.isCompleted()||overallMap.isEmpty()){
+        if(OutSealSummary.isAllCompleted()||overallMap.isEmpty()){
             Card card = new Card.Builder(this)
                     .withProvider(new CardProvider())
                     .setLayout(R.layout.material_welcome_card_layout)
@@ -604,6 +607,8 @@ public class SealProcessActivity extends AppCompatActivity {
                                             dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                                    String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
+                                                    sendMessage(command);
                                                     UsingSealSummary.cancelSeal(sealType);
                                                     card.dismiss();
                                                     refreshSealProcess();

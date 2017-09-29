@@ -77,7 +77,7 @@ public class UsingSealSummary {
         return overallMap;
     }
 
-    public static boolean isCompleted(){
+    public static boolean isAllCompleted(){
         for(Map.Entry<String,Integer> entry: overallMap.entrySet()){
             if(!entry.getValue().equals(processMap.get(entry.getKey()))){
                 return false;
@@ -92,5 +92,16 @@ public class UsingSealSummary {
     }
     public static boolean isCanceled(String sealType){
         return canceledMap.contains(sealType);
+    }
+
+    public static String getCurrentSealType(){
+        return currentSealType;
+    }
+    public static boolean isCurrentCompleted(){
+        if(TextUtils.isEmpty(currentSealType))
+            return true;
+        if(!processMap.containsKey(currentSealType))
+            return false;
+        return overallMap.get(currentSealType).equals(processMap.get(currentSealType));
     }
 }

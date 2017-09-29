@@ -37,8 +37,30 @@ public class BluetoothCmdInterpreter {
                 command+="04";
                 break;
         }
-
         command+=isEnd?"00":"01";
+        return command+Suffix;
+    }
+
+    public static String cancelUsingSend(String sealType){
+        String command= UsingSendPrefix;
+        switch (sealType){
+            case Constants.gz:
+                command+="00";
+                break;
+            case Constants.frz:
+                command+="01";
+                break;
+            case Constants.cwz:
+                command+="02";
+                break;
+            case Constants.htz:
+                command+="03";
+                break;
+            case Constants.fpz:
+                command+="04";
+                break;
+        }
+        command+="02";
         return command+Suffix;
     }
 
