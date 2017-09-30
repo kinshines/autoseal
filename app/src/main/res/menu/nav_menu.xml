@@ -18,6 +18,10 @@
             android:id="@+id/menu_get_seal_offline"
             android:icon="@mipmap/get_seal_offline"
             android:title="@string/get_seal_offline"></item>
+        <item
+            android:id="@+id/menu_return_seal"
+            android:icon="@mipmap/return_seal"
+            android:title="@string/return_seal"></item>
     </group>
     <item android:title="自助盖章">
         <menu>

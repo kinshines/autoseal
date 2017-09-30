@@ -8,6 +8,7 @@
     <string name="using_seal_offline">紧急用印</string>
     <string name="get_seal">普通取印</string>
     <string name="get_seal_offline">紧急取印</string>
+    <string name="return_seal">归还印章</string>
     <string name="using_seal_hint">请输入用印编码</string>
     <string name="get_seal_hint">请输入取印编码</string>
     <string name="send">发送</string>

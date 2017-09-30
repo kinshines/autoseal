@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private UsingSealOfflineFragment usingSealOfflineFragment;
     private GetSealFragment getSealFragment;
     private GetSealOfflineFragment getSealOfflineFragment;
+    private ReturnSealFragment returnSealFragment;
 
     AppCompatEditText editUsingCode;
     AppCompatButton btnUsingCode;
@@ -48,11 +49,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             usingSealOfflineFragment=(UsingSealOfflineFragment) manager.getFragment(savedInstanceState,"usingSealOfflineFragment");
             getSealFragment=(GetSealFragment) manager.getFragment(savedInstanceState,"getSealFragment");
             getSealOfflineFragment=(GetSealOfflineFragment) manager.getFragment(savedInstanceState,"getSealOfflineFragment");
+            returnSealFragment=(ReturnSealFragment) manager.getFragment(savedInstanceState,"returnSealFragment");
         } else {
             usingSealFragment = new UsingSealFragment();
             usingSealOfflineFragment=new UsingSealOfflineFragment();
             getSealFragment=new GetSealFragment();
             getSealOfflineFragment=new GetSealOfflineFragment();
+            returnSealFragment=new ReturnSealFragment();
         }
 
         FragmentManager manager = getSupportFragmentManager();
@@ -69,6 +72,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         manager.beginTransaction()
                 .add(R.id.container_main,getSealOfflineFragment,"getSealOfflineFragment")
                 .commit();
+        manager.beginTransaction()
+                .add(R.id.container_main,returnSealFragment,"returnSealFragment")
+                .commit();
 
         Intent intent = getIntent();
         if (intent.getAction().equals(Constants.ACTION_GET_SEAL_OFFLINE)) {
@@ -77,7 +83,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             showHideFragment(2);
         } else if(intent.getAction().equals(Constants.ACTION_GET_SEAL)) {
             showHideFragment(1);
-        } else {
+        } else if(intent.getAction().equals(Constants.ACTION_RETURN_SEAL)){
+            showHideFragment(4);
+        }
+        else {
             showHideFragment(0);
         }
 
@@ -118,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.menu_get_seal_offline:
                 showHideFragment(3);
                 break;
+            case R.id.menu_return_seal:
+                showHideFragment(4);
+                break;
             case R.id.about:
                 startActivity(new Intent(MainActivity.this,SettingsPreferenceActivity.class));
                 break;
@@ -147,6 +159,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (getSealOfflineFragment.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "getSealOfflineFragment", getSealOfflineFragment);
         }
+        if(returnSealFragment.isAdded()){
+            getSupportFragmentManager().putFragment(outState,"returnSealFragment",returnSealFragment);
+        }
 
     }
 
@@ -159,14 +174,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *                 1 for daily one fragment
      *                 2 for notebook fragment
      */
-    private void showHideFragment(@IntRange(from = 0, to = 3) int position) {
+    private void showHideFragment(@IntRange(from = 0, to = 4) int position) {
 
         FragmentManager manager = getSupportFragmentManager();
         manager.beginTransaction().hide(usingSealFragment).commit();
         manager.beginTransaction().hide(usingSealOfflineFragment).commit();
         manager.beginTransaction().hide(getSealFragment).commit();
         manager.beginTransaction().hide(getSealOfflineFragment).commit();
-
+        manager.beginTransaction().hide(returnSealFragment).commit();
 
         if (position == 0) {
             manager.beginTransaction().show(usingSealFragment).commit();
@@ -184,6 +199,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             manager.beginTransaction().show(getSealOfflineFragment).commit();
             toolbar.setTitle(R.string.get_seal_offline);
             navigationView.setCheckedItem(R.id.menu_get_seal_offline);
+        }else if(position==4){
+            manager.beginTransaction().show(returnSealFragment).commit();
+            toolbar.setTitle(R.string.return_seal);
+            navigationView.setCheckedItem(R.id.menu_return_seal);
         }
 
     }

@@ -40,9 +40,11 @@ public interface Constants {
     String ACTION_USING_SEAL_OFFLINE="ACTION_USING_SEAL_OFFLINE";
     String ACTION_GET_SEAL="ACTION_GET_SEAL";
     String ACTION_GET_SEAL_OFFLINE="ACTION_GET_SEAL_OFFLINE";
+    String ACTION_RETURN_SEAL="ACTION_RETURN_SEAL";
 
     String OfflineUsingSealCode="OfflineUsingSealCode";
     String OfflineOutSealCode="OfflineOutSealCode";
+    String OutSealRecord="OutSealRecord";
 
     String gz="cw1";
     String frz="cw2";
