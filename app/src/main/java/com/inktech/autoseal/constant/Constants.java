@@ -45,6 +45,7 @@ public interface Constants {
     String OfflineUsingSealCode="OfflineUsingSealCode";
     String OfflineOutSealCode="OfflineOutSealCode";
     String OutSealRecord="OutSealRecord";
+    String ReturnSeal="ReturnSeal";
 
     String gz="cw1";
     String frz="cw2";

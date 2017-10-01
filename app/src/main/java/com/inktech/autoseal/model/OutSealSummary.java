@@ -31,6 +31,10 @@ public class OutSealSummary {
         return sealNameMap.get(sealType);
     }
 
+    public static String getCurrentSealName(){
+        return sealNameMap.get(currentSealType);
+    }
+
     private static void init(){
         overallMap.clear();
         processMap.clear();
@@ -38,6 +42,9 @@ public class OutSealSummary {
     }
     public static void setCurrentSealType(String sealType){
         currentSealType=sealType;
+    }
+    public static String getCurrentSealType(){
+        return currentSealType;
     }
     public static String getCurrentSealCode(){
         return currentSealCode;

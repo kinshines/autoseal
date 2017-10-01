@@ -7,21 +7,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dexafree.materialList.card.Card;
+import com.dexafree.materialList.card.CardProvider;
 import com.dexafree.materialList.view.MaterialListView;
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.model.OutSealInfoItemOffline;
+import com.inktech.autoseal.model.OutSealSummary;
 import com.inktech.autoseal.model.UsingSealInfoResponse;
 import com.inktech.autoseal.model.UsingSealSummary;
 import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.util.XmlParseUtil;
+
+import java.util.ArrayList;
 
 import dmax.dialog.SpotsDialog;
 
@@ -62,7 +69,27 @@ public class ReturnSealFragment extends Fragment {
                 loadingView.setCancelable(false);
                 loadingView.show();
                 String sealCode=editUsingCode.getText().toString().trim();
-                PreferenceUtil.setSealCode(sealCode);
+                ArrayList<OutSealInfoItemOffline> list=PreferenceUtil.queryOutSealRecordList(sealCode);
+                if(list.isEmpty()){
+                    Card warnCard = new Card.Builder(getContext())
+                            .withProvider(new CardProvider())
+                            .setLayout(R.layout.material_small_image_card)
+                            .setTitle(R.string.get_seal_code_invalid)
+                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                            .endConfig()
+                            .build();
+                    listSealInfo.getAdapter().clearAll();
+                    listSealInfo.getAdapter().add(warnCard);
+                    return;
+                }
+                OutSealSummary.setCurrentSealCode(sealCode);
+                for(OutSealInfoItemOffline item:list){
+                    OutSealSummary.translateOutSealItemToChinese(item);
+                }
+                Intent intent=new Intent(getActivity(),BluetoothSearchActivity.class);
+                intent.putExtra(Constants.web_service_method, Constants.ReturnSeal);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 

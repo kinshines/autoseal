@@ -45,6 +45,7 @@ import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.service.BluetoothService;
 import com.inktech.autoseal.util.BitmapUtil;
 import com.inktech.autoseal.util.DbUtil;
+import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.model.UsingSealSummary;
 
@@ -84,6 +85,7 @@ public class SealProcessActivity extends AppCompatActivity {
     private String WebServiceMethod="";
     private String sealTypeChinese="";
     private boolean usingSealFlag=false;
+    private boolean returnSealFlag=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,9 @@ public class SealProcessActivity extends AppCompatActivity {
         WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
         if(WebServiceUtil.uploadByUsing.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
             usingSealFlag=true;
+        }
+        if(Constants.ReturnSeal.equals(WebServiceMethod)){
+            returnSealFlag=true;
         }
         bluetoothService = new BluetoothService(handler, device);
 
@@ -277,7 +282,7 @@ public class SealProcessActivity extends AppCompatActivity {
             Card card = new Card.Builder(this)
                     .withProvider(new CardProvider())
                     .setLayout(R.layout.material_welcome_card_layout)
-                    .setTitle("取印完成")
+                    .setTitle(returnSealFlag?"归还印章完成":"取出印章完成")
                     .setBackgroundColor(ContextCompat.getColor(this,R.color.colorWarningLight))
                     .addAction(R.id.ok_button, new WelcomeButtonAction(this)
                             .setText("返回首页")
@@ -357,6 +362,17 @@ public class SealProcessActivity extends AppCompatActivity {
                             loadingView.dismiss();
                         }
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
+                            if(returnSealFlag){
+                                PreferenceUtil.removeOutSealRecord(
+                                        OutSealSummary.getCurrentSealCode(),
+                                        OutSealSummary.getCurrentSealType()
+                                );
+                            }else{
+                                PreferenceUtil.addOutSealRecord(
+                                        OutSealSummary.getCurrentSealCode(),
+                                        OutSealSummary.getCurrentSealType(),
+                                        OutSealSummary.getCurrentSealName());
+                            }
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                             loadingView.dismiss();
@@ -635,9 +651,9 @@ public class SealProcessActivity extends AppCompatActivity {
         boolean hasTakenOut=OutSealSummary.sealHasTakenOut(sealType);
         String description="";
         if(hasTakenOut){
-            description="已取章";
+            description=returnSealFlag?"已归还印章":"已取出印章";
         }else{
-            description="待取章";
+            description=returnSealFlag?"等待归还印章":"等待取出印章";
         }
         CardProvider cardProvider = new Card.Builder(this)
                 .withProvider(new CardProvider())
@@ -657,7 +673,7 @@ public class SealProcessActivity extends AppCompatActivity {
         if(!hasTakenOut){
             cardProvider
                     .addAction(R.id.left_text_button, new TextViewAction(this)
-                            .setText("确认取印")
+                            .setText(returnSealFlag?"确认归还印章":"确认取出印章")
                             .setTextResourceColor(R.color.colorPrimary)
                             .setListener(new OnActionClickListener() {
                                 @Override
@@ -669,14 +685,14 @@ public class SealProcessActivity extends AppCompatActivity {
                                 }
                             }))
                     .addAction(R.id.right_text_button, new TextViewAction(this)
-                            .setText("取消取印")
+                            .setText("取消")
                             .setTextResourceColor(R.color.colorAccent)
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
                                     android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-                                    dialog.setTitle("确认取消取印");
-                                    dialog.setMessage("本次取印将不再提供此类印章");
+                                    dialog.setTitle("确认取消");
+                                    dialog.setMessage(returnSealFlag?"本次还印将不再接受此类印章":"本次取印将不再提供此类印章");
                                     dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
