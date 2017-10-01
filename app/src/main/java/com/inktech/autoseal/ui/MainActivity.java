@@ -2,6 +2,7 @@ package com.inktech.autoseal.ui;
 
 import android.content.Intent;
 import android.os.Process;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,6 +23,8 @@ import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.service.SyncService;
 import com.inktech.autoseal.util.WebServiceUtil;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabSelectListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener {
 
@@ -36,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     AppCompatEditText editUsingCode;
     AppCompatButton btnUsingCode;
+    BottomBar bottomBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,18 +80,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .add(R.id.container_main,returnSealFragment,"returnSealFragment")
                 .commit();
 
+        bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                switch (tabId){
+                    case R.id.tab_using_seal:
+                        showHideFragment(0);
+                        break;
+                    case R.id.tab_get_seal:
+                        showHideFragment(1);
+                        break;
+                    case R.id.tab_using_seal_offline:
+                        showHideFragment(2);
+                        break;
+                    case R.id.tab_get_seal_offline:
+                        showHideFragment(3);
+                        break;
+                    case R.id.tab_return_seal:
+                        showHideFragment(4);
+                        break;
+                }
+            }
+        });
+
         Intent intent = getIntent();
         if (intent.getAction().equals(Constants.ACTION_GET_SEAL_OFFLINE)) {
-            showHideFragment(3);
+            bottomBar.selectTabAtPosition(3);
         } else if (intent.getAction().equals(Constants.ACTION_USING_SEAL_OFFLINE)){
-            showHideFragment(2);
+            bottomBar.selectTabAtPosition(2);
         } else if(intent.getAction().equals(Constants.ACTION_GET_SEAL)) {
-            showHideFragment(1);
+            bottomBar.selectTabAtPosition(1);
         } else if(intent.getAction().equals(Constants.ACTION_RETURN_SEAL)){
-            showHideFragment(4);
-        }
-        else {
-            showHideFragment(0);
+            bottomBar.selectTabAtPosition(4);
+        }else {
+            bottomBar.selectTabAtPosition(0);
         }
 
         Intent serviceIntent=new Intent(this, SyncService.class);
@@ -109,27 +135,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         editUsingCode = (AppCompatEditText) findViewById(R.id.edit_using_code);
         btnUsingCode= (AppCompatButton) findViewById(R.id.btn_using_code);
+
+        bottomBar=(BottomBar) findViewById(R.id.bottomBar);
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         switch (item.getItemId()){
-            case R.id.menu_using_seal:
-                showHideFragment(0);
-                break;
-            case R.id.menu_get_seal:
-                showHideFragment(1);
-                break;
-            case R.id.menu_using_seal_offline:
-                showHideFragment(2);
-                break;
-            case R.id.menu_get_seal_offline:
-                showHideFragment(3);
-                break;
-            case R.id.menu_return_seal:
-                showHideFragment(4);
-                break;
+//            case R.id.menu_using_seal:
+//                showHideFragment(0);
+//                break;
+//            case R.id.menu_get_seal:
+//                showHideFragment(1);
+//                break;
+//            case R.id.menu_using_seal_offline:
+//                showHideFragment(2);
+//                break;
+//            case R.id.menu_get_seal_offline:
+//                showHideFragment(3);
+//                break;
+//            case R.id.menu_return_seal:
+//                showHideFragment(4);
+//                break;
             case R.id.about:
                 startActivity(new Intent(MainActivity.this,SettingsPreferenceActivity.class));
                 break;
@@ -186,23 +215,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (position == 0) {
             manager.beginTransaction().show(usingSealFragment).commit();
             toolbar.setTitle(R.string.using_seal);
-            navigationView.setCheckedItem(R.id.menu_using_seal);
+            //navigationView.setCheckedItem(R.id.menu_using_seal);
         }else if(position==1){
             manager.beginTransaction().show(getSealFragment).commit();
             toolbar.setTitle(R.string.get_seal);
-            navigationView.setCheckedItem(R.id.menu_get_seal);
+            //navigationView.setCheckedItem(R.id.menu_get_seal);
         }else if(position==2){
             manager.beginTransaction().show(usingSealOfflineFragment).commit();
             toolbar.setTitle(R.string.using_seal_offline);
-            navigationView.setCheckedItem(R.id.menu_using_seal_offline);
+            //navigationView.setCheckedItem(R.id.menu_using_seal_offline);
         }else if(position==3){
             manager.beginTransaction().show(getSealOfflineFragment).commit();
             toolbar.setTitle(R.string.get_seal_offline);
-            navigationView.setCheckedItem(R.id.menu_get_seal_offline);
+            //navigationView.setCheckedItem(R.id.menu_get_seal_offline);
         }else if(position==4){
             manager.beginTransaction().show(returnSealFragment).commit();
             toolbar.setTitle(R.string.return_seal);
-            navigationView.setCheckedItem(R.id.menu_return_seal);
+            //navigationView.setCheckedItem(R.id.menu_return_seal);
         }
 
     }

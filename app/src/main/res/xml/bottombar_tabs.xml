@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_using_seal"
+        icon="@drawable/ic_using_seal"
+        title="@string/using_seal" />
+    <tab
+        id="@+id/tab_get_seal"
+        icon="@drawable/ic_get_seal"
+        title="@string/get_seal" />
+    <tab
+        id="@+id/tab_using_seal_offline"
+        icon="@drawable/ic_using_seal_offline"
+        title="@string/using_seal_offline" />
+    <tab
+        id="@+id/tab_get_seal_offline"
+        icon="@drawable/ic_get_seal_offline"
+        title="@string/get_seal_offline" />
+    <tab
+        id="@+id/tab_return_seal"
+        icon="@drawable/ic_return_seal"
+        title="@string/return_seal" />
+</tabs>
