@@ -362,20 +362,36 @@ public class SealProcessActivity extends AppCompatActivity {
                             loadingView.dismiss();
                         }
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
+                            loadingView.dismiss();
                             if(returnSealFlag){
                                 PreferenceUtil.removeOutSealRecord(
                                         OutSealSummary.getCurrentSealCode(),
                                         OutSealSummary.getCurrentSealType()
                                 );
                             }else{
-                                PreferenceUtil.addOutSealRecord(
-                                        OutSealSummary.getCurrentSealCode(),
-                                        OutSealSummary.getCurrentSealType(),
-                                        OutSealSummary.getCurrentSealName());
+                                //取印完成后询问是否立即还印
+                                android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
+                                dialog.setTitle("立即还印");
+                                dialog.setCancelable(false);
+                                dialog.setMessage("印章已取出，是否立即归还？");
+                                dialog.setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                });
+                                dialog.setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        PreferenceUtil.addOutSealRecord(
+                                                OutSealSummary.getCurrentSealCode(),
+                                                OutSealSummary.getCurrentSealType(),
+                                                OutSealSummary.getCurrentSealName());
+                                    }
+                                });
+                                dialog.show();
                             }
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
-                            loadingView.dismiss();
                         }
                     }
                     break;
@@ -708,7 +724,6 @@ public class SealProcessActivity extends AppCompatActivity {
                                         }
                                     });
                                     dialog.show();
-
                                 }
                             }));
         }

@@ -119,4 +119,14 @@ public class PreferenceUtil {
         list.remove(target);
         setDataList(Constants.OutSealRecord,list);
     }
+
+    public static boolean hasOutSealType(String sealType){
+        ArrayList<OutSealInfoItemOffline> list=getOutSealRecordList();
+        for (OutSealInfoItemOffline item:list){
+            if(sealType.equals(item.getType())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

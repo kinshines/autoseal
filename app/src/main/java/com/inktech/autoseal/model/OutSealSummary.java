@@ -1,5 +1,7 @@
 package com.inktech.autoseal.model;
 
+import com.inktech.autoseal.util.PreferenceUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -59,6 +61,9 @@ public class OutSealSummary {
         String chineseType= seal.getSealName();
         addSealType(type);
         sealNameMap.put(type,chineseType);
+        if(PreferenceUtil.hasOutSealType(type)){
+            chineseType+="(尚未归还)";
+        }
         return chineseType;
     }
 
