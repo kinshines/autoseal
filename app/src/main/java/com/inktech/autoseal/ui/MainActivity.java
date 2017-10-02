@@ -144,21 +144,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         switch (item.getItemId()){
-//            case R.id.menu_using_seal:
-//                showHideFragment(0);
-//                break;
-//            case R.id.menu_get_seal:
-//                showHideFragment(1);
-//                break;
-//            case R.id.menu_using_seal_offline:
-//                showHideFragment(2);
-//                break;
-//            case R.id.menu_get_seal_offline:
-//                showHideFragment(3);
-//                break;
-//            case R.id.menu_return_seal:
-//                showHideFragment(4);
-//                break;
             case R.id.about:
                 startActivity(new Intent(MainActivity.this,SettingsPreferenceActivity.class));
                 break;
@@ -215,23 +200,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (position == 0) {
             manager.beginTransaction().show(usingSealFragment).commit();
             toolbar.setTitle(R.string.using_seal);
-            //navigationView.setCheckedItem(R.id.menu_using_seal);
         }else if(position==1){
             manager.beginTransaction().show(getSealFragment).commit();
             toolbar.setTitle(R.string.get_seal);
-            //navigationView.setCheckedItem(R.id.menu_get_seal);
         }else if(position==2){
             manager.beginTransaction().show(usingSealOfflineFragment).commit();
             toolbar.setTitle(R.string.using_seal_offline);
-            //navigationView.setCheckedItem(R.id.menu_using_seal_offline);
         }else if(position==3){
             manager.beginTransaction().show(getSealOfflineFragment).commit();
             toolbar.setTitle(R.string.get_seal_offline);
-            //navigationView.setCheckedItem(R.id.menu_get_seal_offline);
         }else if(position==4){
             manager.beginTransaction().show(returnSealFragment).commit();
             toolbar.setTitle(R.string.return_seal);
-            //navigationView.setCheckedItem(R.id.menu_return_seal);
         }
 
     }

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.adapter.WifiAdapter;
+import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.util.WifiAdmin;
 
 import java.util.List;
@@ -84,7 +86,6 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
                 alert.setNegativeButton("取消连接", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //
                         mWifiAdmin.removeWifi(mWifiAdmin.getNetworkId());
                     }
                 });
@@ -95,6 +96,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         if(mWifiAdmin.isWifiEnabled()){
+            btnOpenWifi.setText("WiFi已开启");
             scanWifi();
         }
     }
@@ -114,19 +116,14 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_open_wifi:
-                btnOpenWifi.setText("WiFi 开启中……");
+                btnOpenWifi.setText("WiFi开启中……");
                 mWifiAdmin.openWifi(WifiActivity.this);
-                try {
-                    Thread.sleep(3000);
-                    scanWifi();
-                    btnOpenWifi.setText("WiFi已开启");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+                scanWifi();
+                btnOpenWifi.setText("WiFi已开启");
                 break;
             case R.id.btn_close_wifi:
                 mWifiAdmin.closeWifi(WifiActivity.this);
+                btnOpenWifi.setText("开启WiFi");
                 if(mWifiList!=null){
                     mWifiList.removeAll(mWifiList);
                     wifiAdapter.notifyDataSetChanged();
@@ -136,45 +133,32 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void scanWifi(){
-        mWifiAdmin.startScan(WifiActivity.this);
-        mWifiList=mWifiAdmin.getWifiList();
-        if(mWifiList!=null){
-            wifiAdapter=new WifiAdapter(this,mWifiList,mWifiAdmin);
-            mlistView.setAdapter(wifiAdapter);
-            setListViewHeightBasedOnChildren(mlistView);
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mWifiAdmin.startScan(WifiActivity.this);
+                WifiActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWifiList=mWifiAdmin.getWifiList();
+                        if(mWifiList!=null){
+                            wifiAdapter=new WifiAdapter(WifiActivity.this,mWifiList,mWifiAdmin);
+                            mlistView.setAdapter(wifiAdapter);
+                            //setListViewHeightBasedOnChildren(mlistView);
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     //监听wifi状态
     private BroadcastReceiver mReceiver = new BroadcastReceiver (){
         @Override
         public void onReceive(Context context, Intent intent) {
-            ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-            NetworkInfo wifiInfo = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            if(wifiInfo.isConnected()){
-                String wifiSSID = mWifiAdmin.getSSID();
-                Toast.makeText(context, wifiSSID+"连接成功", Toast.LENGTH_SHORT).show();
-            }
+            scanWifi();
         }
-
     };
-
-    private void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null) {
-            return;
-        }
-        int totalHeight = 0;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            View listItem = listAdapter.getView(i, null, listView);
-            listItem.measure(0, 0);
-            totalHeight += listItem.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -182,5 +166,11 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(mReceiver);
     }
 }

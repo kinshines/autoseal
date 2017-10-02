@@ -113,6 +113,8 @@ public class WifiAdmin {
     }
 
     public void startScan(Context context) {
+        if(!isWifiEnabled())
+            return;
         mWifiManager.startScan();
         //得到扫描结果
         List<ScanResult> results = mWifiManager.getScanResults();
@@ -123,7 +125,8 @@ public class WifiAdmin {
                 Toast.makeText(context,"当前区域没有无线网络",Toast.LENGTH_SHORT).show();
             }else if(mWifiManager.getWifiState()==WifiManager.WIFI_STATE_ENABLING){
                 Toast.makeText(context,"wifi正在开启，请稍后扫描", Toast.LENGTH_SHORT).show();
-            }else{Toast.makeText(context,"WiFi没有开启", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(context,"WiFi没有开启", Toast.LENGTH_SHORT).show();
             }
         } else {
             mWifiList = new ArrayList<ScanResult>();
@@ -165,31 +168,37 @@ public class WifiAdmin {
 
     // 得到MAC地址
     public String getMacAddress() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.getMacAddress();
     }
 
     // 得到接入点的BSSID
     public String getBSSID() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.getBSSID();
     }
 
     // 得到IP地址
     public int getIPAddress() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? 0 : mWifiInfo.getIpAddress();
     }
 
     // 得到接入点的SSID
     public String getSSID() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? null : mWifiInfo.getSSID();
     }
 
     // 得到连接的ID
     public int getNetworkId() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? 0 : mWifiInfo.getNetworkId();
     }
 
     // 得到WifiInfo的所有信息包
     public String getWifiInfo() {
+        mWifiInfo=mWifiManager.getConnectionInfo();
         return (mWifiInfo == null) ? "NULL" : mWifiInfo.toString();
     }
 
