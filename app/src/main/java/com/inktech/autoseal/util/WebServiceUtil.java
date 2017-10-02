@@ -84,7 +84,7 @@ public class WebServiceUtil {
         Map<String,Object> map=new HashMap<>();
         String sealCode= UsingSealSummary.getCurrentSealCode();
         map.put("usingSealCode",sealCode);
-        map.put("hardwareCode",getHardwareCode());
+        map.put("hardwareCode",PreferenceUtil.getHardwareCode());
         sendRequest(UsingSealInfo,map,listener);
     }
 
@@ -92,7 +92,7 @@ public class WebServiceUtil {
         Map<String,Object> map=new HashMap<>();
         String sealCode= OutSealSummary.getCurrentSealCode();
         map.put("outSealCode",sealCode);
-        map.put("hardwareCode",getHardwareCode());
+        map.put("hardwareCode",PreferenceUtil.getHardwareCode());
         sendRequest(OutSealInfo,map,listener);
     }
 
@@ -128,13 +128,13 @@ public class WebServiceUtil {
 
     public static void updateUsingSealCode(final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
-        map.put("hardwareCode",getHardwareCode());
+        map.put("hardwareCode",PreferenceUtil.getHardwareCode());
         sendRequest(UpdateUsingSealCode,map,listener);
     }
 
     public static void updateOutSealCode(final SoapCallbackListener listener){
         Map<String,Object> map=new HashMap<>();
-        map.put("hardwareCode",getHardwareCode());
+        map.put("hardwareCode",PreferenceUtil.getHardwareCode());
         sendRequest(UpdateOutSealCode,map,listener);
     }
 
@@ -166,11 +166,6 @@ public class WebServiceUtil {
             savedIp="124.128.33.110:10003";
         }
         return "http://"+savedIp+"/WebService/WebService.asmx";
-    }
-
-    private static String getHardwareCode(){
-        SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-        return pref.getString("hardwareCode","hardwareCode");
     }
 
     public static void uploadByRecord(FileUploadRecord record,final SoapCallbackListener listener){

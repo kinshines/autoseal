@@ -1,6 +1,8 @@
 package com.inktech.autoseal.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Process;
 import android.support.annotation.IdRes;
 import android.support.annotation.IntRange;
@@ -10,18 +12,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.service.SyncService;
+import com.inktech.autoseal.util.AesCryptoUtil;
+import com.inktech.autoseal.util.PreferenceUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -116,6 +123,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Intent serviceIntent=new Intent(this, SyncService.class);
         startService(serviceIntent);
+
+        String hardwareCode=PreferenceUtil.getHardwareCode();
+        if(TextUtils.isEmpty(hardwareCode)){
+            final AppCompatEditText editSerialNo=new AppCompatEditText(MainActivity.this);
+            AlertDialog alert=new AlertDialog.Builder(MainActivity.this)
+                    .setView(editSerialNo)
+                    .setCancelable(false)
+                    .setTitle("请输入产品序列号")
+                    .setPositiveButton("确定",null)
+                    .create();
+            alert.show();
+            alert.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String serialNo = editSerialNo.getText().toString();
+                    String clearText=AesCryptoUtil.decrypt(Constants.AesKey,serialNo);
+                    if(TextUtils.isEmpty(clearText)){
+                        editSerialNo.setError("无效的序列号");
+                        return;
+                    }
+                    if(PreferenceUtil.checkSerialValide(clearText)){
+                        alert.dismiss();
+                    }else{
+                        editSerialNo.setError("无效的序列号");
+                        return;
+                    }
+                }
+            });
+        }
     }
     private void initViews() {
 

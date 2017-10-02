@@ -2,6 +2,7 @@ package com.inktech.autoseal.util;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -128,5 +129,41 @@ public class PreferenceUtil {
             }
         }
         return false;
+    }
+
+    public static String getHardwareCode(){
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        return prefs.getString(Constants.HardwareCode,"");
+    }
+
+    private static void setHardwareCode(String hardwareCode){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+        editor.putString(Constants.HardwareCode,hardwareCode);
+        editor.apply();
+    }
+    public static String getBluetoothPairCode(){
+        SharedPreferences prefs= PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
+        return prefs.getString(Constants.BluetoothPairCode,"");
+    }
+    private static void setBluetoothPairCode(String pairCode){
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
+        editor.putString(Constants.BluetoothPairCode,pairCode);
+        editor.apply();
+    }
+
+    public static boolean checkSerialValide(String clearText){
+        boolean isValide=false;
+        if(clearText.startsWith("SD1")&&clearText.length()>=7){
+            String subNum=clearText.substring(3,7);
+            if(TextUtils.isDigitsOnly(subNum)){
+                isValide=true;
+                PreferenceUtil.setHardwareCode("SD1"+subNum);
+            }
+            if(clearText.length()>7){
+                String bluetoothPairCode=clearText.substring(7);
+                setBluetoothPairCode(bluetoothPairCode);
+            }
+        }
+        return isValide;
     }
 }

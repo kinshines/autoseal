@@ -14,16 +14,17 @@ import android.widget.Toast;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.util.PreferenceUtil;
 
 public class SettingsPreferenceActivity extends AppCompatActivity {
 
     AppCompatButton btnSaveIp;
     AppCompatEditText editServerIp;
 
-    AppCompatButton btnSaveHardware;
-    AppCompatEditText editHardware;
     AppCompatTextView textUsingCode;
     AppCompatTextView textOutCode;
+    AppCompatTextView textHardwareCode;
+    AppCompatTextView textBluetoothCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,8 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
         textUsingCode=(AppCompatTextView) findViewById(R.id.text_using_code);
         editServerIp=(AppCompatEditText) findViewById(R.id.edit_server_ip);
         btnSaveIp=(AppCompatButton) findViewById(R.id.btn_save_ip);
-        editHardware=(AppCompatEditText) findViewById(R.id.edit_hardware_code);
-        btnSaveHardware=(AppCompatButton) findViewById(R.id.btn_save_hardware_code);
+        textHardwareCode=(AppCompatTextView) findViewById(R.id.text_hardware_code);
+        textBluetoothCode=(AppCompatTextView) findViewById(R.id.text_bluetooth_code);
         SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(SettingsPreferenceActivity.this);
 
         btnSaveIp.setOnClickListener(new View.OnClickListener() {
@@ -52,21 +53,13 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
             }
         });
 
-        btnSaveHardware.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences.Editor editor=pref.edit();
-                editor.putString("hardwareCode",editHardware.getText().toString());
-                editor.apply();
-                Toast.makeText(SettingsPreferenceActivity.this,"success",Toast.LENGTH_SHORT).show();
-            }
-        });
-
         String savedIp=pref.getString("serverIP","124.128.33.110:10003");
         editServerIp.setText(savedIp);
 
-        String savedhardware=pref.getString("hardwareCode","hardwareCode");
-        editHardware.setText(savedhardware);
+        String savedhardware= PreferenceUtil.getHardwareCode();
+        textHardwareCode.setText("硬件编码："+savedhardware);
+        String savedBluetooth=PreferenceUtil.getBluetoothPairCode();
+        textBluetoothCode.setText("蓝牙配对码："+savedBluetooth);
 
         textUsingCode.setText(pref.getString(Constants.OfflineUsingSealCode,""));
         textOutCode.setText(pref.getString(Constants.OfflineOutSealCode,""));

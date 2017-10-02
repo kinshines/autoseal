@@ -44,6 +44,8 @@ public interface Constants {
 
     String OfflineUsingSealCode="OfflineUsingSealCode";
     String OfflineOutSealCode="OfflineOutSealCode";
+    String HardwareCode="HardwareCode";
+    String BluetoothPairCode="BluetoothPairCode";
     String OutSealRecord="OutSealRecord";
     String ReturnSeal="ReturnSeal";
 
