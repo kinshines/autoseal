@@ -67,4 +67,6 @@ public interface Constants {
 
     Integer ToBeUpload=1;
     Integer Uploaded=2;
+
+    String AesKey="autoseal@inktech";
 }

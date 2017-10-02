@@ -8,12 +8,8 @@
                 android:title="设置"></item>
             <item
                 android:id="@+id/wifi"
-                android:icon="@mipmap/setting"
-                android:title="WiFi管理"></item>
-            <item
-                android:id="@+id/exit"
-                android:icon="@mipmap/out"
-                android:title="退出"></item>
+                android:icon="@mipmap/wifi_signal_open"
+                android:title="WiFi"></item>
         </menu>
     </item>
 

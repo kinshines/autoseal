@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private GetSealOfflineFragment getSealOfflineFragment;
     private ReturnSealFragment returnSealFragment;
 
-    AppCompatEditText editUsingCode;
-    AppCompatButton btnUsingCode;
     BottomBar bottomBar;
 
     @Override
@@ -133,9 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        editUsingCode = (AppCompatEditText) findViewById(R.id.edit_using_code);
-        btnUsingCode= (AppCompatButton) findViewById(R.id.btn_using_code);
-
         bottomBar=(BottomBar) findViewById(R.id.bottomBar);
 
     }
@@ -150,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.wifi:
                 startActivity(new Intent(MainActivity.this,WifiActivity.class));
                 break;
-            case R.id.exit:
-                finish();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
