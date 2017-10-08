@@ -27,6 +27,8 @@ import com.inktech.autoseal.constant.Constants;
 import java.util.Set;
 
 import com.inktech.autoseal.R;
+import com.inktech.autoseal.util.ClsUtils;
+import com.inktech.autoseal.util.PreferenceUtil;
 
 public class BluetoothSearchActivity extends AppCompatActivity {
 
@@ -155,6 +157,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
         Log.d(Constants.TAG, "Registering receiver");
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(mReceiver, filter);
@@ -220,6 +223,18 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                     bluetoothDevicesAdapter.notifyDataSetChanged();
                 }
 
+                if(device.getName().contains("HC-05")){
+                    if (device.getBondState() == BluetoothDevice.BOND_NONE) {
+                        try {
+                            //通过工具类ClsUtils,调用createBond方法
+                            ClsUtils.createBond(device.getClass(), device);
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 toolbarProgressCircle.setVisibility(View.INVISIBLE);
                 setStatus("None");
@@ -235,6 +250,24 @@ public class BluetoothSearchActivity extends AppCompatActivity {
                                     }
                                 }).show();
                         break;
+                }
+            } else if(BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action)){
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(device.getName().contains("HC-05")){
+                    try {
+
+                        //1.确认配对
+                        ClsUtils.setPairingConfirmation(device.getClass(), device, true);
+                        //2.终止有序广播
+                        Log.i("order...", "isOrderedBroadcast:"+isOrderedBroadcast()+",isInitialStickyBroadcast:"+isInitialStickyBroadcast());
+                        abortBroadcast();//如果没有将广播终止，则会出现一个一闪而过的配对框。
+                        //3.调用setPin方法进行配对...
+                        boolean ret = ClsUtils.setPin(device.getClass(), device, PreferenceUtil.getBluetoothPairCode());
+                        //ClsUtils.cancelPairingUserInput(btDevice.getClass(),btDevice);
+                    } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
         }
