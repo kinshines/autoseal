@@ -161,7 +161,7 @@ public class SealProcessActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String message) {
+    private void sendBluetoothMessage(String message) {
         // Check that we're actually connected before trying anything
         if (bluetoothService.getState() != Constants.STATE_CONNECTED) {
             Snackbar.make(coordinatorLayout, "尚未连接盖章机", Snackbar.LENGTH_LONG)
@@ -347,12 +347,10 @@ public class SealProcessActivity extends AppCompatActivity {
                 case Constants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMessage=BluetoothCmdInterpreter.bytesToHexString(writeBuf,writeBuf.length);
-                    Toast.makeText(activity,"usingSend:"+writeMessage,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_READ:
-
                     String readMessage = (String) msg.obj;
-
                     if (readMessage != null ) {
                         Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
                         if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
@@ -361,14 +359,38 @@ public class SealProcessActivity extends AppCompatActivity {
                             refreshSealProcess();
                             loadingView.dismiss();
                         }
+                        if(BluetoothCmdInterpreter.ReturnFeedbackSealOver.equals(readMessage)){
+                            loadingView.dismiss();
+
+                            //还印后询问是否还印完成
+                            android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
+                            dialog.setTitle("还印完成");
+                            dialog.setCancelable(false);
+                            dialog.setMessage("是否已将印章归还？");
+                            dialog.setPositiveButton("已经归还", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String sealType=OutSealSummary.getCurrentSealType();
+                                    String command=BluetoothCmdInterpreter.returnSend(sealType,true);
+                                    sendBluetoothMessage(command);
+                                    PreferenceUtil.removeOutSealRecord(
+                                            OutSealSummary.getCurrentSealCode(),
+                                            OutSealSummary.getCurrentSealType()
+                                    );
+                                }
+                            });
+                            dialog.setNegativeButton("尚未归还", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            });
+                            dialog.show();
+
+                            OutSealSummary.completeOnce();
+                            refreshSealProcess();
+                        }
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
                             loadingView.dismiss();
-                            if(returnSealFlag){
-                                PreferenceUtil.removeOutSealRecord(
-                                        OutSealSummary.getCurrentSealCode(),
-                                        OutSealSummary.getCurrentSealType()
-                                );
-                            }else{
                                 //取印完成后询问是否立即还印
                                 android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
                                 dialog.setTitle("立即还印");
@@ -389,7 +411,7 @@ public class SealProcessActivity extends AppCompatActivity {
                                     }
                                 });
                                 dialog.show();
-                            }
+
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                         }
@@ -624,7 +646,7 @@ public class SealProcessActivity extends AppCompatActivity {
                                     loadingView.show();
                                     UsingSealSummary.setCurrentSealType(sealType);
                                     String command=BluetoothCmdInterpreter.usingSend(sealType, remainingCount==1);
-                                    sendMessage(command);
+                                    sendBluetoothMessage(command);
                                 }
                             }))
                             .addAction(R.id.right_text_button, new TextViewAction(this)
@@ -640,7 +662,7 @@ public class SealProcessActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
                                                     String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
-                                                    sendMessage(command);
+                                                    sendBluetoothMessage(command);
                                                     UsingSealSummary.cancelSeal(sealType);
                                                     card.dismiss();
                                                     refreshSealProcess();
@@ -696,8 +718,10 @@ public class SealProcessActivity extends AppCompatActivity {
                                 public void onActionClicked(View view, Card card) {
                                     loadingView.show();
                                     OutSealSummary.setCurrentSealType(sealType);
-                                    String command=BluetoothCmdInterpreter.outSend(sealType);
-                                    sendMessage(command);
+                                    String command=returnSealFlag
+                                            ?BluetoothCmdInterpreter.returnSend(sealType,false)
+                                            :BluetoothCmdInterpreter.outSend(sealType);
+                                    sendBluetoothMessage(command);
                                 }
                             }))
                     .addAction(R.id.right_text_button, new TextViewAction(this)

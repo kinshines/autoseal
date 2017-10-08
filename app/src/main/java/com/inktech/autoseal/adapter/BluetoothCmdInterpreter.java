@@ -18,6 +18,10 @@ public class BluetoothCmdInterpreter {
     public static final String OutFeedbackReceivedCmd = OutReceivePrefix +"0000"+Suffix;
     public static final String OutFeedbackSealOver = OutReceivePrefix +"0100"+Suffix;
 
+    private static final String ReturnSendPrefix="EEB5";
+    private static final String ReturnReceivePrefix="EEB6";
+    public static final String ReturnFeedbackSealOver = ReturnReceivePrefix +"0100"+Suffix;
+
     public static String usingSend(String sealType, boolean isEnd){
         String command= UsingSendPrefix;
         switch (sealType){
@@ -85,6 +89,30 @@ public class BluetoothCmdInterpreter {
         }
 
         command+="00";
+        return command+Suffix;
+    }
+
+    public static String returnSend(String sealType,boolean isConfirmed){
+        String command= ReturnSendPrefix;
+        switch (sealType){
+            case Constants.gz:
+                command+="00";
+                break;
+            case Constants.frz:
+                command+="01";
+                break;
+            case Constants.cwz:
+                command+="02";
+                break;
+            case Constants.htz:
+                command+="03";
+                break;
+            case Constants.fpz:
+                command+="04";
+                break;
+        }
+
+        command+=isConfirmed?"01":"00";
         return command+Suffix;
     }
 
