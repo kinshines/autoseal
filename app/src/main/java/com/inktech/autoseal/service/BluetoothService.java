@@ -96,7 +96,7 @@ public class BluetoothService {
         // usingSend a failure item_message back to the Activity
         Message msg = myHandler.obtainMessage(Constants.MESSAGE_SNACKBAR);
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.SNACKBAR, "与盖章机已失去连接");
+        bundle.putString(Constants.SNACKBAR, "与盖章机失去连接，请重新连接");
         msg.setData(bundle);
         myHandler.sendMessage(msg);
         setState(Constants.STATE_ERROR);

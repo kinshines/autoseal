@@ -164,6 +164,7 @@ public class SealProcessActivity extends AppCompatActivity {
     private void sendBluetoothMessage(String message) {
         // Check that we're actually connected before trying anything
         if (bluetoothService.getState() != Constants.STATE_CONNECTED) {
+            loadingView.dismiss();
             Snackbar.make(coordinatorLayout, "尚未连接盖章机", Snackbar.LENGTH_LONG)
                     .setAction("连接", new View.OnClickListener() {
                         @Override public void onClick(View v) {
@@ -270,7 +271,10 @@ public class SealProcessActivity extends AppCompatActivity {
                 //once you start to seal,you should process this seal to end
                 if(!UsingSealSummary.isCurrentCompleted()&&!sealType.equals(UsingSealSummary.getCurrentSealType()))
                     continue;
-                Card card=populateCardWithUsingSeal(sealType);
+                Integer remainingCount=UsingSealSummary.getRemainCount(sealType);
+                if(remainingCount==0)
+                    continue;
+                Card card=populateCardWithUsingSeal(sealType,remainingCount);
                 listSealProcess.getAdapter().add(card);
             }
         }
@@ -359,9 +363,9 @@ public class SealProcessActivity extends AppCompatActivity {
                             refreshSealProcess();
                             loadingView.dismiss();
                         }
+
                         if(BluetoothCmdInterpreter.ReturnFeedbackSealOver.equals(readMessage)){
                             loadingView.dismiss();
-
                             //还印后询问是否还印完成
                             android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
                             dialog.setTitle("还印完成");
@@ -389,29 +393,29 @@ public class SealProcessActivity extends AppCompatActivity {
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                         }
+
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
                             loadingView.dismiss();
-                                //取印完成后询问是否立即还印
-                                android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-                                dialog.setTitle("立即还印");
-                                dialog.setCancelable(false);
-                                dialog.setMessage("印章已取出，是否立即归还？");
-                                dialog.setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                    }
-                                });
-                                dialog.setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        PreferenceUtil.addOutSealRecord(
-                                                OutSealSummary.getCurrentSealCode(),
-                                                OutSealSummary.getCurrentSealType(),
-                                                OutSealSummary.getCurrentSealName());
-                                    }
-                                });
-                                dialog.show();
-
+                            //取印完成后询问是否立即还印
+                            android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
+                            dialog.setTitle("立即还印");
+                            dialog.setCancelable(false);
+                            dialog.setMessage("印章已取出，是否立即归还？");
+                            dialog.setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            });
+                            dialog.setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    PreferenceUtil.addOutSealRecord(
+                                            OutSealSummary.getCurrentSealCode(),
+                                            OutSealSummary.getCurrentSealType(),
+                                            OutSealSummary.getCurrentSealName());
+                                }
+                            });
+                            dialog.show();
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                         }
@@ -419,13 +423,13 @@ public class SealProcessActivity extends AppCompatActivity {
                     break;
 
                 case Constants.MESSAGE_SNACKBAR:
+                    loadingView.dismiss();
                     Snackbar.make(activity.coordinatorLayout, msg.getData().getString(Constants.SNACKBAR), Snackbar.LENGTH_LONG)
                             .setAction("连接", new View.OnClickListener() {
                                 @Override public void onClick(View v) {
                                     activity.reconnect();
                                 }
                             }).show();
-
                     break;
                 case Constants.MESSAGE_FILE_UPLOAD_SUCCEED:
                     Toast.makeText(activity,"照片上传成功",Toast.LENGTH_SHORT).show();
@@ -611,16 +615,11 @@ public class SealProcessActivity extends AppCompatActivity {
         finish();
     }
 
-    private Card populateCardWithUsingSeal(String sealType){
+    private Card populateCardWithUsingSeal(String sealType,Integer remainingCount){
         String chineseSealType=UsingSealSummary.getSealTypeChinese(sealType);
-        Integer remainingCount=UsingSealSummary.getRemainCount(sealType);
-        String description="";
-        if(remainingCount==0){
-            description="盖章完成";
-        }else{
-            description="剩余 "+remainingCount+" 次";
-        }
-        CardProvider cardProvider = new Card.Builder(this)
+        String description="剩余 "+remainingCount+" 次";
+
+        Card card = new Card.Builder(this)
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_basic_image_buttons_card_layout)
                 .setTitle(chineseSealType)
@@ -633,52 +632,68 @@ public class SealProcessActivity extends AppCompatActivity {
                     public void onImageConfigure(@NonNull RequestCreator requestCreator) {
                         requestCreator.fit();
                     }
-                });
+                })
+                .addAction(R.id.left_text_button, new TextViewAction(this)
+                        .setText("确认盖章")
+                        .setTextResourceColor(R.color.colorPrimary)
+                        .setListener(new OnActionClickListener() {
+                            @Override
+                            public void onActionClicked(View view, Card card) {
+                                loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……");
+                                loadingView.show();
+                                UsingSealSummary.setCurrentSealType(sealType);
+                                String command=BluetoothCmdInterpreter.usingSend(sealType, remainingCount==1);
+                                sendBluetoothMessage(command);
+                            }
+                        }))
+                .addAction(R.id.right_text_button, new TextViewAction(this)
+                        .setText("取消盖章")
+                        .setTextResourceColor(R.color.colorAccent)
+                        .setListener(new OnActionClickListener() {
+                            @Override
+                            public void onActionClicked(View view, Card card) {
+                                android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
+                                dialog.setTitle("确认取消盖章");
+                                dialog.setMessage("本次盖章将不再提供此类印章");
+                                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
+                                        sendBluetoothMessage(command);
+                                        UsingSealSummary.cancelSeal(sealType);
+                                        card.dismiss();
+                                        refreshSealProcess();
+                                    }
+                                });
+                                dialog.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                    }
+                                });
+                                dialog.show();
+                            }
+                        }))
+                .endConfig()
+                .build();
+        return card;
+    }
 
-                if(remainingCount>0){
-                    cardProvider
-                            .addAction(R.id.left_text_button, new TextViewAction(this)
-                            .setText("确认盖章")
-                            .setTextResourceColor(R.color.colorPrimary)
-                            .setListener(new OnActionClickListener() {
-                                @Override
-                                public void onActionClicked(View view, Card card) {
-                                    loadingView.show();
-                                    UsingSealSummary.setCurrentSealType(sealType);
-                                    String command=BluetoothCmdInterpreter.usingSend(sealType, remainingCount==1);
-                                    sendBluetoothMessage(command);
-                                }
-                            }))
-                            .addAction(R.id.right_text_button, new TextViewAction(this)
-                                    .setText("取消盖章")
-                                    .setTextResourceColor(R.color.colorAccent)
-                                    .setListener(new OnActionClickListener() {
-                                        @Override
-                                        public void onActionClicked(View view, Card card) {
-                                            android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-                                            dialog.setTitle("确认取消盖章");
-                                            dialog.setMessage("本次盖章将不再提供此类印章");
-                                            dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
-                                                    sendBluetoothMessage(command);
-                                                    UsingSealSummary.cancelSeal(sealType);
-                                                    card.dismiss();
-                                                    refreshSealProcess();
-                                                }
-                                            });
-                                            dialog.setNegativeButton("返回", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                                }
-                                            });
-                                            dialog.show();
-                                        }
-                                    }));
-                }
-                Card card= cardProvider
+    private Card populateCardWithZeroCount(String sealType){
+        String chineseSealType=UsingSealSummary.getSealTypeChinese(sealType);
+        Card card = new Card.Builder(this)
+                .withProvider(new CardProvider())
+                .setLayout(R.layout.material_small_image_card)
+                .setTitle(chineseSealType)
+                .setTitleGravity(Gravity.END)
+                .setDescription("盖章完成")
+                .setDescriptionGravity(Gravity.END)
+                .setDrawable(getDrawableIcon(sealType))
+                .setDrawableConfiguration(new CardProvider.OnImageConfigListener() {
+                    @Override
+                    public void onImageConfigure(@NonNull RequestCreator requestCreator) {
+                        requestCreator.centerCrop();
+                    }
+                })
                 .endConfig()
                 .build();
         return card;
@@ -716,6 +731,7 @@ public class SealProcessActivity extends AppCompatActivity {
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
+                                    loadingView=new SpotsDialog(SealProcessActivity.this,returnSealFlag?"归还印中……":"取出印章中……");
                                     loadingView.show();
                                     OutSealSummary.setCurrentSealType(sealType);
                                     String command=returnSealFlag
