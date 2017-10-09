@@ -377,21 +377,11 @@ public class SealProcessActivity extends AppCompatActivity {
                                     String sealType=OutSealSummary.getCurrentSealType();
                                     String command=BluetoothCmdInterpreter.returnSend(sealType,true);
                                     sendBluetoothMessage(command);
-                                    PreferenceUtil.removeOutSealRecord(
-                                            OutSealSummary.getCurrentSealCode(),
-                                            OutSealSummary.getCurrentSealType()
-                                    );
-                                }
-                            });
-                            dialog.setNegativeButton("尚未归还", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    loadingView=new SpotsDialog(SealProcessActivity.this,"印章归还确认中……");
+                                    loadingView.show();
                                 }
                             });
                             dialog.show();
-
-                            OutSealSummary.completeOnce();
-                            refreshSealProcess();
                         }
 
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
@@ -416,6 +406,17 @@ public class SealProcessActivity extends AppCompatActivity {
                                 }
                             });
                             dialog.show();
+                            OutSealSummary.completeOnce();
+                            refreshSealProcess();
+                        }
+
+                        //还印确认反馈
+                        if(BluetoothCmdInterpreter.ReturnConfirmedFeedback.equals(readMessage)){
+                            loadingView.dismiss();
+                            PreferenceUtil.removeOutSealRecord(
+                                    OutSealSummary.getCurrentSealCode(),
+                                    OutSealSummary.getCurrentSealType()
+                            );
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                         }

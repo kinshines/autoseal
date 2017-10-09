@@ -21,6 +21,7 @@ public class BluetoothCmdInterpreter {
     private static final String ReturnSendPrefix="EEB5";
     private static final String ReturnReceivePrefix="EEB6";
     public static final String ReturnFeedbackSealOver = ReturnReceivePrefix +"0100"+Suffix;
+    public static final String ReturnConfirmedFeedback=ReturnReceivePrefix +"0200"+Suffix;
 
     public static String usingSend(String sealType, boolean isEnd){
         String command= UsingSendPrefix;
