@@ -81,7 +81,7 @@ public class ReturnSealFragment extends Fragment {
                 }
                 OutSealSummary.setCurrentSealCode(sealCode);
                 for(OutSealInfoItemOffline item:list){
-                    OutSealSummary.translateOutSealItemToChinese(item);
+                    OutSealSummary.translateReturnSealItemToChinese(item);
                 }
                 Intent intent=new Intent(getActivity(),BluetoothSearchActivity.class);
                 intent.putExtra(Constants.web_service_method, Constants.ReturnSeal);

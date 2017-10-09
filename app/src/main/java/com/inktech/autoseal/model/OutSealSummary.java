@@ -59,11 +59,20 @@ public class OutSealSummary {
     public static String translateOutSealItemToChinese(OutSealInfoItem seal){
         String type=seal.getType();
         String chineseType= seal.getSealName();
+        if(PreferenceUtil.hasOutSealType(type)){
+            chineseType+=" (已取出)";
+            return chineseType;
+        }
         addSealType(type);
         sealNameMap.put(type,chineseType);
-        if(PreferenceUtil.hasOutSealType(type)){
-            chineseType+="(尚未归还)";
-        }
+        return chineseType;
+    }
+
+    public static String translateReturnSealItemToChinese(OutSealInfoItem seal){
+        String type=seal.getType();
+        String chineseType= seal.getSealName();
+        addSealType(type);
+        sealNameMap.put(type,chineseType);
         return chineseType;
     }
 

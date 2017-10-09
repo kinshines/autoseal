@@ -3,6 +3,7 @@ package com.inktech.autoseal.model;
 import android.text.TextUtils;
 
 import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.util.PreferenceUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +70,10 @@ public class UsingSealSummary {
         String type=seal.getType();
         int count=seal.getCount();
         String chineseType= seal.getSealName();
+        if(PreferenceUtil.hasOutSealType(type)){
+            chineseType+=" (已取出)";
+            return chineseType;
+        }
         addMap(type,count);
         sealNameMap.put(type,chineseType);
         return chineseType+"：盖章 "+count+" 次";
