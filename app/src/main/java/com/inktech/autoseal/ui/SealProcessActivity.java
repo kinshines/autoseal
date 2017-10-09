@@ -84,6 +84,7 @@ public class SealProcessActivity extends AppCompatActivity {
 
     private String WebServiceMethod="";
     private String sealTypeChinese="";
+    private String takingPictureSealType="";
     private boolean usingSealFlag=false;
     private boolean returnSealFlag=false;
 
@@ -358,6 +359,7 @@ public class SealProcessActivity extends AppCompatActivity {
                     if (readMessage != null ) {
                         Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
                         if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
+                            takingPictureSealType=UsingSealSummary.getCurrentSealType();
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
@@ -517,6 +519,7 @@ public class SealProcessActivity extends AppCompatActivity {
                 FileOutputStream fos = new FileOutputStream(filename);
                 fos.write(data);
                 fos.close();
+                sealTypeChinese=UsingSealSummary.getSealTypeChinese(takingPictureSealType);
                 WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath) {

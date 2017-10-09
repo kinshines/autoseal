@@ -120,7 +120,7 @@ public class WebServiceUtil {
             positionChi="取印人";
         }
         if(Constants.Document.equals(position)){
-            positionChi="文档_"+sealName;
+            positionChi=sealName;
         }
         map.put("postion",positionChi);
         sendRequest(method,map,listener,filePath);

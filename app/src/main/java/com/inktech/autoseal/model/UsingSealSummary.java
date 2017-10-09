@@ -46,6 +46,7 @@ public class UsingSealSummary {
     }
 
     private static void init(){
+        currentSealType="";
         overallMap.clear();
         processMap.clear();
         sealNameMap.clear();
@@ -97,6 +98,7 @@ public class UsingSealSummary {
     public static String getCurrentSealType(){
         return currentSealType;
     }
+
     public static boolean isCurrentCompleted(){
         if(TextUtils.isEmpty(currentSealType))
             return true;
