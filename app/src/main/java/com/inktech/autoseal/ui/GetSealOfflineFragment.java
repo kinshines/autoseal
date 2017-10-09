@@ -39,7 +39,6 @@ public class GetSealOfflineFragment extends Fragment {
     AppCompatButton btnUsingCode;
     AppCompatButton btnScan;
     MaterialListView listSealInfo;
-    AlertDialog loadingView;
     OutSealInfoItemOffline sealInfoOffline;
 
     public GetSealOfflineFragment() {
@@ -139,7 +138,6 @@ public class GetSealOfflineFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
-        loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
     }
 
 }

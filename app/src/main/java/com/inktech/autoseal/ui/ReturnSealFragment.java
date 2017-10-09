@@ -41,7 +41,6 @@ public class ReturnSealFragment extends Fragment {
     AppCompatButton btnUsingCode;
     AppCompatButton btnScan;
     MaterialListView listSealInfo;
-    AlertDialog loadingView;
 
     public ReturnSealFragment() {
         // Required empty public constructor
@@ -66,8 +65,6 @@ public class ReturnSealFragment extends Fragment {
         btnUsingCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadingView.setCancelable(false);
-                loadingView.show();
                 String sealCode=editUsingCode.getText().toString().trim();
                 ArrayList<OutSealInfoItemOffline> list=PreferenceUtil.queryOutSealRecordList(sealCode);
                 if(list.isEmpty()){
@@ -122,7 +119,6 @@ public class ReturnSealFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
-        loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
     }
 
 }
