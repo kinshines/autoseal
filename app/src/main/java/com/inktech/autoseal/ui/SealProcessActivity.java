@@ -696,6 +696,7 @@ public class SealProcessActivity extends AppCompatActivity {
                                             sendBluetoothMessage(command);
                                         }
                                         UsingSealSummary.cancelSeal(sealType);
+                                        UsingSealSummary.setCurrentSealType("");
                                         card.dismiss();
                                         refreshSealProcess();
                                     }
