@@ -17,13 +17,14 @@ public class BluetoothCmdInterpreter {
     private static final String OutReceivePrefix="EEB4";
     public static final String OutFeedbackReceivedCmd = OutReceivePrefix +"0000"+Suffix;
     public static final String OutFeedbackSealOver = OutReceivePrefix +"0100"+Suffix;
+    public static final String OutConfirmedFeedback = OutReceivePrefix+"0200"+Suffix;
 
     private static final String ReturnSendPrefix="EEB5";
     private static final String ReturnReceivePrefix="EEB6";
     public static final String ReturnFeedbackSealOver = ReturnReceivePrefix +"0100"+Suffix;
     public static final String ReturnConfirmedFeedback=ReturnReceivePrefix +"0200"+Suffix;
 
-    public static String usingSend(String sealType, boolean isEnd){
+    public static String usingSend(String sealType, Integer remainingCount, Integer totalCount){
         String command= UsingSendPrefix;
         switch (sealType){
             case Constants.gz:
@@ -42,7 +43,15 @@ public class BluetoothCmdInterpreter {
                 command+="04";
                 break;
         }
-        command+=isEnd?"00":"01";
+        if(totalCount==1){
+            command+="04";
+        }else if(remainingCount==totalCount){
+            command+="00";
+        } else if(remainingCount==1){
+            command+="02";
+        }else {
+            command+="01";
+        }
         return command+Suffix;
     }
 
@@ -65,11 +74,11 @@ public class BluetoothCmdInterpreter {
                 command+="04";
                 break;
         }
-        command+="02";
+        command+="03";
         return command+Suffix;
     }
 
-    public static String outSend(String sealType){
+    public static String outSend(String sealType,boolean isConfirmed){
         String command= OutSendPrefix;
         switch (sealType){
             case Constants.gz:
@@ -89,7 +98,7 @@ public class BluetoothCmdInterpreter {
                 break;
         }
 
-        command+="00";
+        command+=isConfirmed?"01":"00";
         return command+Suffix;
     }
 

@@ -107,7 +107,7 @@ public class SealProcessActivity extends AppCompatActivity {
         handler = new myHandler(SealProcessActivity.this);
 
         assert getSupportActionBar() != null; // won't be null, lint error
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Intent intent=getIntent();
         device = intent.getExtras().getParcelable(Constants.EXTRA_DEVICE);
@@ -396,6 +396,7 @@ public class SealProcessActivity extends AppCompatActivity {
                             dialog.setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    outSealConfirmDialog();
                                 }
                             });
                             dialog.setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
@@ -405,11 +406,10 @@ public class SealProcessActivity extends AppCompatActivity {
                                             OutSealSummary.getCurrentSealCode(),
                                             OutSealSummary.getCurrentSealType(),
                                             OutSealSummary.getCurrentSealName());
+                                    outSealConfirmDialog();
                                 }
                             });
                             dialog.show();
-                            OutSealSummary.completeOnce();
-                            refreshSealProcess();
                         }
 
                         //还印确认反馈
@@ -419,6 +419,13 @@ public class SealProcessActivity extends AppCompatActivity {
                                     OutSealSummary.getCurrentSealCode(),
                                     OutSealSummary.getCurrentSealType()
                             );
+                            OutSealSummary.completeOnce();
+                            refreshSealProcess();
+                        }
+
+                        //取印确认反馈
+                        if(BluetoothCmdInterpreter.OutConfirmedFeedback.equals(readMessage)){
+                            loadingView.dismiss();
                             OutSealSummary.completeOnce();
                             refreshSealProcess();
                         }
@@ -442,6 +449,24 @@ public class SealProcessActivity extends AppCompatActivity {
                     break;
             }
         }
+    }
+
+    private void outSealConfirmDialog(){
+        //确认取印完成
+        android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
+        dialog.setTitle("取印是否已完成？");
+        dialog.setCancelable(false);
+        dialog.setPositiveButton("取印完成", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String sealType=OutSealSummary.getCurrentSealType();
+                String command=BluetoothCmdInterpreter.outSend(sealType,true);
+                sendBluetoothMessage(command);
+                loadingView=new SpotsDialog(SealProcessActivity.this,"取印完成确认中……");
+                loadingView.show();
+            }
+        });
+        dialog.show();
     }
 
     // 初始化surface
@@ -646,7 +671,10 @@ public class SealProcessActivity extends AppCompatActivity {
                                 loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……");
                                 loadingView.show();
                                 UsingSealSummary.setCurrentSealType(sealType);
-                                String command=BluetoothCmdInterpreter.usingSend(sealType, remainingCount==1);
+                                String command=BluetoothCmdInterpreter.usingSend(
+                                        sealType,
+                                        remainingCount,
+                                        UsingSealSummary.getTotalCount(sealType));
                                 sendBluetoothMessage(command);
                             }
                         }))
@@ -662,8 +690,11 @@ public class SealProcessActivity extends AppCompatActivity {
                                 dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
-                                        sendBluetoothMessage(command);
+                                        //一上来就取消的话，不发送指令
+                                        if(remainingCount!=UsingSealSummary.getTotalCount(sealType)){
+                                            String command=BluetoothCmdInterpreter.cancelUsingSend(sealType);
+                                            sendBluetoothMessage(command);
+                                        }
                                         UsingSealSummary.cancelSeal(sealType);
                                         card.dismiss();
                                         refreshSealProcess();
@@ -740,7 +771,7 @@ public class SealProcessActivity extends AppCompatActivity {
                                     OutSealSummary.setCurrentSealType(sealType);
                                     String command=returnSealFlag
                                             ?BluetoothCmdInterpreter.returnSend(sealType,false)
-                                            :BluetoothCmdInterpreter.outSend(sealType);
+                                            :BluetoothCmdInterpreter.outSend(sealType,false);
                                     sendBluetoothMessage(command);
                                 }
                             }))

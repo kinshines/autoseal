@@ -41,6 +41,10 @@ public class UsingSealSummary {
         return overallMap.get(sealType);
     }
 
+    public static Integer getTotalCount(String sealType){
+        return overallMap.get(sealType);
+    }
+
     public static String getSealTypeChinese(String sealType){
         return sealNameMap.get(sealType);
     }
