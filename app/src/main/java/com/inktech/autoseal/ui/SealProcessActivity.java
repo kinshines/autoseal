@@ -352,12 +352,12 @@ public class SealProcessActivity extends AppCompatActivity {
                 case Constants.MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     String writeMessage=BluetoothCmdInterpreter.bytesToHexString(writeBuf,writeBuf.length);
-                    Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(activity,"Send:"+writeMessage,Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_READ:
                     String readMessage = (String) msg.obj;
                     if (readMessage != null ) {
-                        Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
                         if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
                             takingPictureSealType=UsingSealSummary.getCurrentSealType();
                             startTakePhoto();
@@ -442,10 +442,10 @@ public class SealProcessActivity extends AppCompatActivity {
                             }).show();
                     break;
                 case Constants.MESSAGE_FILE_UPLOAD_SUCCEED:
-                    Toast.makeText(activity,"照片上传成功",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(activity,"照片上传成功",Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_FILE_UPLOAD_FAIL:
-                    Toast.makeText(activity,"照片上传失败",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(activity,"照片上传失败",Toast.LENGTH_SHORT).show();
                     break;
             }
         }

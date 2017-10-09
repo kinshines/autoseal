@@ -114,10 +114,10 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
         public void handleMessage(Message msg){
             switch (msg.what){
                 case Constants.MESSAGE_FILE_UPLOAD_SUCCEED:
-                    Toast.makeText(PhotoPreviewActivity.this,"照片上传成功",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PhotoPreviewActivity.this,"照片上传成功",Toast.LENGTH_SHORT).show();
                     break;
                 case Constants.MESSAGE_FILE_UPLOAD_FAIL:
-                    Toast.makeText(PhotoPreviewActivity.this,"照片上传失败",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(PhotoPreviewActivity.this,"照片上传失败",Toast.LENGTH_SHORT).show();
                     break;
             }
         }
