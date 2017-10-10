@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.inktech.autoseal.R;
@@ -22,6 +23,7 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qrcode_reader);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mQRCodeView = (ZBarView) findViewById(R.id.zbarview);
         mQRCodeView.setDelegate(this);
@@ -58,5 +60,16 @@ public class QRCodeReaderActivity extends AppCompatActivity implements QRCodeVie
     protected void onStop() {
         mQRCodeView.stopCamera();
         super.onStop();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

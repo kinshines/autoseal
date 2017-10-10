@@ -82,7 +82,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.QRCodeReaderActivity"
-            android:label="请将二维码对准前摄像头以便扫描" />
+            android:label="请将二维码对准前摄像头" />
         <activity
             android:name=".ui.SettingsPreferenceActivity"
             android:label="@string/title_activity_settings_preference"

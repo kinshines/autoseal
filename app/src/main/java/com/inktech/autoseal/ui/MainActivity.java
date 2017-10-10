@@ -69,21 +69,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FragmentManager manager = getSupportFragmentManager();
 
-        manager.beginTransaction()
-                .add(R.id.container_main, usingSealFragment, "usingCodeFragment")
-                .commit();
-        manager.beginTransaction()
-                .add(R.id.container_main,usingSealOfflineFragment,"usingOfflineCodeFragment")
-                .commit();
-        manager.beginTransaction()
-                .add(R.id.container_main,getSealFragment,"getSealFragment")
-                .commit();
-        manager.beginTransaction()
-                .add(R.id.container_main,getSealOfflineFragment,"getSealOfflineFragment")
-                .commit();
-        manager.beginTransaction()
-                .add(R.id.container_main,returnSealFragment,"returnSealFragment")
-                .commit();
+        if(!usingSealFragment.isAdded()){
+            manager.beginTransaction()
+                    .add(R.id.container_main, usingSealFragment, "usingSealFragment")
+                    .commit();
+        }
+        if(!usingSealOfflineFragment.isAdded()){
+            manager.beginTransaction()
+                    .add(R.id.container_main,usingSealOfflineFragment,"usingSealOfflineFragment")
+                    .commit();
+        }
+        if(!getSealFragment.isAdded()){
+            manager.beginTransaction()
+                    .add(R.id.container_main,getSealFragment,"getSealFragment")
+                    .commit();
+        }
+        if(!getSealOfflineFragment.isAdded()){
+            manager.beginTransaction()
+                    .add(R.id.container_main,getSealOfflineFragment,"getSealOfflineFragment")
+                    .commit();
+        }
+        if(!returnSealFragment.isAdded()){
+            manager.beginTransaction()
+                    .add(R.id.container_main,returnSealFragment,"returnSealFragment")
+                    .commit();
+        }
 
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
