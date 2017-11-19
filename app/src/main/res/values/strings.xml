@@ -32,6 +32,11 @@
     <string name="get_seal_code_description">取印编码有效，确认印章信息无误后，请点击确认拍照按钮，并拍下您的正面照以存档方可取印</string>
     <string name="confirm_take_photo">确认拍照</string>
 
+    <string name="notifyTitle">提示</string>
+    <string name="gpsNotifyMsg">当前手机扫描蓝牙需要打开定位功能。</string>
+    <string name="setting">前往设置</string>
+    <string name="cancel">取消</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

@@ -1,5 +1,6 @@
 package com.inktech.autoseal.ui;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -7,8 +8,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +32,8 @@ import android.widget.TextView;
 import com.inktech.autoseal.adapter.BluetoothDevicesAdapter;
 import com.inktech.autoseal.constant.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.inktech.autoseal.R;
@@ -143,7 +153,7 @@ public class BluetoothSearchActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (bluetoothAdapter.isEnabled()) {
                     // Bluetooth enabled
-                    startSearching();
+                    checkPermissions();
                 } else {
                     enableBluetooth();
                 }
@@ -178,7 +188,9 @@ public class BluetoothSearchActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_ENABLE_BT) {
             if (resultCode == RESULT_OK) {
-                startSearching();
+                if(checkGPSIsOpen()){
+                    startSearching();
+                }
             } else {
                 setStatus("Error");
                 Snackbar.make(coordinatorLayout, "Failed to enable bluetooth", Snackbar.LENGTH_INDEFINITE)
@@ -272,4 +284,76 @@ public class BluetoothSearchActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public final void onRequestPermissionsResult(int requestCode,
+                                                 @NonNull String[] permissions,
+                                                 @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case Constants.REQUEST_GRANT_PERMISSION:
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            onPermissionGranted(permissions[i]);
+                        }
+                    }
+                }
+                break;
+        }
+    }
+    private void checkPermissions() {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION};
+        List<String> permissionDeniedList = new ArrayList<>();
+        for (String permission : permissions) {
+            int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                onPermissionGranted(permission);
+            } else {
+                permissionDeniedList.add(permission);
+            }
+        }
+        if (!permissionDeniedList.isEmpty()) {
+            String[] deniedPermissions = permissionDeniedList.toArray(new String[permissionDeniedList.size()]);
+            ActivityCompat.requestPermissions(this, deniedPermissions, Constants.REQUEST_GRANT_PERMISSION);
+        }
+    }
+
+    private void onPermissionGranted(String permission) {
+        switch (permission) {
+            case Manifest.permission.ACCESS_FINE_LOCATION:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkGPSIsOpen()) {
+                    new android.app.AlertDialog.Builder(this)
+                            .setTitle(R.string.notifyTitle)
+                            .setMessage(R.string.gpsNotifyMsg)
+                            .setNegativeButton(R.string.cancel,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            finish();
+                                        }
+                                    })
+                            .setPositiveButton(R.string.setting,
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                            startActivityForResult(intent, Constants.REQUEST_ENABLE_BT);
+                                        }
+                                    })
+
+                            .setCancelable(false)
+                            .show();
+                } else {
+                    startSearching();
+                }
+                break;
+        }
+    }
+    private boolean checkGPSIsOpen() {
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager == null)
+            return false;
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER);
+    }
 }
