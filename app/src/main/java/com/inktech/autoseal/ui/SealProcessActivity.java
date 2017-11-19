@@ -1,5 +1,6 @@
 package com.inktech.autoseal.ui;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -16,6 +17,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -62,7 +64,8 @@ import com.squareup.picasso.RequestCreator;
 
 import dmax.dialog.SpotsDialog;
 
-public class SealProcessActivity extends AppCompatActivity {
+public class SealProcessActivity extends AppCompatActivity implements
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     BluetoothService bluetoothService;
     BluetoothDevice device;
@@ -494,14 +497,26 @@ public class SealProcessActivity extends AppCompatActivity {
                 //如果存在摄像头
                 if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
                     //获取摄像头
-                    if (openFacingBackCamera()) {
-                        Log.i(TAG, "openCameraSuccess");
-                        //进行对焦
-                        autoFocus();
+                    if(ContextCompat.checkSelfPermission(SealProcessActivity.this, Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED){
+                        if (openFacingBackCamera()) {
+                            Log.i(TAG, "openCameraSuccess");
+                            //进行对焦
+                            autoFocus();
+                        } else {
+                            Log.i(TAG, "openCameraFailed");
+                        }
+                    }else if (ActivityCompat.shouldShowRequestPermissionRationale(SealProcessActivity.this,
+                            Manifest.permission.CAMERA)) {
+                        TakePhotoActivity.ConfirmationDialogFragment
+                                .newInstance(R.string.camera_permission_confirmation,
+                                        new String[]{Manifest.permission.CAMERA},
+                                        Constants.REQUEST_CAMERA_PERMISSION,
+                                        R.string.camera_permission_not_granted)
+                                .show(getSupportFragmentManager(), Constants.FRAGMENT_DIALOG);
                     } else {
-                        Log.i(TAG, "openCameraFailed");
+                        ActivityCompat.requestPermissions(SealProcessActivity.this, new String[]{Manifest.permission.CAMERA},
+                                Constants.REQUEST_CAMERA_PERMISSION);
                     }
-
                 }
 
             }
@@ -823,5 +838,22 @@ public class SealProcessActivity extends AppCompatActivity {
                 return R.drawable.cwz;
         }
         return R.drawable.gz;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Constants.REQUEST_CAMERA_PERMISSION:
+                if (permissions.length != 1 || grantResults.length != 1) {
+                    throw new RuntimeException("Error on requesting camera permission.");
+                }
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, R.string.camera_permission_not_granted,
+                            Toast.LENGTH_SHORT).show();
+                }
+                // No need to start camera here; it is handled by onResume
+                break;
+        }
     }
 }

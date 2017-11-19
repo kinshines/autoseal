@@ -30,8 +30,6 @@ public class TakePhotoActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final String TAG = "TakePhotoActivity";
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private static final String FRAGMENT_DIALOG = "dialog";
     private String WebServiceMethod="";
 
     private CameraView mCameraView;
@@ -83,12 +81,12 @@ public class TakePhotoActivity extends AppCompatActivity implements
             ConfirmationDialogFragment
                     .newInstance(R.string.camera_permission_confirmation,
                             new String[]{Manifest.permission.CAMERA},
-                            REQUEST_CAMERA_PERMISSION,
+                            Constants.REQUEST_CAMERA_PERMISSION,
                             R.string.camera_permission_not_granted)
-                    .show(getSupportFragmentManager(), FRAGMENT_DIALOG);
+                    .show(getSupportFragmentManager(), Constants.FRAGMENT_DIALOG);
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
-                    REQUEST_CAMERA_PERMISSION);
+                    Constants.REQUEST_CAMERA_PERMISSION);
         }
     }
 
@@ -102,7 +100,7 @@ public class TakePhotoActivity extends AppCompatActivity implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_CAMERA_PERMISSION:
+            case Constants.REQUEST_CAMERA_PERMISSION:
                 if (permissions.length != 1 || grantResults.length != 1) {
                     throw new RuntimeException("Error on requesting camera permission.");
                 }

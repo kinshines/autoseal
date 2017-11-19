@@ -10,6 +10,7 @@ public interface Constants {
     String TAG = "Arduino - Android";
     int REQUEST_ENABLE_BT = 1;
     int REQUEST_QR_SCAN=2;
+    int REQUEST_CAMERA_PERMISSION = 1;
 
     // message types sent from the BluetoothChatService Handler
     int MESSAGE_STATE_CHANGE = 1;
@@ -35,6 +36,7 @@ public interface Constants {
     // Key names received from the BluetoothChatService Handler
     String EXTRA_DEVICE  = "EXTRA_DEVICE";
     String SNACKBAR = "toast";
+    String FRAGMENT_DIALOG = "dialog";
 
     String ACTION_USING_SEAL="ACTION_USING_SEAL";
     String ACTION_USING_SEAL_OFFLINE="ACTION_USING_SEAL_OFFLINE";
