@@ -73,10 +73,6 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String pw = et_password.getText().toString();
-                        if(null == pw  || pw.length() < 8){
-                            Toast.makeText(WifiActivity.this, "密码至少8位", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
                         SharedPreferences.Editor editor=preferences.edit();
                         editor.putString(ssid, pw);   //保存密码
                         editor.commit();
