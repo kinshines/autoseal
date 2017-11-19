@@ -333,20 +333,20 @@ public class SealProcessActivity extends AppCompatActivity implements
                 case Constants.MESSAGE_STATE_CHANGE:
                     switch (msg.arg1) {
                         case Constants.STATE_CONNECTED:
-                            activity.setStatus("Connected");
+                            activity.setStatus("盖章机已连接");
                             activity.reconnectButton.setVisible(false);
                             activity.toolbalProgressBar.setVisibility(View.GONE);
                             break;
                         case Constants.STATE_CONNECTING:
-                            activity.setStatus("Connecting");
+                            activity.setStatus("盖章机连接中……");
                             activity.toolbalProgressBar.setVisibility(View.VISIBLE);
                             break;
                         case Constants.STATE_NONE:
-                            activity.setStatus("Not Connected");
+                            activity.setStatus("未连接盖章机");
                             activity.toolbalProgressBar.setVisibility(View.GONE);
                             break;
                         case Constants.STATE_ERROR:
-                            activity.setStatus("Error");
+                            activity.setStatus("出错啦");
                             activity.reconnectButton.setVisible(true);
                             activity.toolbalProgressBar.setVisibility(View.GONE);
                             break;
@@ -366,6 +366,12 @@ public class SealProcessActivity extends AppCompatActivity implements
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
+                            //wait for taking photo
+                            try {
+                                Thread.sleep(3*1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
                             loadingView.dismiss();
                         }
 
@@ -683,7 +689,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
-                                loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……");
+                                loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……请勿取走文件");
                                 loadingView.show();
                                 UsingSealSummary.setCurrentSealType(sealType);
                                 String command=BluetoothCmdInterpreter.usingSend(
