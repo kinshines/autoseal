@@ -41,7 +41,8 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_photo_preview);
         initViews();
         Intent intent=getIntent();
-        photoData=intent.getByteArrayExtra("photo_data");
+        //photoData=intent.getByteArrayExtra("photo_data");
+        photoData=BitmapUtil.previewTakePhotoData;
         WebServiceMethod=intent.getStringExtra(Constants.web_service_method);
         Bitmap previewBitmap= BitmapFactory.decodeByteArray(photoData,0,photoData.length);
         imagePreview.setImageBitmap(previewBitmap);
