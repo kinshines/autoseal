@@ -1,15 +1,19 @@
 package com.inktech.autoseal.ui;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -93,7 +97,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
 
         if(mWifiAdmin.isWifiEnabled()){
             btnOpenWifi.setText("WiFi已开启");
-            scanWifi();
+            scanWifiCheckPermission();
         }
     }
 
@@ -114,7 +118,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_open_wifi:
                 btnOpenWifi.setText("WiFi开启中……");
                 mWifiAdmin.openWifi(WifiActivity.this);
-                scanWifi();
+                scanWifiCheckPermission();
                 btnOpenWifi.setText("WiFi已开启");
                 break;
             case R.id.btn_close_wifi:
@@ -152,7 +156,7 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     private BroadcastReceiver mReceiver = new BroadcastReceiver (){
         @Override
         public void onReceive(Context context, Intent intent) {
-            scanWifi();
+            scanWifiCheckPermission();
         }
     };
 
@@ -168,5 +172,34 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStop() {
         super.onStop();
         unregisterReceiver(mReceiver);
+    }
+
+    private void scanWifiCheckPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    Constants.REQUEST_GRANT_PERMISSION);
+        }else{
+            scanWifi();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+
+        if (requestCode == Constants.REQUEST_GRANT_PERMISSION)
+        {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                scanWifi();
+            } else
+            {
+                // Permission Denied
+                Toast.makeText(WifiActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
