@@ -184,4 +184,13 @@ public class BitmapUtil {
             e.printStackTrace();
         }
     }
+
+    public static byte[] previewTakePhotoData=null;
+
+    public static byte[] compressBitmap(byte[] originData){
+        Bitmap bitmap=BitmapFactory.decodeByteArray(originData,0,originData.length);
+        ByteArrayOutputStream stream=new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,75,stream);
+        return stream.toByteArray();
+    }
 }

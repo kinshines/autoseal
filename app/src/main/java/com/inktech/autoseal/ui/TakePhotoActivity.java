@@ -24,6 +24,7 @@ import com.google.android.cameraview.CameraView;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.constant.Constants;
+import com.inktech.autoseal.util.BitmapUtil;
 
 public class TakePhotoActivity extends AppCompatActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -131,9 +132,11 @@ public class TakePhotoActivity extends AppCompatActivity implements
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
             Intent intent=new Intent(TakePhotoActivity.this,PhotoPreviewActivity.class);
-            intent.putExtra("photo_data",data);
+            //intent.putExtra("photo_data",data);
+            BitmapUtil.previewTakePhotoData=data;
             intent.putExtra(Constants.web_service_method,WebServiceMethod);
             startActivity(intent);
+            finish();
         }
 
     };
