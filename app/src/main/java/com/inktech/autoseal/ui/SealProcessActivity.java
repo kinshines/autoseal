@@ -2,6 +2,7 @@ package com.inktech.autoseal.ui;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -15,9 +16,11 @@ import android.hardware.Camera;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +42,7 @@ import com.dexafree.materialList.card.OnActionClickListener;
 import com.dexafree.materialList.card.action.TextViewAction;
 import com.dexafree.materialList.card.action.WelcomeButtonAction;
 import com.dexafree.materialList.view.MaterialListView;
+import com.google.android.cameraview.CameraView;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.adapter.BluetoothCmdInterpreter;
 import com.inktech.autoseal.adapter.SoapCallbackListener;
@@ -77,11 +81,9 @@ public class SealProcessActivity extends AppCompatActivity implements
     Snackbar snackTurnOn;
     myHandler handler;
 
-    private SurfaceView mySurfaceView;
-    private SurfaceHolder myHolder;
-    private Camera myCamera;
     AlertDialog loadingView;
     MaterialListView listSealProcess;
+    private CameraView mCameraView;
 
     private static final String TAG = "SealProcessActivity";
 
@@ -320,6 +322,10 @@ public class SealProcessActivity extends AppCompatActivity implements
         coordinatorLayout=(CoordinatorLayout) findViewById(R.id.coordinator_layout_bluetooth);
         loadingView=new SpotsDialog(this,"盖章机通信中……");
         listSealProcess=(MaterialListView) findViewById(R.id.list_seal_process);
+        mCameraView = (CameraView) findViewById(R.id.camera_view);
+        if (mCameraView != null) {
+            mCameraView.addCallback(mCallback);
+        }
     }
 
     private class myHandler extends Handler{
@@ -478,80 +484,15 @@ public class SealProcessActivity extends AppCompatActivity implements
         dialog.show();
     }
 
-    // 初始化surface
-    @SuppressWarnings("deprecation")
-    private void initSurface() {
-        // 初始化surfaceview
-        if (mySurfaceView == null && myHolder == null) {
-            mySurfaceView = (SurfaceView) findViewById(R.id.camera_surfaceview);
-            // 初始化surfaceholder
-            myHolder = mySurfaceView.getHolder();
-        }
-
-    }
     /**
      * 开始拍照
      */
     private void startTakePhoto() {
-        //初始化surface
-        initSurface();
-        //这里得开线程进行拍照，因为Activity还未显示完全的时候是无法进行拍照的，SurfacaView必须先显示
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                //如果存在摄像头
-                if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-                    //获取摄像头
-                    if(ContextCompat.checkSelfPermission(SealProcessActivity.this, Manifest.permission.CAMERA)==PackageManager.PERMISSION_GRANTED){
-                        if (openFacingBackCamera()) {
-                            Log.i(TAG, "openCameraSuccess");
-                            //进行对焦
-                            autoFocus();
-                        } else {
-                            Log.i(TAG, "openCameraFailed");
-                        }
-                    }else if (ActivityCompat.shouldShowRequestPermissionRationale(SealProcessActivity.this,
-                            Manifest.permission.CAMERA)) {
-                        TakePhotoActivity.ConfirmationDialogFragment
-                                .newInstance(R.string.camera_permission_confirmation,
-                                        new String[]{Manifest.permission.CAMERA},
-                                        Constants.REQUEST_CAMERA_PERMISSION,
-                                        R.string.camera_permission_not_granted)
-                                .show(getSupportFragmentManager(), Constants.FRAGMENT_DIALOG);
-                    } else {
-                        ActivityCompat.requestPermissions(SealProcessActivity.this, new String[]{Manifest.permission.CAMERA},
-                                Constants.REQUEST_CAMERA_PERMISSION);
-                    }
-                }
-
-            }
-        }.start();
+        if (mCameraView != null) {
+            mCameraView.takePicture();
+        }
     }
 
-    // 自动对焦回调函数(空实现)
-    private Camera.AutoFocusCallback myAutoFocus = new Camera.AutoFocusCallback() {
-        @Override
-        public void onAutoFocus(boolean success, Camera camera) {
-        }
-    };
-
-    // 对焦并拍照
-    private void autoFocus() {
-
-        try {
-            // 因为开启摄像头需要时间，这里让线程睡两秒
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // 自动对焦
-        myCamera.autoFocus(myAutoFocus);
-
-        // 对焦后拍照
-        myCamera.takePicture(null, null, myPicCallback);
-    }
 
     // 拍照成功回调函数
     private Camera.PictureCallback myPicCallback = new Camera.PictureCallback() {
@@ -591,59 +532,11 @@ public class SealProcessActivity extends AppCompatActivity implements
 
                 Log.i(TAG, "保存照片失败" + error.toString());
                 error.printStackTrace();
-                myCamera.stopPreview();
-                myCamera.release();
-                myCamera = null;
             }
 
             Log.i(TAG, "获取照片成功");
-            myCamera.stopPreview();
-            myCamera.release();
-            myCamera = null;
         }
     };
-
-    // 得到后置摄像头
-    private boolean openFacingBackCamera() {
-        // 尝试开启后置摄像头
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        for (int camIdx = 0, cameraCount = Camera.getNumberOfCameras(); camIdx < cameraCount; camIdx++) {
-            Camera.getCameraInfo(camIdx, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                try {
-                    Log.i(TAG, "tryToOpenCamera");
-                    myCamera = Camera.open(camIdx);
-                } catch (RuntimeException e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        }
-
-        try {
-            // 这里的myCamera为已经初始化的Camera对象
-            myCamera.setPreviewDisplay(myHolder);
-        } catch (IOException e) {
-            e.printStackTrace();
-            myCamera.stopPreview();
-            myCamera.release();
-            myCamera = null;
-        }
-
-        myCamera.startPreview();
-
-        Camera.Parameters parameters = myCamera.getParameters(); // 获取各项参数
-        parameters.setPictureFormat(PixelFormat.JPEG); // 设置图片格式
-        parameters.setJpegQuality(100); // 设置照片质量
-        List<Camera.Size> sizeList=parameters.getSupportedPictureSizes();
-        Camera.Size camreaSize=sizeList.get(sizeList.size()/3);
-        parameters.setPictureSize(camreaSize.width, camreaSize.height);
-        parameters.setRotation(90);
-        parameters.setFocusMode("continuous-picture");
-        myCamera.setParameters(parameters);
-
-        return true;
-    }
 
     @Override
     public void onBackPressed() {
@@ -847,6 +740,32 @@ public class SealProcessActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_GRANTED) {
+            mCameraView.start();
+        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.CAMERA)) {
+            TakePhotoActivity.ConfirmationDialogFragment
+                    .newInstance(R.string.camera_permission_confirmation,
+                            new String[]{Manifest.permission.CAMERA},
+                            Constants.REQUEST_CAMERA_PERMISSION,
+                            R.string.camera_permission_not_granted)
+                    .show(getSupportFragmentManager(), Constants.FRAGMENT_DIALOG);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    Constants.REQUEST_CAMERA_PERMISSION);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        mCameraView.stop();
+        super.onPause();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -862,4 +781,54 @@ public class SealProcessActivity extends AppCompatActivity implements
                 break;
         }
     }
+
+    private CameraView.Callback mCallback
+            = new CameraView.Callback() {
+
+        @Override
+        public void onCameraOpened(CameraView cameraView) {
+            Log.d(TAG, "onCameraOpened");
+        }
+
+        @Override
+        public void onCameraClosed(CameraView cameraView) {
+            Log.d(TAG, "onCameraClosed");
+        }
+
+        @Override
+        public void onPictureTaken(CameraView cameraView, final byte[] data) {
+            Log.d(TAG, "onPictureTaken " + data.length);
+            String filename = BitmapUtil.getFilePath(SealProcessActivity.this);
+            try {
+                FileOutputStream fos = new FileOutputStream(filename);
+                fos.write(data);
+                fos.close();
+                sealTypeChinese=UsingSealSummary.getSealTypeChinese(takingPictureSealType);
+                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
+                    @Override
+                    public void onFinish(String xml, String method, String sealCode, String filePath) {
+                        UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
+                        if(response.getStatus()==1){
+                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
+                        }else{
+                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Exception e, String method, String sealCode, String filePath) {
+                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                    }
+                });
+            } catch (Exception error) {
+                Toast.makeText(SealProcessActivity.this, "拍照失败", Toast.LENGTH_SHORT)
+                        .show();
+                Log.i(TAG, "保存照片失败" + error.toString());
+                error.printStackTrace();
+            }
+        }
+    };
 }
