@@ -372,12 +372,6 @@ public class SealProcessActivity extends AppCompatActivity implements
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
-                            //wait for taking photo
-                            try {
-                                Thread.sleep(3*1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
                             loadingView.dismiss();
                         }
 
@@ -493,51 +487,6 @@ public class SealProcessActivity extends AppCompatActivity implements
         }
     }
 
-
-    // 拍照成功回调函数
-    private Camera.PictureCallback myPicCallback = new Camera.PictureCallback() {
-
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-
-            String filename = BitmapUtil.getFilePath(SealProcessActivity.this);
-
-            try {
-                FileOutputStream fos = new FileOutputStream(filename);
-                fos.write(data);
-                fos.close();
-                sealTypeChinese=UsingSealSummary.getSealTypeChinese(takingPictureSealType);
-                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
-                    @Override
-                    public void onFinish(String xml, String method, String sealCode, String filePath) {
-                        UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
-                        if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
-                        }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
-                    }
-                });
-            } catch (Exception error) {
-                Toast.makeText(SealProcessActivity.this, "拍照失败", Toast.LENGTH_SHORT)
-                        .show();
-
-                Log.i(TAG, "保存照片失败" + error.toString());
-                error.printStackTrace();
-            }
-
-            Log.i(TAG, "获取照片成功");
-        }
-    };
-
     @Override
     public void onBackPressed() {
         retunToHome();
@@ -584,6 +533,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             public void onActionClicked(View view, Card card) {
                                 loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……请勿取走文件");
                                 loadingView.show();
+                                startCamera();
                                 UsingSealSummary.setCurrentSealType(sealType);
                                 String command=BluetoothCmdInterpreter.usingSend(
                                         sealType,
@@ -742,6 +692,9 @@ public class SealProcessActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    private void startCamera(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED) {
             mCameraView.start();
@@ -757,6 +710,10 @@ public class SealProcessActivity extends AppCompatActivity implements
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
                     Constants.REQUEST_CAMERA_PERMISSION);
         }
+    }
+
+    private void stopCamera(){
+        mCameraView.stop();
     }
 
     @Override
@@ -828,6 +785,8 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .show();
                 Log.i(TAG, "保存照片失败" + error.toString());
                 error.printStackTrace();
+            }finally {
+                stopCamera();
             }
         }
     };
