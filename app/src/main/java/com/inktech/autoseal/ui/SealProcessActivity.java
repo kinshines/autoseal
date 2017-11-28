@@ -372,6 +372,12 @@ public class SealProcessActivity extends AppCompatActivity implements
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
+                            try {
+                                Thread.sleep(3*1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            stopCamera();
                             loadingView.dismiss();
                         }
 
@@ -785,8 +791,6 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .show();
                 Log.i(TAG, "保存照片失败" + error.toString());
                 error.printStackTrace();
-            }finally {
-                stopCamera();
             }
         }
     };
