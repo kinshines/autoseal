@@ -13,7 +13,9 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -92,6 +94,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     private String takingPictureSealType="";
     private boolean usingSealFlag=false;
     private boolean returnSealFlag=false;
+    private Handler mBackgroundHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +132,8 @@ public class SealProcessActivity extends AppCompatActivity implements
         setTitle(device.getName());
     }
 
-    @Override protected void onStart() {
+    @Override
+    protected void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -139,7 +143,8 @@ public class SealProcessActivity extends AppCompatActivity implements
         Log.d(Constants.TAG, "Connecting");
     }
 
-    @Override protected void onStop() {
+    @Override
+    protected void onStop() {
         super.onStop();
         if (bluetoothService != null) {
             bluetoothService.stop();
@@ -147,6 +152,18 @@ public class SealProcessActivity extends AppCompatActivity implements
         }
 
         unregisterReceiver(mReceiver);
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mBackgroundHandler != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                mBackgroundHandler.getLooper().quitSafely();
+            } else {
+                mBackgroundHandler.getLooper().quit();
+            }
+            mBackgroundHandler = null;
+        }
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -739,6 +756,15 @@ public class SealProcessActivity extends AppCompatActivity implements
         }
     }
 
+    private Handler getBackgroundHandler() {
+        if (mBackgroundHandler == null) {
+            HandlerThread thread = new HandlerThread("background");
+            thread.start();
+            mBackgroundHandler = new Handler(thread.getLooper());
+        }
+        return mBackgroundHandler;
+    }
+
     private CameraView.Callback mCallback
             = new CameraView.Callback() {
 
@@ -755,37 +781,52 @@ public class SealProcessActivity extends AppCompatActivity implements
         @Override
         public void onPictureTaken(CameraView cameraView, final byte[] data) {
             Log.d(TAG, "onPictureTaken " + data.length);
-            String filename = BitmapUtil.getFilePath(SealProcessActivity.this);
-            try {
-                FileOutputStream fos = new FileOutputStream(filename);
-                fos.write(data);
-                fos.close();
-                sealTypeChinese=UsingSealSummary.getSealTypeChinese(takingPictureSealType);
-                WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
-                    @Override
-                    public void onFinish(String xml, String method, String sealCode, String filePath) {
-                        UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
-                        if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
-                        }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                            handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
-                        }
-                    }
+            getBackgroundHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    String filename = BitmapUtil.getFilePath(SealProcessActivity.this);
+                    FileOutputStream fos=null;
+                    try {
+                        fos = new FileOutputStream(filename);
+                        fos.write(data);
+                        fos.close();
+                        sealTypeChinese=UsingSealSummary.getSealTypeChinese(takingPictureSealType);
+                        WebServiceUtil.uploadByMethod(WebServiceMethod, filename, Constants.Document,sealTypeChinese,new SoapCallbackListener() {
+                            @Override
+                            public void onFinish(String xml, String method, String sealCode, String filePath) {
+                                UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
+                                if(response.getStatus()==1){
+                                    DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                    handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
+                                }else{
+                                    DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                    handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                                }
+                            }
 
-                    @Override
-                    public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
-                        handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                            @Override
+                            public void onError(Exception e, String method, String sealCode, String filePath) {
+                                DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
+                            }
+                        });
+                    } catch (Exception error) {
+                        Toast.makeText(SealProcessActivity.this, "拍照失败", Toast.LENGTH_SHORT)
+                                .show();
+                        Log.i(TAG, "保存照片失败" + error.toString());
+                        error.printStackTrace();
+                    }finally {
+                        if (fos != null) {
+                            try {
+                                fos.close();
+                            } catch (IOException e) {
+                                // Ignore
+                            }
+                        }
+                        stopCamera();
                     }
-                });
-            } catch (Exception error) {
-                Toast.makeText(SealProcessActivity.this, "拍照失败", Toast.LENGTH_SHORT)
-                        .show();
-                Log.i(TAG, "保存照片失败" + error.toString());
-                error.printStackTrace();
-            }
+                }
+            });
         }
     };
 }
