@@ -372,12 +372,6 @@ public class SealProcessActivity extends AppCompatActivity implements
                             startTakePhoto();
                             UsingSealSummary.completeOnce();
                             refreshSealProcess();
-                            try {
-                                Thread.sleep(3*1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            stopCamera();
                             loadingView.dismiss();
                         }
 
