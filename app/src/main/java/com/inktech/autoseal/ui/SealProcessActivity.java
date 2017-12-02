@@ -61,6 +61,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,6 +96,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     private boolean usingSealFlag=false;
     private boolean returnSealFlag=false;
     private Handler mBackgroundHandler;
+    Date lastClickTime=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +132,7 @@ public class SealProcessActivity extends AppCompatActivity implements
 
         refreshSealProcess();
         setTitle(device.getName());
+        lastClickTime=new Date();
     }
 
     @Override
@@ -528,6 +531,7 @@ public class SealProcessActivity extends AppCompatActivity implements
         String chineseSealType=UsingSealSummary.getSealTypeChinese(sealType);
         String description="剩余 "+remainingCount+" 次";
 
+
         Card card = new Card.Builder(this)
                 .withProvider(new CardProvider())
                 .setLayout(R.layout.material_basic_image_buttons_card_layout)
@@ -548,6 +552,11 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
+                                Date now=new Date();
+                                if(now.getTime()-lastClickTime.getTime()<2000){
+                                    return;
+                                }
+                                lastClickTime=now;
                                 loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……请勿取走文件");
                                 loadingView.show();
                                 startCamera();
