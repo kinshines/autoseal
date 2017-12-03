@@ -43,6 +43,7 @@ public class GetSealFragment extends Fragment {
     AppCompatButton btnScan;
     MaterialListView listSealInfo;
     AlertDialog loadingView;
+    AppCompatButton btnConfirm;
 
     public GetSealFragment() {
         // Required empty public constructor
@@ -89,15 +90,6 @@ public class GetSealFragment extends Fragment {
                 });
             }
         });
-
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),QRCodeReaderActivity.class);
-                startActivityForResult(intent, Constants.REQUEST_QR_SCAN);
-            }
-        });
-
         return view;
     }
 
@@ -120,6 +112,26 @@ public class GetSealFragment extends Fragment {
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
         loadingView=new SpotsDialog(getContext(),getResources().getText(R.string.checking));
+        btnConfirm=view.findViewById(R.id.btn_confirm);
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),QRCodeReaderActivity.class);
+                startActivityForResult(intent, Constants.REQUEST_QR_SCAN);
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
+                intent.putExtra(Constants.web_service_method,WebServiceUtil.uploadByOut);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
     }
 
     private Handler handler=new Handler(){
@@ -171,25 +183,13 @@ public class GetSealFragment extends Fragment {
                         result=result+OutSealSummary.translateOutSealItemToChinese(seal)+"\n";
                     }
                     result=result.substring(0,result.length()-1);
+                    btnConfirm.setVisibility(View.VISIBLE);
                     Card sealCard = new Card.Builder(getContext())
                             .withProvider(new CardProvider())
-                            .setLayout(R.layout.material_welcome_card_layout)
+                            .setLayout(R.layout.material_small_image_card)
                             .setTitle(result)
                             .setDescription(R.string.get_seal_code_description)
                             .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
-                            .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
-                                    .setText(R.string.confirm_take_photo)
-                                    .setTextColor(ContextCompat.getColor(getContext(),R.color.colorAccent))
-                                    .setListener(new OnActionClickListener() {
-                                        @Override
-                                        public void onActionClicked(View view, Card card) {
-                                            Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
-                                            intent.putExtra(Constants.web_service_method,WebServiceUtil.uploadByOut);
-                                            startActivity(intent);
-                                            getActivity().finish();
-                                        }
-                                    }))
-                            .setDividerVisible(true)
                             .endConfig()
                             .build();
                     listSealInfo.getAdapter().clearAll();

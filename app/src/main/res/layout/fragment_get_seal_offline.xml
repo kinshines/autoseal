@@ -64,4 +64,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatButton
+            android:visibility="invisible"
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/confirm_btn_height"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="@dimen/card_view_horizontal_margin"
+            android:layout_centerHorizontal="true"
+            android:text="@string/confirm_take_photo" />
+    </RelativeLayout>
 </LinearLayout>

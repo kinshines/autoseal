@@ -39,6 +39,7 @@ public class UsingSealOfflineFragment extends Fragment {
     AppCompatButton btnScan;
     MaterialListView listSealInfo;
     UsingSealInfoItemOffline sealInfoOffline;
+    AppCompatButton btnConfirm;
 
     public UsingSealOfflineFragment() {
         // Required empty public constructor
@@ -58,61 +59,6 @@ public class UsingSealOfflineFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_using_seal_offline, container, false);
         initViews(view);
-
-        btnUsingCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sealCode=editUsingCode.getText().toString().trim();
-                UsingSealSummary.setCurrentSealCode(sealCode);
-                PreferenceUtil.setSealCode(sealCode);
-                sealInfoOffline=SealOfflineUtil.validateUsingSealCode(sealCode);
-                if(sealInfoOffline==null){
-                    Card warnCard = new Card.Builder(getContext())
-                            .withProvider(new CardProvider())
-                            .setLayout(R.layout.material_small_image_card)
-                            .setTitle(R.string.using_seal_code_invalid)
-                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
-                            .endConfig()
-                            .build();
-                    listSealInfo.getAdapter().clearAll();
-                    listSealInfo.getAdapter().add(warnCard);
-                    return;
-                }
-                String result= UsingSealSummary.translateUsingSealItemToChinese(sealInfoOffline);
-                Card sealCard = new Card.Builder(getContext())
-                        .withProvider(new CardProvider())
-                        .setLayout(R.layout.material_welcome_card_layout)
-                        .setTitle(result)
-                        .setDescription(R.string.using_seal_code_description)
-                        .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
-                        .addAction(R.id.ok_button, new WelcomeButtonAction(getContext())
-                                .setText(R.string.confirm_take_photo)
-                                .setTextColor(ContextCompat.getColor(getContext(),R.color.colorAccent))
-                                .setListener(new OnActionClickListener() {
-                                    @Override
-                                    public void onActionClicked(View view, Card card) {
-                                        Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
-                                        intent.putExtra(Constants.web_service_method, WebServiceUtil.uploadByUrgentUsing);
-                                        startActivity(intent);
-                                        getActivity().finish();
-                                    }
-                                }))
-                        .setDividerVisible(true)
-                        .endConfig()
-                        .build();
-                listSealInfo.getAdapter().clearAll();
-                listSealInfo.getAdapter().add(sealCard);
-            }
-        });
-
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent(getActivity(),QRCodeReaderActivity.class);
-                startActivityForResult(intent, Constants.REQUEST_QR_SCAN);
-            }
-        });
-
         return view;
     }
 
@@ -134,6 +80,59 @@ public class UsingSealOfflineFragment extends Fragment {
         btnUsingCode= view.findViewById(R.id.btn_using_code);
         listSealInfo=view.findViewById(R.id.list_seal_info);
         btnScan=view.findViewById(R.id.btn_scan);
+        btnConfirm=view.findViewById(R.id.btn_confirm);
+
+        btnUsingCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sealCode=editUsingCode.getText().toString().trim();
+                UsingSealSummary.setCurrentSealCode(sealCode);
+                PreferenceUtil.setSealCode(sealCode);
+                sealInfoOffline=SealOfflineUtil.validateUsingSealCode(sealCode);
+                if(sealInfoOffline==null){
+                    Card warnCard = new Card.Builder(getContext())
+                            .withProvider(new CardProvider())
+                            .setLayout(R.layout.material_small_image_card)
+                            .setTitle(R.string.using_seal_code_invalid)
+                            .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorWarningLight))
+                            .endConfig()
+                            .build();
+                    listSealInfo.getAdapter().clearAll();
+                    listSealInfo.getAdapter().add(warnCard);
+                    return;
+                }
+                String result= UsingSealSummary.translateUsingSealItemToChinese(sealInfoOffline);
+                btnConfirm.setVisibility(View.VISIBLE);
+                Card sealCard = new Card.Builder(getContext())
+                        .withProvider(new CardProvider())
+                        .setLayout(R.layout.material_small_image_card)
+                        .setTitle(result)
+                        .setDescription(R.string.using_seal_code_description)
+                        .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
+                        .endConfig()
+                        .build();
+                listSealInfo.getAdapter().clearAll();
+                listSealInfo.getAdapter().add(sealCard);
+            }
+        });
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),QRCodeReaderActivity.class);
+                startActivityForResult(intent, Constants.REQUEST_QR_SCAN);
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(),TakePhotoActivity.class);
+                intent.putExtra(Constants.web_service_method, WebServiceUtil.uploadByUrgentUsing);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
     }
 
 }
