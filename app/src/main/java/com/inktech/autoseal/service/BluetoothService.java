@@ -119,20 +119,20 @@ public class BluetoothService {
         }
     }
 
-    public void write(byte[] out) {
+    public boolean write(byte[] out) {
         // Create temporary object
         ConnectedThread r;
         // Synchronize a copy of the ConnectedThread
         synchronized (this) {
             if (state != Constants.STATE_CONNECTED) {
                 Log.e(Constants.TAG, "Trying to send but not connected");
-                return;
+                return false;
             }
             r = connectedThread;
         }
 
         // Perform the write unsynchronized
-        r.write(out);
+        return r.write(out);
     }
 
     private class ConnectThread extends Thread {
@@ -243,13 +243,15 @@ public class BluetoothService {
         }
 
         /* Call this from the main activity to send data to the remote device */
-        public void write(byte[] bytes) {
+        public boolean write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
                 myHandler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, bytes).sendToTarget();
             } catch (IOException e) {
                 Log.e(Constants.TAG, "Exception during write", e);
+                return false;
             }
+            return true;
         }
 
         /* Call this from the main activity to shutdown the connection */

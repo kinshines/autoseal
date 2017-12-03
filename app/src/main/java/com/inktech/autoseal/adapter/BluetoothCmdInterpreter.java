@@ -24,6 +24,10 @@ public class BluetoothCmdInterpreter {
     public static final String ReturnFeedbackSealOver = ReturnReceivePrefix +"0100"+Suffix;
     public static final String ReturnConfirmedFeedback=ReturnReceivePrefix +"0200"+Suffix;
 
+    private static final String LightSwitchPrefix="EEB7";
+    public static final String LightSwitchOn=LightSwitchPrefix+"0001"+Suffix;
+    public static final String LightSwitchOff=LightSwitchPrefix+"0000"+Suffix;
+
     public static String usingSend(String sealType, Integer remainingCount, Integer totalCount){
         String command= UsingSendPrefix;
         switch (sealType){

@@ -131,7 +131,6 @@ public class SealProcessActivity extends AppCompatActivity implements
         bluetoothService = new BluetoothService(handler, device);
 
         refreshSealProcess();
-        setTitle(device.getName());
         lastClickTime=new Date();
     }
 
@@ -144,6 +143,16 @@ public class SealProcessActivity extends AppCompatActivity implements
 
         bluetoothService.connect();
         Log.d(Constants.TAG, "Connecting");
+
+        //用印时先开灯
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(usingSealFlag&&Constants.STATE_CONNECTED==bluetoothService.getState()){
+            sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOn);
+        }
     }
 
     @Override
@@ -187,7 +196,7 @@ public class SealProcessActivity extends AppCompatActivity implements
 
     }
 
-    private void sendBluetoothMessage(String message) {
+    private boolean sendBluetoothMessage(String message) {
         // Check that we're actually connected before trying anything
         if (bluetoothService.getState() != Constants.STATE_CONNECTED) {
             loadingView.dismiss();
@@ -197,9 +206,10 @@ public class SealProcessActivity extends AppCompatActivity implements
                             reconnect();
                         }
                     }).show();
+            return false;
         } else {
             byte[] send = BluetoothCmdInterpreter.getHexBytes(message);
-            bluetoothService.write(send);
+            return bluetoothService.write(send);
         }
     }
 
@@ -290,6 +300,9 @@ public class SealProcessActivity extends AppCompatActivity implements
                     .endConfig()
                     .build();
             listSealProcess.getAdapter().add(card);
+
+            //用印结束后关灯
+            sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOff);
         }else{
             for(String sealType:overallMap.keySet()){
                 if(UsingSealSummary.isCanceled(sealType))
@@ -405,11 +418,17 @@ public class SealProcessActivity extends AppCompatActivity implements
                             dialog.setPositiveButton("已经归还", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    String sealType=OutSealSummary.getCurrentSealType();
-                                    String command=BluetoothCmdInterpreter.returnSend(sealType,true);
-                                    sendBluetoothMessage(command);
                                     loadingView=new SpotsDialog(SealProcessActivity.this,"印章归还确认中……");
                                     loadingView.show();
+                                    String sealType=OutSealSummary.getCurrentSealType();
+                                    String command=BluetoothCmdInterpreter.returnSend(sealType,true);
+                                    boolean sendFlag=sendBluetoothMessage(command);
+                                    if(sendFlag){
+                                        PreferenceUtil.removeOutSealRecord(
+                                                OutSealSummary.getCurrentSealCode(),
+                                                OutSealSummary.getCurrentSealType()
+                                        );
+                                    }
                                 }
                             });
                             dialog.show();
@@ -657,7 +676,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
-                                    loadingView=new SpotsDialog(SealProcessActivity.this,returnSealFlag?"归还印中……":"取出印章中……");
+                                    loadingView=new SpotsDialog(SealProcessActivity.this,returnSealFlag?"归还印章中……":"取出印章中……");
                                     loadingView.show();
                                     OutSealSummary.setCurrentSealType(sealType);
                                     String command=returnSealFlag
