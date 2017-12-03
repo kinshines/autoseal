@@ -25,6 +25,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
     AppCompatTextView textOutCode;
     AppCompatTextView textHardwareCode;
     AppCompatTextView textBluetoothCode;
+    AppCompatTextView textOutSealRecord;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
         btnSaveIp=(AppCompatButton) findViewById(R.id.btn_save_ip);
         textHardwareCode=(AppCompatTextView) findViewById(R.id.text_hardware_code);
         textBluetoothCode=(AppCompatTextView) findViewById(R.id.text_bluetooth_code);
+        textOutSealRecord=(AppCompatTextView) findViewById(R.id.out_seal_record);
         SharedPreferences pref  = PreferenceManager.getDefaultSharedPreferences(SettingsPreferenceActivity.this);
 
         btnSaveIp.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +65,7 @@ public class SettingsPreferenceActivity extends AppCompatActivity {
 
         textUsingCode.setText(pref.getString(Constants.OfflineUsingSealCode,""));
         textOutCode.setText(pref.getString(Constants.OfflineOutSealCode,""));
+        textOutSealRecord.setText(pref.getString(Constants.OutSealRecord,""));
     }
 
     @Override

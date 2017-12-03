@@ -84,7 +84,7 @@
                         android:text="蓝牙配对码"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <android.support.v7.widget.AppCompatTextView
@@ -94,7 +94,7 @@
                         android:text="紧急用印码"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <android.support.v7.widget.AppCompatTextView
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
                 <LinearLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <android.support.v7.widget.AppCompatTextView
@@ -114,11 +114,31 @@
                         android:text="紧急取印码"/>
                 </LinearLayout>
                 <LinearLayout
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/text_out_code"
+                        android:textSize="@dimen/description_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:textSize="@dimen/subtitle_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="OutSealRecord"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/out_seal_record"
                         android:textSize="@dimen/description_size"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
