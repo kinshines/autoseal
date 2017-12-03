@@ -27,7 +27,7 @@ public class PreferenceUtil {
      * @param datalist
      */
     public static <T> void setDataList(String tag, ArrayList<T> datalist) {
-        if (null == datalist || datalist.size() == 0)
+        if (null == datalist)
             return;
 
         Gson gson = new Gson();

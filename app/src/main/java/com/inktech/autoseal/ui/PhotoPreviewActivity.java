@@ -65,7 +65,8 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     FileOutputStream fos = new FileOutputStream(filename);
                     fos.write(photoData);
                     fos.close();
-                    final Integer position=(WebServiceUtil.uploadByOut.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod))?Constants.UserForOut:Constants.User;
+                    final Integer position=(WebServiceUtil.uploadByOut.equals(WebServiceMethod)||WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod))?
+                            Constants.UserForOut:Constants.User;
                     WebServiceUtil.uploadByMethod(WebServiceMethod, filename, position, "", new SoapCallbackListener() {
                     @Override
                     public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -92,15 +93,21 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                     Log.i(TAG, "保存照片失败" + error.toString());
                     error.printStackTrace();
                 }
+
                 if(WebServiceUtil.uploadByUrgentUsing.equals(WebServiceMethod)){
                     SealOfflineUtil.removeUsingSealInfoItemOffline(UsingSealSummary.getCurrentSealCode());
                 }else if(WebServiceUtil.uploadByUrgentOut.equals(WebServiceMethod)){
                     SealOfflineUtil.removeOutSealInfoItemOffline(OutSealSummary.getCurrentSealCode());
                 }
-                Intent bluetoothIntent=new Intent(this,BluetoothSearchActivity.class);
-                bluetoothIntent.putExtra(Constants.web_service_method,WebServiceMethod);
-                startActivity(bluetoothIntent);
-                finish();
+                try{
+                    Intent bluetoothIntent=new Intent(this,BluetoothSearchActivity.class);
+                    bluetoothIntent.putExtra(Constants.web_service_method,WebServiceMethod);
+                    startActivity(bluetoothIntent);
+                    finish();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 break;
             case R.id.btn_take_photo:
                 Intent takephotoIntent=new Intent(this,TakePhotoActivity.class);
