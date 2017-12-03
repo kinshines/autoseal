@@ -99,6 +99,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     private boolean returnSealFlag=false;
     private Handler mBackgroundHandler;
     Date lastClickTime=null;
+    boolean firstCreate=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,16 +146,6 @@ public class SealProcessActivity extends AppCompatActivity implements
 
         bluetoothService.connect();
         Log.d(Constants.TAG, "Connecting");
-
-        //用印时先开灯
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(usingSealFlag&&Constants.STATE_CONNECTED==bluetoothService.getState()){
-            sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOn);
-        }
     }
 
     @Override
@@ -278,6 +269,17 @@ public class SealProcessActivity extends AppCompatActivity implements
         listSealProcess.getAdapter().clearAll();
         if(usingSealFlag){
             refreshUsingSealProcess();
+
+            //用印时先开灯
+            if(firstCreate&&Constants.STATE_CONNECTED==bluetoothService.getState()){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOn);
+                firstCreate=false;
+            }
         }else{
             refreshOutSealProcess();
         }
