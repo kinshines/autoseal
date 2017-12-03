@@ -75,4 +75,6 @@ public interface Constants {
     Integer Uploaded=2;
 
     String AesKey="autoseal@inktech";
+
+    Integer FeedbackTimerTaskDelay=12*1000;
 }
