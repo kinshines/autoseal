@@ -400,6 +400,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                     String readMessage = (String) msg.obj;
                     if (readMessage != null ) {
                         //Toast.makeText(activity,"Reveive:"+readMessage,Toast.LENGTH_SHORT).show();
+                        //用印反馈
                         if(BluetoothCmdInterpreter.UsingFeedbackSealOver.equals(readMessage)){
                             takingPictureSealType=UsingSealSummary.getCurrentSealType();
                             startTakePhoto();
@@ -408,6 +409,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             loadingView.dismiss();
                         }
 
+                        //还印反馈
                         if(BluetoothCmdInterpreter.ReturnFeedbackSealOver.equals(readMessage)){
                             loadingView.dismiss();
                             //还印后询问是否还印完成
@@ -434,6 +436,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             dialog.show();
                         }
 
+                        //取印反馈
                         if(BluetoothCmdInterpreter.OutFeedbackSealOver.equals(readMessage)){
                             loadingView.dismiss();
                             //取印完成后询问是否立即还印
@@ -571,6 +574,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
+                                //防止2秒内多次点击
                                 Date now=new Date();
                                 if(now.getTime()-lastClickTime.getTime()<2000){
                                     return;
