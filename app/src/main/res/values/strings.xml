@@ -13,6 +13,7 @@
     <string name="get_seal_hint">请输入取印编码</string>
     <string name="send">发送</string>
     <string name="confirm">确认</string>
+    <string name="scan_tip">扫码输入</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_take_photo">TakePhotoActivity</string>
     <string name="camera_permission_confirmation">This app demonstrates the usage of CameraView. In order to do that, it needs permission to access camera.</string>

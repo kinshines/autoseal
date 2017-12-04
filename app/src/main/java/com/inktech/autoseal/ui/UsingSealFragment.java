@@ -185,6 +185,7 @@ public class UsingSealFragment extends Fragment {
                     }
                     result=result.substring(0,result.length()-1);
                     btnConfirm.setVisibility(View.VISIBLE);
+                    btnUsingCode.setVisibility(View.GONE);
                     Card sealCard = new Card.Builder(getContext())
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_small_image_card)

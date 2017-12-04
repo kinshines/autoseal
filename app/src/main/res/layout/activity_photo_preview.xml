@@ -23,7 +23,8 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_confirm"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="@dimen/confirm_btn_height"
+            android:textSize="@dimen/confirm_btn_size"
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:layout_marginLeft="40dp"
@@ -35,7 +36,8 @@
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_take_photo"
             android:layout_width="0dp"
-            android:layout_height="32dp"
+            android:layout_height="@dimen/confirm_btn_height"
+            android:textSize="@dimen/confirm_btn_size"
             android:background="@color/colorAccent"
             android:textColor="@android:color/white"
             android:layout_marginLeft="20dp"
