@@ -2,7 +2,6 @@ package com.inktech.autoseal.ui;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -12,18 +11,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -453,11 +448,11 @@ public class SealProcessActivity extends AppCompatActivity implements
     private void runAfterReturnSealFeedback(){
         loadingView.dismiss();
         //还印后询问是否还印完成
-        android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-        dialog.setTitle("还印完成");
-        dialog.setCancelable(false);
-        dialog.setMessage("是否已将印章归还？");
-        dialog.setPositiveButton("已经归还", new DialogInterface.OnClickListener() {
+        android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
+        .setTitle("还印完成")
+        .setCancelable(false)
+        .setMessage("是否已将印章归还？")
+        .setPositiveButton("已经归还", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 loadingView=new SpotsDialog(SealProcessActivity.this,"印章归还确认中……");
@@ -472,24 +467,25 @@ public class SealProcessActivity extends AppCompatActivity implements
                     );
                 }
             }
-        });
+        }).create();
         dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(Constants.DialogButtonSize);
     }
 
     private void runAfterOutSealFeedback(){
         loadingView.dismiss();
         //取印完成后询问是否立即还印
-        android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-        dialog.setTitle("立即还印");
-        dialog.setCancelable(false);
-        dialog.setMessage("印章已取出，是否立即归还？");
-        dialog.setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
+        android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
+        .setTitle("立即还印")
+        .setCancelable(false)
+        .setMessage("印章已取出，是否立即归还？")
+        .setPositiveButton("立即归还", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 outSealConfirmDialog();
             }
-        });
-        dialog.setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
+        })
+        .setNegativeButton("以后归还", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 PreferenceUtil.addOutSealRecord(
@@ -498,8 +494,10 @@ public class SealProcessActivity extends AppCompatActivity implements
                         OutSealSummary.getCurrentSealName());
                 outSealConfirmDialog();
             }
-        });
+        }).create();
         dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(Constants.DialogButtonSize);
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(Constants.DialogButtonSize);
     }
 
     private void runAfterReturnConfirmedFeedback(){
@@ -520,10 +518,10 @@ public class SealProcessActivity extends AppCompatActivity implements
 
     private void outSealConfirmDialog(){
         //确认取印完成
-        android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-        dialog.setTitle("取印是否已完成？");
-        dialog.setCancelable(false);
-        dialog.setPositiveButton("取印完成", new DialogInterface.OnClickListener() {
+        android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
+        .setTitle("取印是否已完成？")
+        .setCancelable(false)
+        .setPositiveButton("取印完成", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 String sealType=OutSealSummary.getCurrentSealType();
@@ -532,8 +530,9 @@ public class SealProcessActivity extends AppCompatActivity implements
                 loadingView=new SpotsDialog(SealProcessActivity.this,"取印完成确认中……");
                 loadingView.show();
             }
-        });
+        }).create();
         dialog.show();
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(Constants.DialogButtonSize);
     }
 
     /**
@@ -612,10 +611,10 @@ public class SealProcessActivity extends AppCompatActivity implements
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
-                                android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-                                dialog.setTitle("确认取消盖章");
-                                dialog.setMessage("本次盖章将不再提供此类印章");
-                                dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
+                                .setTitle("确认取消盖章")
+                                .setMessage("本次盖章将不再提供此类印章")
+                                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         //一上来就取消的话，不发送指令
@@ -628,13 +627,15 @@ public class SealProcessActivity extends AppCompatActivity implements
                                         card.dismiss();
                                         refreshSealProcess();
                                     }
-                                });
-                                dialog.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                })
+                                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                     }
-                                });
+                                }).create();
                                 dialog.show();
+                                dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(Constants.DialogButtonSize);
+                                dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(Constants.DialogButtonSize);
                             }
                         }))
                 .endConfig()
@@ -690,7 +691,7 @@ public class SealProcessActivity extends AppCompatActivity implements
         if(!hasTakenOut){
             cardProvider
                     .addAction(R.id.left_text_button, new TextViewAction(this)
-                            .setText(returnSealFlag?"确认归还印章":"确认取出印章")
+                            .setText(returnSealFlag?"确认还章":"确认取章")
                             .setTextColor(Color.WHITE)
                             .setListener(new OnActionClickListener() {
                                 @Override
@@ -705,29 +706,31 @@ public class SealProcessActivity extends AppCompatActivity implements
                                 }
                             }))
                     .addAction(R.id.right_text_button, new TextViewAction(this)
-                            .setText("取消")
+                            .setText(returnSealFlag?"取消还章":"取消取章")
                             .setTextColor(Color.WHITE)
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
-                                    android.support.v7.app.AlertDialog.Builder dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this);
-                                    dialog.setTitle("确认取消");
-                                    dialog.setMessage(returnSealFlag?"本次还印将不再接受此类印章":"本次取印将不再提供此类印章");
-                                    dialog.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                    android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
+                                    .setTitle("确认取消")
+                                    .setMessage(returnSealFlag?"本次还印将不再接受此类印章":"本次取印将不再提供此类印章")
+                                    .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
                                             OutSealSummary.cancelSeal(sealType);
                                             card.dismiss();
                                             refreshSealProcess();
                                         }
-                                    });
-                                    dialog.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                                    })
+                                    .setNegativeButton("返回", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialogInterface, int i) {
 
                                         }
-                                    });
+                                    }).create();
                                     dialog.show();
+                                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextSize(Constants.DialogButtonSize);
+                                    dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextSize(Constants.DialogButtonSize);
                                 }
                             }));
         }

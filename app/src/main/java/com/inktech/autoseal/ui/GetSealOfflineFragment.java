@@ -107,6 +107,7 @@ public class GetSealOfflineFragment extends Fragment {
                     return;
                 }
                 btnConfirm.setVisibility(View.VISIBLE);
+                btnUsingCode.setVisibility(View.GONE);
                 String result= OutSealSummary.translateOutSealItemToChinese(sealInfoOffline);
                 Card sealCard = new Card.Builder(getContext())
                         .withProvider(new CardProvider())

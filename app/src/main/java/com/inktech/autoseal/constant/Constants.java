@@ -77,4 +77,6 @@ public interface Constants {
     String AesKey="autoseal@inktech";
 
     Integer FeedbackTimerTaskDelay=12*1000;
+
+    float DialogButtonSize=25;
 }

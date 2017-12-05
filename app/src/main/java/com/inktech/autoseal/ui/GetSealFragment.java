@@ -184,11 +184,12 @@ public class GetSealFragment extends Fragment {
                     }
                     result=result.substring(0,result.length()-1);
                     btnConfirm.setVisibility(View.VISIBLE);
+                    btnUsingCode.setVisibility(View.GONE);
                     Card sealCard = new Card.Builder(getContext())
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_small_image_card)
                             .setTitle(result)
-                            .setDescription(R.string.get_seal_code_description)
+                            //.setDescription(R.string.get_seal_code_description)
                             .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
                             .endConfig()
                             .build();
