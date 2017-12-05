@@ -190,7 +190,7 @@ public class UsingSealFragment extends Fragment {
                             .withProvider(new CardProvider())
                             .setLayout(R.layout.material_small_image_card)
                             .setTitle(result)
-                            .setDescription(R.string.using_seal_code_description)
+                            //.setDescription(R.string.using_seal_code_description)
                             .setBackgroundColor(ContextCompat.getColor(getContext(),R.color.colorLight))
                             .endConfig()
                             .build();

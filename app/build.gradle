@@ -41,7 +41,6 @@ dependencies {
     compile "com.android.support:support-v4:$supportLibraryVersion"
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
-    compile 'com.github.dexafree:materiallist:3.2.1'
     compile 'cn.bingoogolapple:bga-qrcodecore:1.1.8@aar'
     compile 'cn.bingoogolapple:bga-zbar:1.1.8@aar'
     compile 'com.android.support:support-v4:26.+'
@@ -51,4 +50,5 @@ dependencies {
     compile 'com.github.d-max:spots-dialog:0.7@aar'
     compile 'com.roughike:bottom-bar:2.3.1'
     testCompile 'junit:junit:4.12'
+    compile project(path: ':materialList')
 }
