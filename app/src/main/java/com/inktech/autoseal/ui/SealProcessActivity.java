@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Build;
@@ -63,9 +64,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.util.XmlParseUtil;
@@ -269,17 +267,6 @@ public class SealProcessActivity extends AppCompatActivity implements
         listSealProcess.getAdapter().clearAll();
         if(usingSealFlag){
             refreshUsingSealProcess();
-
-            //用印时先开灯
-            if(firstCreate&&Constants.STATE_CONNECTED==bluetoothService.getState()){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOn);
-                firstCreate=false;
-            }
         }else{
             refreshOutSealProcess();
         }
@@ -380,6 +367,11 @@ public class SealProcessActivity extends AppCompatActivity implements
                             activity.setStatus("盖章机已连接");
                             activity.reconnectButton.setVisible(false);
                             activity.toolbalProgressBar.setVisibility(View.GONE);
+                            //用印时先开灯
+                            if(firstCreate&&usingSealFlag){
+                                sendBluetoothMessage(BluetoothCmdInterpreter.LightSwitchOn);
+                                firstCreate=false;
+                            }
                             break;
                         case Constants.STATE_CONNECTING:
                             activity.setStatus("盖章机连接中……");
@@ -593,7 +585,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                 })
                 .addAction(R.id.left_text_button, new TextViewAction(this)
                         .setText("确认盖章")
-                        .setTextResourceColor(R.color.colorPrimary)
+                        .setTextColor(Color.WHITE)
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
@@ -616,7 +608,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                         }))
                 .addAction(R.id.right_text_button, new TextViewAction(this)
                         .setText("取消盖章")
-                        .setTextResourceColor(R.color.colorAccent)
+                        .setTextColor(Color.WHITE)
                         .setListener(new OnActionClickListener() {
                             @Override
                             public void onActionClicked(View view, Card card) {
@@ -699,7 +691,7 @@ public class SealProcessActivity extends AppCompatActivity implements
             cardProvider
                     .addAction(R.id.left_text_button, new TextViewAction(this)
                             .setText(returnSealFlag?"确认归还印章":"确认取出印章")
-                            .setTextResourceColor(R.color.colorPrimary)
+                            .setTextColor(Color.WHITE)
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
@@ -714,7 +706,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             }))
                     .addAction(R.id.right_text_button, new TextViewAction(this)
                             .setText("取消")
-                            .setTextResourceColor(R.color.colorAccent)
+                            .setTextColor(Color.WHITE)
                             .setListener(new OnActionClickListener() {
                                 @Override
                                 public void onActionClicked(View view, Card card) {
