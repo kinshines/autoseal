@@ -37,6 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <android.support.v7.widget.AppCompatEditText
+                    android:textSize="@dimen/confirm_btn_size"
                     android:id="@+id/edit_using_code"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -48,11 +49,10 @@
                 android:layout_height="wrap_content">
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_scan"
-                    android:drawableLeft="@mipmap/scan"
                     android:drawableStart="@mipmap/scan"
                     android:background="@android:color/white"
                     android:text="@string/scan_tip"
-                    android:textSize="@dimen/medium_text_size"
+                    android:textSize="@dimen/confirm_btn_size"
                     android:textColor="@android:color/darker_gray"
                     android:gravity="center_vertical"
                     android:layout_width="@dimen/scan_btn_width"

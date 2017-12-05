@@ -122,7 +122,7 @@ public class WebServiceUtil {
         if(Constants.Document.equals(position)){
             positionChi=sealName;
         }
-        map.put("postion",positionChi);
+        map.put("position",positionChi);
         sendRequest(method,map,listener,filePath);
     }
 

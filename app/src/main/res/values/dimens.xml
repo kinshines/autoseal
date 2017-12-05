@@ -17,8 +17,8 @@
     <dimen name="body1_primary">20sp</dimen>
     <dimen name="caption_primary">13sp</dimen>
 
-    <dimen name="scan_btn_size">40dp</dimen>
-    <dimen name="scan_btn_width">120dp</dimen>
+    <dimen name="scan_btn_size">45dp</dimen>
+    <dimen name="scan_btn_width">140dp</dimen>
     <dimen name="confirm_btn_height">35dp</dimen>
     <dimen name="confirm_btn_size">22sp</dimen>
 
