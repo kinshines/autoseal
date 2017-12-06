@@ -8,25 +8,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -34,6 +30,7 @@ import com.inktech.autoseal.R;
 import com.inktech.autoseal.adapter.WifiAdapter;
 import com.inktech.autoseal.constant.Constants;
 import com.inktech.autoseal.util.WifiAdmin;
+import com.thanosfisherman.wifiutils.WifiUtils;
 
 import java.util.List;
 
@@ -80,7 +77,21 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
                         SharedPreferences.Editor editor=preferences.edit();
                         editor.putString(ssid, pw);   //保存密码
                         editor.commit();
-                        mWifiAdmin.addNetwork(mWifiAdmin.CreateWifiInfo(ssid, et_password.getText().toString(), 3));
+                        //mWifiAdmin.addNetwork(mWifiAdmin.CreateWifiInfo(ssid, et_password.getText().toString(), 3));
+                        WifiUtils.withContext(getApplicationContext())
+                                .connectWith(ssid, et_password.getText().toString())
+                                .onConnectionResult(this::checkResult)
+                                .start();
+                    }
+
+                    private void checkResult(boolean isSuccess)
+                    {
+                        if (isSuccess){
+                            Toast.makeText(WifiActivity.this, "WiFi连接成功", Toast.LENGTH_SHORT).show();
+                            scanWifi();
+                        }
+                        else
+                            Toast.makeText(WifiActivity.this, "WiFi密码错误", Toast.LENGTH_SHORT).show();
                     }
                 });
                 alert.setNegativeButton("取消连接", new DialogInterface.OnClickListener(){
@@ -94,7 +105,11 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         if(mWifiAdmin.isWifiEnabled()){
             btnOpenWifi.setText("WiFi已开启");
             scanWifiCheckPermission();
@@ -102,8 +117,8 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /*
- * 控件初始化
- * */
+     * 控件初始化
+     * */
     private void initViews() {
         btnOpenWifi=(AppCompatButton) findViewById(R.id.btn_open_wifi);
         btnCloseWifi=(AppCompatButton) findViewById(R.id.btn_close_wifi);
@@ -116,9 +131,10 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.btn_open_wifi:
+                scanWifiCheckPermission();
                 btnOpenWifi.setText("WiFi开启中……");
                 mWifiAdmin.openWifi(WifiActivity.this);
-                scanWifiCheckPermission();
+
                 btnOpenWifi.setText("WiFi已开启");
                 break;
             case R.id.btn_close_wifi:
@@ -133,23 +149,18 @@ public class WifiActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void scanWifi(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mWifiAdmin.startScan(WifiActivity.this);
-                WifiActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mWifiList=mWifiAdmin.getWifiList();
-                        if(mWifiList!=null){
-                            wifiAdapter=new WifiAdapter(WifiActivity.this,mWifiList,mWifiAdmin);
-                            mlistView.setAdapter(wifiAdapter);
-                            //setListViewHeightBasedOnChildren(mlistView);
-                        }
-                    }
-                });
-            }
-        }).start();
+        WifiUtils.withContext(getApplicationContext()).scanWifi(this::getScanResults).start();
+    }
+
+    private void getScanResults(@NonNull final List<ScanResult> results)
+    {
+        mWifiList=results;
+        if (results.isEmpty())
+        {
+            return;
+        }
+        wifiAdapter=new WifiAdapter(WifiActivity.this,mWifiList,mWifiAdmin);
+        mlistView.setAdapter(wifiAdapter);
     }
 
     //监听wifi状态
