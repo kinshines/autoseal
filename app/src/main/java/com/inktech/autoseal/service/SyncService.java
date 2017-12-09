@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.inktech.autoseal.adapter.SoapCallbackListener;
 import com.inktech.autoseal.db.FileUploadRecord;
@@ -16,6 +17,7 @@ import com.inktech.autoseal.model.UploadFileResponse;
 import com.inktech.autoseal.model.UsingSealInfoItemOffline;
 import com.inktech.autoseal.model.UsingSealInfoSyncResponse;
 import com.inktech.autoseal.util.DbUtil;
+import com.inktech.autoseal.util.NetworkUtil;
 import com.inktech.autoseal.util.SealOfflineUtil;
 import com.inktech.autoseal.util.WebServiceUtil;
 import com.inktech.autoseal.util.XmlParseUtil;
@@ -37,6 +39,7 @@ public class SyncService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e(TAG, "onStartCommand: flags"+flags+",startId"+startId);
         syncUsingSealInfoIfNeed();
         syncOutSealInfoIfNeed();
         uploadLocalFile();
@@ -61,6 +64,8 @@ public class SyncService extends Service {
     }
 
     private void syncUsingSealCode(){
+        if(!NetworkUtil.isNetworkConnected())
+            return;
         WebServiceUtil.updateUsingSealCode(new SoapCallbackListener() {
             @Override
             public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -79,6 +84,8 @@ public class SyncService extends Service {
     }
 
     private void syncOutSealCode(){
+        if(!NetworkUtil.isNetworkConnected())
+            return;
         WebServiceUtil.updateOutSealCode(new SoapCallbackListener() {
             @Override
             public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -97,6 +104,8 @@ public class SyncService extends Service {
     }
 
     private void uploadLocalFile() {
+        if(!NetworkUtil.isNetworkConnected())
+            return;
         List<FileUploadRecord> list=DbUtil.getTobeUploadFileList();
         if(list.size()==0)
             return;
