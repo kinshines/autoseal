@@ -104,8 +104,16 @@ public class SyncService extends Service {
     }
 
     private void uploadLocalFile() {
-        if(!NetworkUtil.isNetworkConnected())
-            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                threadUploadLocalFile();
+            }
+        }).start();
+
+    }
+
+    private void threadUploadLocalFile(){
         List<FileUploadRecord> list=DbUtil.getTobeUploadFileList();
         if(list.size()==0)
             return;
@@ -115,6 +123,8 @@ public class SyncService extends Service {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if(!NetworkUtil.isNetworkConnected())
+                continue;
             WebServiceUtil.uploadByRecord(record, new SoapCallbackListener() {
                 @Override
                 public void onFinish(String xml, String method, String sealCode, String filePath) {
@@ -132,7 +142,6 @@ public class SyncService extends Service {
                     DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName());
                 }
             });
-
         }
     }
 }
