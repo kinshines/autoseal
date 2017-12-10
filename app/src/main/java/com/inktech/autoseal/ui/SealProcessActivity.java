@@ -612,7 +612,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             @Override
                             public void onActionClicked(View view, Card card) {
                                 android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
-                                .setTitle("确认取消盖章")
+                                .setTitle("确认取消盖章").setCancelable(false)
                                 .setMessage("本次盖章将不再提供此类印章")
                                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
@@ -712,7 +712,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                                 @Override
                                 public void onActionClicked(View view, Card card) {
                                     android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
-                                    .setTitle("确认取消")
+                                    .setTitle("确认取消").setCancelable(false)
                                     .setMessage(returnSealFlag?"本次还印将不再接受此类印章":"本次取印将不再提供此类印章")
                                     .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                         @Override

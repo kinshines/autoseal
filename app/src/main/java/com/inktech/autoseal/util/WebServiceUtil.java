@@ -110,7 +110,16 @@ public class WebServiceUtil {
         Map<String,Object> map=new HashMap<>();
         map.put("sealCode",sealCode);
         File file=new File(filePath);
-        map.put("fileByte",getBytes(file));
+        if(!file.exists()){
+            DbUtil.uploadSuccess(method,sealCode,filePath,position,sealName);
+            return;
+        }
+        byte[] fileByte=getBytes(file);
+        if(fileByte==null){
+            listener.onError(new Exception("file byte null"),method,sealCode,filePath);
+            return;
+        }
+        map.put("fileByte",fileByte);
         map.put("filename",file.getName());
         String positionChi="";
         if(Constants.User.equals(position)){
@@ -153,8 +162,10 @@ public class WebServiceUtil {
             buffer = bos.toByteArray();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            buffer=null;
         } catch (IOException e) {
             e.printStackTrace();
+            buffer=null;
         }
         return buffer;
     }

@@ -118,11 +118,6 @@ public class SyncService extends Service {
         if(list.size()==0)
             return;
         for (FileUploadRecord record:list){
-            try {
-                Thread.sleep(2*1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             if(!NetworkUtil.isNetworkConnected())
                 continue;
             WebServiceUtil.uploadByRecord(record, new SoapCallbackListener() {
@@ -142,6 +137,12 @@ public class SyncService extends Service {
                     DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName());
                 }
             });
+
+            try {
+                Thread.sleep(20*1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
