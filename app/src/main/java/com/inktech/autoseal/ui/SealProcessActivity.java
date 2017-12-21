@@ -59,6 +59,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.inktech.autoseal.R;
 import com.inktech.autoseal.util.XmlParseUtil;
@@ -93,6 +95,8 @@ public class SealProcessActivity extends AppCompatActivity implements
     private Handler mBackgroundHandler;
     Date lastClickTime=null;
     boolean firstCreate=true;
+    Timer loadingViewTimer;
+    DismissLoadingTask dismissLoadingTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -377,7 +381,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             activity.toolbalProgressBar.setVisibility(View.GONE);
                             break;
                         case Constants.STATE_ERROR:
-                            loadingView.dismiss();
+                            cancelAndDismissLoadView();
                             activity.setStatus("出错啦");
                             activity.reconnectButton.setVisible(true);
                             activity.toolbalProgressBar.setVisibility(View.GONE);
@@ -420,7 +424,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                     }
                     break;
                 case Constants.MESSAGE_SNACKBAR:
-                    loadingView.dismiss();
+                    cancelAndDismissLoadView();
                     Snackbar.make(activity.coordinatorLayout, msg.getData().getString(Constants.SNACKBAR), Snackbar.LENGTH_LONG)
                             .setAction("连接", new View.OnClickListener() {
                                 @Override public void onClick(View v) {
@@ -446,7 +450,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     }
 
     private void runAfterReturnSealFeedback(){
-        loadingView.dismiss();
+        cancelAndDismissLoadView();
         //还印后询问是否还印完成
         android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
         .setTitle("还印完成")
@@ -473,7 +477,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     }
 
     private void runAfterOutSealFeedback(){
-        loadingView.dismiss();
+        cancelAndDismissLoadView();
         //取印完成后询问是否立即还印
         android.support.v7.app.AlertDialog dialog=new android.support.v7.app.AlertDialog.Builder(SealProcessActivity.this)
         .setTitle("立即还印")
@@ -501,7 +505,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     }
 
     private void runAfterReturnConfirmedFeedback(){
-        loadingView.dismiss();
+        cancelAndDismissLoadView();
         PreferenceUtil.removeOutSealRecord(
                 OutSealSummary.getCurrentSealCode(),
                 OutSealSummary.getCurrentSealType()
@@ -511,7 +515,7 @@ public class SealProcessActivity extends AppCompatActivity implements
     }
 
     private void runAfterOutConfirmedFeedback(){
-        loadingView.dismiss();
+        cancelAndDismissLoadView();
         OutSealSummary.completeOnce();
         refreshSealProcess();
     }
@@ -594,8 +598,15 @@ public class SealProcessActivity extends AppCompatActivity implements
                                     return;
                                 }
                                 lastClickTime=now;
+
                                 loadingView=new SpotsDialog(SealProcessActivity.this,"盖章中……请勿取走文件");
                                 loadingView.show();
+
+                                cancelDismissLoadingTask();
+                                loadingViewTimer=new Timer();
+                                dismissLoadingTask=new DismissLoadingTask();
+                                loadingViewTimer.schedule(dismissLoadingTask,Constants.DismissLoadingViewTaskDelay);
+
                                 startCamera();
                                 UsingSealSummary.setCurrentSealType(sealType);
                                 String command=BluetoothCmdInterpreter.usingSend(
@@ -880,10 +891,32 @@ public class SealProcessActivity extends AppCompatActivity implements
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        loadingView.dismiss();
+                        cancelAndDismissLoadView();
                     }
                 }
             });
         }
     };
+
+    private void cancelDismissLoadingTask(){
+        if(loadingViewTimer!=null){
+            if(dismissLoadingTask!=null){
+                dismissLoadingTask.cancel();
+            }
+        }
+    }
+
+    private void cancelAndDismissLoadView(){
+        cancelDismissLoadingTask();
+        loadingView.dismiss();
+    }
+
+
+    class DismissLoadingTask extends TimerTask {
+        @Override
+        public void run() {
+            // task to run goes here
+            loadingView.dismiss();
+        }
+    }
 }
