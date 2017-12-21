@@ -98,7 +98,7 @@ public class BluetoothService {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.SNACKBAR, "与盖章机失去连接，请重新连接");
         msg.setData(bundle);
-        myHandler.sendMessage(msg);
+        msg.sendToTarget();
         setState(Constants.STATE_ERROR);
         cancelConnectedThread();
     }
@@ -234,7 +234,6 @@ public class BluetoothService {
                         readMessage.setLength(0);
                     }
                 } catch (IOException e) {
-
                     Log.e(Constants.TAG, "Connection Lost", e);
                     connectionLost();
                     break;

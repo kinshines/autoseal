@@ -377,6 +377,7 @@ public class SealProcessActivity extends AppCompatActivity implements
                             activity.toolbalProgressBar.setVisibility(View.GONE);
                             break;
                         case Constants.STATE_ERROR:
+                            loadingView.dismiss();
                             activity.setStatus("出错啦");
                             activity.reconnectButton.setVisible(true);
                             activity.toolbalProgressBar.setVisibility(View.GONE);
@@ -418,7 +419,6 @@ public class SealProcessActivity extends AppCompatActivity implements
                         }
                     }
                     break;
-
                 case Constants.MESSAGE_SNACKBAR:
                     loadingView.dismiss();
                     Snackbar.make(activity.coordinatorLayout, msg.getData().getString(Constants.SNACKBAR), Snackbar.LENGTH_LONG)
