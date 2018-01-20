@@ -143,11 +143,14 @@
 
     <style name="Material_Action" parent="@style/Base.TextAppearance.AppCompat.Button">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">38dp</item>
-        <item name="android:minWidth">88dp</item>
-        <item name="android:padding">4dp</item>
-        <item name="android:layout_marginLeft">4dp</item>
-        <item name="android:layout_marginRight">4dp</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:minWidth">128dp</item>
+        <item name="android:paddingLeft">18dp</item>
+        <item name="android:paddingRight">18dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">14dp</item>
         <item name="android:buttonStyle">@style/Base.Widget.AppCompat.Button</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:textSize">@dimen/confirm_btn_size</item>
