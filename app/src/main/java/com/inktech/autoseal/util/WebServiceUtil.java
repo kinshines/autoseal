@@ -67,7 +67,7 @@ public class WebServiceUtil {
                     if (method.contains("uploadBy")){
                         new MarshalBase64().register(envelope);
                     }
-                    httpTransportSE=new HttpTransportSE(getServerIp());
+                    httpTransportSE=new HttpTransportSE(getServerIp(),8*1000);
                     String action=AddressNameSpace+method;
                     httpTransportSE.call(action,envelope);
                     SoapObject object=(SoapObject)envelope.bodyIn;
