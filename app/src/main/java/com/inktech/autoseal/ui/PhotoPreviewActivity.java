@@ -73,17 +73,17 @@ public class PhotoPreviewActivity extends AppCompatActivity implements View.OnCl
                         UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
 
                         if(response.getStatus()==1){
-                            DbUtil.uploadSuccess(method,sealCode,filePath,position,"");
+                            DbUtil.uploadSuccess(method,sealCode,filePath,position,"",0);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                         }else{
-                            DbUtil.uploadFail(method,sealCode,filePath,position,"");
+                            DbUtil.uploadFail(method,sealCode,filePath,position,"",0);
                             handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                         }
                     }
 
                     @Override
                     public void onError(Exception e, String method, String sealCode, String filePath) {
-                        DbUtil.uploadFail(method,sealCode,filePath,position,"");
+                        DbUtil.uploadFail(method,sealCode,filePath,position,"",0);
                         handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                     }
                 });

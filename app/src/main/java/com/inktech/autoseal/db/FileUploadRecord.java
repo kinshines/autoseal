@@ -16,6 +16,7 @@ public class FileUploadRecord extends DataSupport {
     private Integer status;
     private Date timeStamp;
     private String sealName;
+    private Integer uploadTimes;
 
     public String getSealCode() {
         return sealCode;
@@ -72,5 +73,9 @@ public class FileUploadRecord extends DataSupport {
     public void setSealName(String sealName) {
         this.sealName = sealName;
     }
+
+    public Integer getUploadTimes(){return uploadTimes;}
+
+    public void setUploadTimes(Integer uploadTimes){this.uploadTimes=uploadTimes;}
 }
 

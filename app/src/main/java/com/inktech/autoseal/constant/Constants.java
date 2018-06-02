@@ -80,4 +80,5 @@ public interface Constants {
     Integer DismissLoadingViewTaskDelay=30*1000;
 
     float DialogButtonSize=25;
+    Integer MaxUploadTimes=5;
 }

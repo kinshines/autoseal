@@ -857,17 +857,17 @@ public class SealProcessActivity extends AppCompatActivity implements
                             public void onFinish(String xml, String method, String sealCode, String filePath) {
                                 UploadFileResponse response= XmlParseUtil.pullUploadFileResponse(xml);
                                 if(response.getStatus()==1){
-                                    DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                    DbUtil.uploadSuccess(method,sealCode,filePath,Constants.Document,sealTypeChinese,0);
                                     handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_SUCCEED);
                                 }else{
-                                    DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                    DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese,0);
                                     handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                                 }
                             }
 
                             @Override
                             public void onError(Exception e, String method, String sealCode, String filePath) {
-                                DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese);
+                                DbUtil.uploadFail(method,sealCode,filePath,Constants.Document,sealTypeChinese,0);
                                 handler.sendEmptyMessage(Constants.MESSAGE_FILE_UPLOAD_FAIL);
                             }
                         });

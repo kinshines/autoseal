@@ -111,7 +111,7 @@ public class WebServiceUtil {
         map.put("sealCode",sealCode);
         File file=new File(filePath);
         if(!file.exists()){
-            DbUtil.uploadSuccess(method,sealCode,filePath,position,sealName);
+            DbUtil.updateUploadedStatus(filePath);
             return;
         }
         byte[] fileByte=getBytes(file);

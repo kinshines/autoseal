@@ -125,16 +125,16 @@ public class SyncService extends Service {
                 public void onFinish(String xml, String method, String sealCode, String filePath) {
                     UploadFileResponse response=XmlParseUtil.pullUploadFileResponse(xml);
                     if(response.getStatus()==1){
-                        DbUtil.uploadSuccess(method,sealCode,filePath,record.getPosition(),record.getSealName());
+                        DbUtil.uploadSuccess(method,sealCode,filePath,record.getPosition(),record.getSealName(),record.getUploadTimes());
                     }else{
-                        DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName());
+                        DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName(),record.getUploadTimes());
                     }
                 }
 
                 @Override
                 public void onError(Exception e, String method, String sealCode, String filePath) {
                     e.printStackTrace();
-                    DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName());
+                    DbUtil.uploadFail(method,sealCode,filePath,record.getPosition(),record.getSealName(),record.getUploadTimes());
                 }
             });
 
